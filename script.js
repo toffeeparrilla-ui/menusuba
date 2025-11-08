@@ -3,8 +3,6 @@
 // ===============================================
 const data = [
     // La estructura de los datos del CSV (id, nombre, precio, categoria, descripcion, imagen)
-    // Se ha convertido a este formato JavaScript para que sea fácil de manejar.
-    // 
     // NOTA: Los precios están como strings ("35.900") para mantener los puntos de miles, 
     // y se limpian para los cálculos en la función `calcularTotal()`.
 
@@ -311,8 +309,8 @@ function generarMensajeWhatsApp() {
         return;
     }
 
-    // ⚠️ CAMBIA ESTO por tu número de WhatsApp real
-    const whatsappNumber = '57573246812450'; // Ejemplo: 57 324 681 2450
+    // ⚠️ CRÍTICO: REEMPLAZA '573101234567' por tu número de WhatsApp real
+    const whatsappNumber = '573101234567'; // Ejemplo: 57 310 123 4567
 
     const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('telefono').value;
