@@ -3,15 +3,15 @@
 /* ========================================= */
 
 :root {
-    /* COLORES DE MARCA TOFFE */
-    --primary-color: #bdae8d; /* Beige/Dorado (Acentos, precios) */
-    --secondary-color: #867970; /* Marrón-Grisáceo (Títulos) */
-    --text-color-dark: #7e7e78; /* Gris Oscuro (Botones de acción, color de fondo para contraste) */
+    /* COLORES SOLICITADOS */
+    --primary-color: #156082; /* Azul Fuerte (Acentos, botones, precios) */
+    --secondary-color: #000000; /* Negro (Títulos, texto principal, DESCRIPCIONES) */
+    --text-color-dark: #969696; /* Gris Medio (Detalles, placeholder) */
     
+    /* COLORES COMPLEMENTARIOS */
     --background-color: #f4f4f4;
     --card-background: #ffffff;
-    --success-color: #4CAF50; /* Mantener el verde para el botón de WhatsApp */
-    --description-color: #000000; /* NEGRO PURO para las descripciones */
+    --success-color: #4CAF50; 
 }
 
 * {
@@ -23,7 +23,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--background-color);
-    color: var(--secondary-color);
+    color: var(--text-color-dark);
 }
 
 #app-container {
@@ -43,7 +43,7 @@ h2 {
     font-size: 1.8em;
     margin-bottom: 15px;
     padding-bottom: 5px;
-    /* Usar el color primario para el borde de la categoría */
+    /* Usar el nuevo color primario azul para el borde de la categoría */
     border-bottom: 2px solid var(--primary-color);
     display: inline-block;
 }
@@ -66,7 +66,7 @@ h3.subcategoria-title {
     align-items: center;
     justify-content: center;
     padding: 15px 20px;
-    background-color: #f7f7f7;
+    background-color: var(--card-background);
     border-bottom: 2px solid var(--primary-color);
     margin-bottom: 20px;
     text-align: center;
@@ -127,7 +127,7 @@ h3.subcategoria-title {
 
 
 /* ========================================= */
-/* 3. FILTROS (NAVEGACIÓN) */
+/* 3. FILTROS (NAVEGACIÓN) - FLOTANTE */
 /* ========================================= */
 
 #botones-filtro {
@@ -136,15 +136,21 @@ h3.subcategoria-title {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    padding: 10px 0;
+    padding: 10px;
+    /* PROPIEDADES CLAVE PARA QUE SEA FLOTANTE (STICKY) */
+    position: sticky;
+    top: 0; 
+    z-index: 100; 
+    background-color: var(--background-color); 
     border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
 }
 
 .filtro-btn {
     padding: 8px 15px;
-    border: 1px solid var(--text-color-dark);
+    border: 1px solid var(--primary-color); 
     background-color: var(--card-background);
-    color: var(--text-color-dark);
+    color: var(--primary-color); 
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s;
@@ -152,13 +158,13 @@ h3.subcategoria-title {
 }
 
 .filtro-btn:hover {
-    background-color: #f0ebe2; 
+    background-color: #e0f0f7; 
 }
 
 .filtro-btn.active {
-    background-color: var(--text-color-dark); 
-    color: var(--primary-color); 
-    border-color: var(--text-color-dark);
+    background-color: var(--primary-color); 
+    color: white; 
+    border-color: var(--primary-color);
 }
 
 
@@ -189,18 +195,9 @@ h3.subcategoria-title {
 .item-imagen {
     width: 100%;
     height: 200px;
-    /* Cambio clave: 'contain' para mostrar la imagen completa */
     object-fit: contain; 
     display: block;
-    background-color: #f8f8f8; /* Fondo para el espacio vacío */
-}
-
-.banner-categoria-img {
-    width: 100%;
-    max-height: 250px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    background-color: #f8f8f8; 
 }
 
 .item-info {
@@ -214,14 +211,14 @@ h3.subcategoria-title {
 
 .item-nota {
     font-size: 0.9em;
-    color: var(--description-color); /* Color de la descripción en negro */
+    color: var(--secondary-color); /* DESCRIPCIÓN EN COLOR NEGRO */
     margin-bottom: 10px;
     min-height: 36px;
 }
 
 .item-info p {
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--primary-color); 
     margin: 5px 0;
 }
 
@@ -238,9 +235,7 @@ h3.subcategoria-title {
 .item-info button, .item-actions-list button {
     width: 100%;
     padding: 10px;
-    /* Fondo oscuro para contraste */
-    background-color: var(--text-color-dark); 
-    /* CAMBIO CLAVE: Texto blanco para mejor contraste */
+    background-color: var(--primary-color); 
     color: white; 
     border: none;
     border-radius: 4px;
@@ -250,12 +245,36 @@ h3.subcategoria-title {
 }
 
 .item-info button:hover, .item-actions-list button:hover {
-    background-color: #5d5d59; 
+    background-color: #104a68; 
+}
+
+/* PLACEHOLDER PARA CARD SIN IMAGEN */
+.menu-item .no-image-placeholder {
+    width: 100%;
+    height: 200px;
+    background-color: #f0f0f0; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.menu-item .no-image-placeholder h3 {
+    margin-bottom: 5px;
+    color: var(--secondary-color);
+}
+
+.menu-item .no-image-placeholder p {
+    font-size: 0.8em;
+    color: var(--text-color-dark);
 }
 
 
 /* ========================================= */
-/* 5. MENÚ EN FORMATO DE LISTA (Horneados) */
+/* 5. MENÚ EN FORMATO DE LISTA - AHORA COMO TARJETA HORIZONTAL (LIST + IMAGEN) */
 /* ========================================= */
 
 .items-list {
@@ -268,13 +287,37 @@ h3.subcategoria-title {
 
 .menu-item-list {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    border-bottom: 1px solid #eee;
+    /* Ajuste para la imagen lateral */
+    align-items: stretch; 
+    padding: 0; 
+    border-bottom: none; /* Quitamos el borde inferior de lista */
     background-color: var(--card-background);
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden; /* Importante para el radio de borde */
+}
+
+/* Estilo para la IMAGEN LATERAL (Thumbnail) */
+.menu-item-list .item-thumb {
+    width: 120px; /* Ancho fijo para el thumbnail */
+    height: 120px; /* Alto fijo */
+    object-fit: cover; /* Recortar si es necesario, pero cubrir el área */
+    flex-shrink: 0; /* Evita que se encoja */
+    margin-right: 15px;
+}
+
+.menu-item-list.no-image {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px; /* Restaura el padding para listas sin imagen */
+}
+
+/* Ajuste para el contenido al lado de la imagen */
+.menu-item-list.with-image .item-info-list {
+    flex-grow: 1;
+    padding: 15px 0; /* Padding vertical para centrar contenido */
+    padding-right: 15px;
 }
 
 .item-info-list {
@@ -284,35 +327,47 @@ h3.subcategoria-title {
 
 .item-info-list h3 {
     margin: 0;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: 600;
     color: var(--secondary-color);
 }
 
 .item-info-list .item-nota {
-    font-size: 0.8em;
-    color: var(--description-color); /* Color de la descripción en negro */
-    margin-top: 2px;
+    font-size: 0.9em;
+    color: var(--secondary-color); /* DESCRIPCIÓN EN COLOR NEGRO */
+    margin-top: 5px;
+    margin-bottom: 0;
 }
 
 .item-actions-list {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column; /* Cambiamos a columna para apilar acciones */
+    justify-content: center;
+    align-items: flex-end;
+    gap: 5px;
+    padding: 15px;
     white-space: nowrap;
 }
 
 .item-actions-list p {
     margin: 0;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--primary-color); 
 }
 
 .item-actions-list .nota-input {
     width: 120px;
     padding: 5px;
     font-size: 0.8em;
+}
+
+.item-actions-list button {
+    width: 40px; /* Botón cuadrado */
+    height: 40px;
+    padding: 0;
+    font-size: 1.5em;
+    line-height: 1;
 }
 
 
@@ -334,6 +389,7 @@ h3.subcategoria-title {
     margin-bottom: 5px;
     font-weight: 600;
     font-size: 0.9em;
+    color: var(--secondary-color);
 }
 
 #carrito-items-scroll {
@@ -351,12 +407,13 @@ h3.subcategoria-title {
     align-items: center;
     padding: 5px 0;
     font-size: 0.95em;
+    color: var(--secondary-color);
 }
 
 .remove-btn {
-    background: #f7f3f0;
-    color: var(--secondary-color);
-    border: 1px solid #ccc;
+    background: #e0f0f7;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
     padding: 3px 7px;
     margin-left: 8px;
     cursor: pointer;
@@ -376,6 +433,7 @@ h3.subcategoria-title {
     justify-content: space-between;
     font-weight: 500;
     margin: 5px 0;
+    color: var(--secondary-color);
 }
 
 #totales p:last-child {
@@ -428,6 +486,12 @@ h3.subcategoria-title {
     .items-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
+
+    /* En móvil, la tarjeta de lista sigue siendo horizontal pero más compacta */
+    .menu-item-list .item-thumb {
+        width: 90px;
+        height: 90px; 
+    }
 }
 
 @media (max-width: 600px) {
@@ -452,79 +516,44 @@ h3.subcategoria-title {
         font-size: 1.3em;
     }
     
-    /* Ajustes de Lista (Horneados) */
+    /* Ajustes de Lista - Adaptación a móvil */
     .menu-item-list {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px;
+        flex-wrap: wrap; 
     }
+
+    .menu-item-list .item-thumb {
+        width: 100%; /* Imagen a ancho completo arriba */
+        height: 150px; 
+        margin-right: 0;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .menu-item-list.with-image .item-info-list {
+        padding: 10px 15px 0 15px; /* Ajuste de padding */
+    }
+
     .item-actions-list {
-        margin-top: 10px;
-        width: 100%;
+        flex-direction: row; /* Volvemos a fila para ahorrar espacio */
         justify-content: space-between;
+        width: 100%;
+        padding: 10px 15px 15px 15px;
     }
+    
     .item-actions-list p {
+        font-size: 1em;
         flex-grow: 1;
     }
+
     .item-actions-list .nota-input {
-        width: 100px;
-        flex-grow: 1;
+        display: none; /* Ocultar la nota en móvil si se necesita más espacio */
     }
+
     .item-actions-list button {
-        width: auto;
+        width: 35px;
+        height: 35px;
     }
 
     h2 {
         font-size: 1.5em;
     }
-}
-
-/* ========================================= */
-/* 8. ESTILOS DE MAPA Y UBICACIÓN */
-/* ========================================= */
-
-#ubicacion-container {
-    max-width: 1400px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: var(--card-background);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-#ubicacion-container h2 {
-    /* Desactivamos el borde inferior que tienen las categorías del menú */
-    border-bottom: none; 
-    font-size: 1.6em;
-    display: block;
-    padding-bottom: 0;
-    margin-bottom: 15px;
-}
-
-#direccion-info {
-    margin-bottom: 20px;
-    line-height: 1.6;
-    color: var(--secondary-color);
-}
-
-#direccion-info strong {
-    color: var(--text-color-dark);
-}
-
-.mapa-responsive {
-    /* Contenedor que obliga al iframe a mantener la proporción (16:9) */
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-}
-
-.mapa-responsive iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
 }
