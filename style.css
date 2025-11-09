@@ -1,603 +1,529 @@
-/* ========================================= */
-/* 0. ESTILOS GLOBALES Y LAYOUT PRINCIPAL */
-/* ========================================= */
-
+/* =======================================================
+   1. VARIABLES DE MARCA Y COLORES (NUEVO)
+   ======================================================= */
 :root {
-    /* COLORES SOLICITADOS */
-    --primary-color: #156082; /* Azul Fuerte (Acentos, botones, precios) */
-    --secondary-color: #000000; /* Negro (Títulos, texto principal, DESCRIPCIONES) */
-    --text-color-dark: #969696; /* Gris Medio (Detalles, placeholder) */
+    /* Colores de Marca */
+    --primary-color: #4B0082; /* Violeta Oscuro / Indigo (Botones, Títulos) */
+    --secondary-color: #FFD700; /* Dorado / Amarillo Oro (Acentos, Hover) */
+    --background-color: #F8F8FF; /* Fondo claro general */
     
-    /* COLORES COMPLEMENTARIOS */
-    --background-color: #f4f4f4;
-    --card-background: #ffffff;
-    --success-color: #4CAF50; 
+    /* Colores funcionales */
+    --text-color: #333; /* Texto principal oscuro */
+    --text-color-light: #f4f4f4; /* Texto en fondos oscuros */
+    --text-color-dark: #666; /* Notas o texto secundario */
+    --cart-bg: #fff; /* Fondo del carrito */
+    --border-color: #ddd; /* Color de borde sutil */
+    --success-color: #28a745; /* Color para botones de éxito/finalizar */
 }
 
+/* =======================================================
+   2. ESTILOS BASE Y ESTRUCTURA GENERAL
+   ======================================================= */
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
     background-color: var(--background-color);
-    color: var(--text-color-dark);
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
-h1, h2, h3 {
-    color: var(--secondary-color);
-    font-weight: 700;
-    margin-top: 0;
-}
-
-/* Encabezado de Categoría */
-h2 {
-    font-size: 1.8em;
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid var(--primary-color);
-    display: inline-block;
-    /* Necesario para que el scroll a las categorías no quede tapado por la barra sticky */
-    padding-top: 60px; 
-    margin-top: -60px; 
-}
-
-h3.subcategoria-title {
-    font-size: 1.3em;
-    color: var(--secondary-color);
-    margin-top: 25px;
-    margin-bottom: 15px;
-    border: none;
-}
-
-/* ========================================= */
-/* 1. ESTILOS DE CABECERA Y LOGO */
-/* ========================================= */
-
-#app-header {
+.container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 20px;
-    background-color: var(--card-background);
-    border-bottom: 2px solid var(--primary-color);
-    margin-bottom: 20px;
-    text-align: center;
-    width: 100%;
-}
-
-#logo-empresa {
-    /* Logo Rectangular */
-    width: 150px; 
-    height: auto; 
-    border-radius: 0; 
-    object-fit: contain; 
-    margin-right: 15px;
-}
-
-#info-empresa {
-    text-align: left;
-}
-
-#info-empresa h1 {
-    margin: 0;
-    font-size: 1.5em;
-    color: var(--primary-color);
-    font-weight: 900;
-}
-
-#info-empresa p {
-    margin: 5px 0 0;
-    font-size: 0.9em;
-    color: var(--secondary-color);
-}
-
-/* ========================================= */
-/* 2. CONTENEDOR DE MENÚ Y CARRITO (CSS GRID) */
-/* ========================================= */
-
-#app-container {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
     gap: 30px;
-    max-width: 1400px;
-    margin: 0 auto;
+}
+
+/* =======================================================
+   3. ESTILOS DEL ENCABEZADO Y FILTROS
+   ======================================================= */
+header {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin-bottom: 10px;
+}
+
+#filtros-container {
     padding: 20px;
+    background-color: var(--cart-bg);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
 }
-
-#menu-container {
-    grid-column: 1 / 2;
-}
-
-#carrito {
-    grid-column: 2 / 3;
-    position: sticky;
-    top: 20px;
-    align-self: flex-start;
-    padding: 20px;
-    background-color: var(--card-background);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-
-/* ========================================= */
-/* 3. FILTROS (NAVEGACIÓN) - FLOTANTE (STICKY) */
-/* ========================================= */
 
 #botones-filtro {
-    grid-column: 1 / -1; 
-    width: 100%;
-    margin-bottom: 20px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 10px;
-    position: sticky;
-    top: 0; 
-    z-index: 100; 
-    background-color: var(--background-color); 
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
+    gap: 10px;
+    padding-bottom: 5px;
 }
 
 .filtro-btn {
     padding: 8px 15px;
-    border: 1px solid var(--primary-color); 
-    background-color: var(--card-background);
-    color: var(--primary-color); 
+    border: 1px solid var(--border-color);
     border-radius: 20px;
+    background-color: #fff;
+    color: var(--text-color);
     cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 600;
-    white-space: nowrap; 
+    transition: all 0.3s ease;
+    flex-shrink: 0; /* Evita que los botones se encojan */
 }
 
 .filtro-btn:hover {
-    background-color: #e0f0f7; 
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border-color: var(--secondary-color);
 }
 
 .filtro-btn.active {
-    background-color: var(--primary-color); 
-    color: white; 
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
     border-color: var(--primary-color);
 }
 
+/* =======================================================
+   4. ESTILOS DE LA SECCIÓN DEL MENÚ
+   ======================================================= */
 
-/* ========================================= */
-/* 4. MENÚ EN FORMATO DE TARJETA (GRID) - COMPACTADO Y CON HOVER */
-/* ========================================= */
+.menu-section {
+    flex: 2.5;
+    min-width: 60%;
+}
 
+.menu-section h2 {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--secondary-color);
+    padding-bottom: 5px;
+    margin: 30px 0 20px 0;
+    font-size: 1.8em;
+}
+
+/* --- ESTILO GRID PREDETERMINADO (Platos Principales) --- */
 .items-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
-    margin-bottom: 40px;
 }
 
 .menu-item {
-    background-color: var(--card-background);
+    background-color: var(--cart-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s; /* Asegura transición suave */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .menu-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .item-imagen {
     width: 100%;
-    height: 150px; 
-    object-fit: contain; 
+    height: 180px;
+    object-fit: cover;
     display: block;
-    background-color: #f8f8f8; 
+}
+
+.no-image-placeholder {
+    width: 100%;
+    height: 180px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color-dark);
 }
 
 .item-info {
     padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .item-info h3 {
-    font-size: 1.1em;
+    font-size: 1.2em;
     margin-bottom: 5px;
+    color: var(--primary-color);
 }
 
-/* ESTILO CLAVE PARA DESCRIPCIONES LARGAS (3 líneas por defecto) */
-.item-nota {
+.item-info .item-nota {
     font-size: 0.9em;
-    color: var(--secondary-color); 
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Límite de 3 líneas */
-    -webkit-box-orient: vertical;
+    color: var(--text-color-dark);
+    margin-bottom: 10px;
+    min-height: 40px; /* Asegura espacio si la descripción es corta */
+}
+
+.item-info p:last-of-type {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-top: 5px;
+}
+
+.item-info input, .item-info button {
+    margin-top: 10px;
+}
+
+/* --- ESTILO TARJETA COMPACTA (Desayunos, Wraps, Ensaladas) --- */
+.menu-item.compact-card {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    height: 120px;
+    align-items: center;
+}
+
+.menu-item.compact-card .item-imagen,
+.menu-item.compact-card .no-image-placeholder {
+    height: 100%;
+    width: 100px;
+}
+
+.menu-item.compact-card .item-info {
+    padding: 10px;
+}
+
+.menu-item.compact-card .item-info .item-nota {
+    min-height: auto;
+    max-height: 30px;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 40px; /* Altura mínima ajustada */
-    margin-bottom: 8px; 
-    transition: all 0.3s ease-in-out; /* Transición para la expansión */
+    white-space: nowrap;
 }
 
-/* EXPANDIR LA DESCRIPCIÓN AL PASAR EL MOUSE (SOLO ESCRITORIO) */
-.menu-item:hover .item-nota {
-    -webkit-line-clamp: unset; 
-    -webkit-box-orient: unset;
-    overflow: visible; 
-    white-space: normal; 
-    min-height: auto; 
+.menu-item.compact-card .item-info p:last-of-type,
+.menu-item.compact-card .item-info .nota-input,
+.menu-item.compact-card .item-info button {
+    display: none; /* Ocultar precio, nota, y botón por defecto */
 }
 
-.item-info p {
-    font-weight: 700;
-    color: var(--primary-color); 
-    margin: 5px 0;
-}
-
-.nota-input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 8px; 
-    margin-bottom: 8px; 
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 0.9em;
-}
-
-.item-info button, .item-actions-list button {
-    width: 100%;
-    padding: 10px;
-    background-color: var(--primary-color); 
-    color: white; 
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-
-.item-info button:hover, .item-actions-list button:hover {
-    background-color: #104a68; 
-}
-
-/* PLACEHOLDER PARA CARD SIN IMAGEN */
-.menu-item .no-image-placeholder {
-    width: 100%;
-    height: 150px; 
-    background-color: #f0f0f0; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
+.menu-item.compact-card:hover .item-info p:last-of-type,
+.menu-item.compact-card:hover .item-info .nota-input,
+.menu-item.compact-card:hover .item-info button {
+    display: block; /* Mostrar al hacer hover */
 }
 
 
-/* ========================================= */
-/* 5. MENÚ EN FORMATO DE LISTA - COMPACTADO PARA HORNEADOS */
-/* ========================================= */
-
+/* --- ESTILO LISTA COMPACTA (Bebidas, Postres, Horneados, Cocteles) --- */
 .items-list {
     display: flex;
     flex-direction: column;
-    gap: 5px; 
-    padding: 5px 0; 
-    margin-bottom: 30px; 
+    gap: 5px;
 }
 
 .menu-item-list {
     display: flex;
-    align-items: stretch; 
-    padding: 0; 
-    border-bottom: none; 
-    background-color: var(--card-background);
-    border-radius: 8px;
-    box-shadow: 0 0px 2px rgba(0, 0, 0, 0.04); 
-    overflow: hidden; 
-}
-
-/* Estilo para la IMAGEN LATERAL (Thumbnail) */
-.menu-item-list .item-thumb {
-    width: 100px; 
-    height: 100px; 
-    object-fit: cover; 
-    flex-shrink: 0; 
-    margin-right: 10px; 
-}
-
-/* Ajuste para el caso de HORNEADOS (Sin imagen) - Compactado */
-.menu-item-list.no-image {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 6px 12px; 
+    padding: 10px 15px;
+    background-color: var(--cart-bg);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+    min-height: 60px;
 }
 
-/* Ajuste para el contenido al lado de la imagen */
-.menu-item-list.with-image .item-info-list {
-    flex-grow: 1;
-    padding: 10px 0; 
-    padding-right: 10px; 
+.menu-item-list:last-child {
+    border-bottom: none;
+}
+
+.menu-item-list:hover {
+    background-color: #f0f0f0;
+}
+
+.item-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.menu-item-list.no-image {
+    padding-left: 15px; /* Ajuste si no tiene imagen */
 }
 
 .item-info-list {
     flex-grow: 1;
-    padding-right: 15px;
+    min-width: 0;
 }
 
 .item-info-list h3 {
-    margin: 0;
-    font-size: 1em; 
+    font-size: 1em;
+    margin-bottom: 2px;
+    color: var(--text-color);
     font-weight: 600;
-    color: var(--secondary-color);
 }
 
 .item-info-list .item-nota {
-    font-size: 0.85em; 
-    color: var(--secondary-color); 
-    margin-top: 3px; 
-    margin-bottom: 0;
+    font-size: 0.85em;
+    color: var(--text-color-dark);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .item-actions-list {
     display: flex;
-    flex-direction: column; 
-    justify-content: center;
-    align-items: flex-end;
-    gap: 3px; 
-    padding: 10px; 
-    white-space: nowrap;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .item-actions-list p {
-    margin: 0;
-    font-size: 1em; 
-    font-weight: 700;
-    color: var(--primary-color); 
+    font-weight: bold;
+    color: var(--primary-color);
+    width: 80px;
+    text-align: right;
 }
 
 .item-actions-list .nota-input {
-    width: 100px; 
-    padding: 4px; 
-    font-size: 0.75em; 
+    width: 100px; /* Ancho más compacto para la nota en lista */
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.8em;
 }
 
-.item-actions-list button {
-    width: 35px; 
-    height: 35px; 
-    padding: 0;
-    font-size: 1.3em; 
-    line-height: 1;
-}
+/* =======================================================
+   5. ESTILOS DE BOTONES E INPUTS
+   ======================================================= */
 
-
-/* ========================================= */
-/* 6. CARRITO (ASIDE) ESTILOS */
-/* ========================================= */
-
-#datos-envio input, #datos-envio select {
+input[type="text"], input[type="tel"], select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1em;
 }
 
-#datos-envio label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
-    font-size: 0.9em;
-    color: var(--secondary-color);
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
-#carrito-items-scroll {
-    max-height: 300px;
-    overflow-y: auto;
-    padding-right: 10px;
-    margin: 15px 0;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
+button:hover {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Estilo específico para el botón de agregar en lista */
+.item-actions-list button {
+    padding: 5px 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+/* =======================================================
+   6. ESTILOS DEL CARRITO (SIDEBAR)
+   ======================================================= */
+#carrito {
+    flex: 1;
+    background-color: var(--cart-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: fit-content; /* Se ajusta al contenido */
+    position: sticky;
+    top: 20px; /* Se pega a 20px de la parte superior */
+    min-width: 300px;
+}
+
+#carrito h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+#carrito-items {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
 }
 
 .pedido-item-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
+    margin-bottom: 8px;
     font-size: 0.95em;
-    color: var(--secondary-color);
+    align-items: center;
+}
+
+.pedido-item-row span:first-child {
+    flex-grow: 1;
 }
 
 .remove-btn {
-    background: #e0f0f7;
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
+    background-color: #f44336;
+    color: white;
     padding: 3px 7px;
-    margin-left: 8px;
-    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.8em;
+    line-height: 1;
     border-radius: 50%;
-    font-size: 0.7em;
-    font-weight: 900;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#totales {
-    border-top: 2px dashed #ddd;
+.remove-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Totales */
+.totales {
+    margin-top: 15px;
     padding-top: 10px;
-    margin-top: 10px;
 }
 
-#totales p {
+.total-row {
     display: flex;
     justify-content: space-between;
-    font-weight: 500;
-    margin: 5px 0;
-    color: var(--secondary-color);
+    font-size: 1.1em;
+    margin-bottom: 5px;
 }
 
-#totales p:last-child {
-    font-weight: 700;
-    font-size: 1.2em;
+.total-row.final {
+    font-size: 1.4em;
+    font-weight: bold;
+    border-top: 2px solid var(--border-color);
+    padding-top: 10px;
+    margin-top: 10px;
+    color: var(--primary-color);
+}
+
+.total-row.final span:last-child {
     color: var(--primary-color);
 }
 
 #finalizar-pedido-btn {
     width: 100%;
-    padding: 12px;
+    margin-top: 20px;
     background-color: var(--success-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: 700;
-    margin-top: 15px;
-    transition: background-color 0.2s;
 }
 
 #finalizar-pedido-btn:hover {
-    background-color: #45a049;
+    background-color: #1e7e34;
 }
 
-
-/* ========================================= */
-/* 7. MEDIA QUERIES (RESPONSIVE) */
-/* ========================================= */
-
-@media (max-width: 992px) {
-    /* Layout principal para tabletas y dispositivos grandes en vertical */
-    #app-container {
-        grid-template-columns: 1fr;
-        padding: 10px;
-    }
-
-    #carrito {
-        position: relative;
-        top: 0;
-        grid-column: 1 / -1;
-        order: -1;
-        margin-bottom: 20px;
-    }
-
-    #botones-filtro {
-        grid-column: 1 / -1;
-    }
-
-    .items-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    }
+#finalizar-pedido-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
-@media (max-width: 600px) {
-    
-    .item-imagen, .menu-item .no-image-placeholder {
-        /* Altura aún más pequeña en móvil */
-        height: 120px; 
-    }
-    
-    /* Asegurar que las notas mantengan el límite de 3 líneas en móvil (sin hover) */
-    .item-nota {
-        -webkit-line-clamp: 3; 
-        min-height: 40px; 
-    }
-    
-    /* Ajustes de Cabecera y Logo */
-    #app-header {
-        flex-direction: column;
-        padding: 10px;
-    }
-    
-    #logo-empresa {
-        margin-right: 0;
-        margin-bottom: 10px;
-        width: 120px; 
-        height: auto;
-    }
-    
-    #info-empresa {
-        text-align: center;
-    }
-    
-    #info-empresa h1 {
-        font-size: 1.3em;
-    }
-
-    h2 {
-        font-size: 1.5em;
-    }
-    
-    /* ARREGLO DE IMÁGENES GRANDES EN LISTA */
-    .menu-item-list {
-        flex-wrap: nowrap; 
-    }
-
-    .menu-item-list .item-thumb {
-        width: 100px; 
-        height: 100px;
-        margin-right: 10px;
-        border-radius: 8px 0 0 8px; 
-    }
-
-    .menu-item-list.with-image .item-info-list {
-        padding: 10px 10px 10px 0; 
-    }
-
-    .item-actions-list {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: auto;
-        padding: 10px 15px;
-    }
-    
-    /* Ocultamos el input de nota en el formato de lista para ahorrar espacio */
-    .item-actions-list .nota-input {
-        display: none; 
-    }
-
-    .item-actions-list button {
-        width: 35px;
-        height: 35px;
-    }
-}
-
-/* ========================================= */
-/* 8. BOTÓN MÓVIL "VER PEDIDO" */
-/* ========================================= */
+/* =======================================================
+   7. ESTILOS MÓVILES (MENOS DE 992px)
+   ======================================================= */
 
 #ver-pedido-movil {
-    display: none; 
     position: fixed;
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%); 
-    z-index: 200; 
-    padding: 12px 20px;
-    background-color: var(--success-color); 
-    color: white;
-    border: none;
-    border-radius: 30px; 
+    right: 20px;
+    padding: 15px 25px;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border-radius: 30px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
-    align-items: center; 
+    font-weight: bold;
+    z-index: 100;
+    display: none; /* Oculto por defecto, JS lo muestra */
+    align-items: center;
     gap: 8px;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
 }
 
 #ver-pedido-movil:hover {
-    background-color: #45a049;
-    transform: translateX(-50%) scale(1.05);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
 }
 
-@media (min-width: 992px) {
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+        margin: 10px auto;
+        padding: 0 10px;
+        gap: 10px;
+    }
+
+    .menu-section {
+        min-width: 100%;
+    }
+
+    #carrito {
+        position: static;
+        top: auto;
+        min-width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Ajuste de la cuadrícula en móvil */
+    .items-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Mostrar elementos ocultos de la tarjeta compacta en móvil para interacción */
+    .menu-item.compact-card .item-info p:last-of-type,
+    .menu-item.compact-card .item-info .nota-input,
+    .menu-item.compact-card .item-info button {
+        display: block; 
+    }
+    
+    /* El botón flotante se gestiona por JavaScript, pero aseguramos su estilo base */
     #ver-pedido-movil {
-        display: none !important; 
+        display: none; 
+    }
+    
+    /* Ajuste de la lista compacta en móvil */
+    .menu-item-list {
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+    
+    .item-info-list {
+        flex-basis: 100%; /* Ocupa todo el ancho superior */
+        margin-bottom: 5px;
+    }
+    
+    .item-actions-list {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .item-actions-list p {
+        width: auto;
+    }
+    
+    .item-actions-list .nota-input {
+        flex-grow: 1;
+        margin-right: 10px;
     }
 }

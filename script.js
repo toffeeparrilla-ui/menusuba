@@ -1,18 +1,17 @@
 // =======================================================
-// 1. CONSTANTES Y DATOS DE MENÚ
+// 1. CONSTANTES Y DATOS DE MENÚ (168 PRODUCTOS)
 // =======================================================
 
 // URL de la aplicación web de Google Apps Script para guardar pedidos
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqb3YaoRm3Qfn3krLQW4WsmjxQ8DsPpb6QTfwJH_mv2hzelbORxrZjpFRd72FRhy-v/exec'; 
 
-// Número de WhatsApp al que se enviará el pedido
-// ⚠️ RECUERDA CAMBIAR ESTO POR TU NÚMERO REAL
-const numeroWhatsApp = '573100000000'; 
+// ✅ NÚMERO DE WHATSAPP ACTUALIZADO
+const numeroWhatsApp = '573219959831'; 
 
-// Costo de envío (puede ser 0 si no aplica)
+// Costo de envío
 const costoEnvio = 4000; 
 
-// Base de datos de productos (¡TU MENÚ COMPLETO DE 93 PRODUCTOS!)
+// Base de datos de productos (¡CATÁLOGO COMPLETO DE 168 PRODUCTOS!)
 const data = [
     { id: 1, nombre: "Bagre en Salsa Criolla", precio: 35900, categoria: "A La Marinera", descripcion: "Acompañado de Arroz, Ensalada de la casa, patacon y yuca frita", imagen: "assets/imagenes/A La Marinera/img13.jpg" },
     { id: 2, nombre: "Filete de Merlusa", precio: 25900, categoria: "A La Marinera", descripcion: "Pidelo Con ensalada de la casa o Vegetales al Wok", imagen: "assets/imagenes/A La Marinera/img9.jpg" },
@@ -106,7 +105,82 @@ const data = [
     { id: 90, nombre: "Churrasco Argentino", precio: 45900, categoria: "Toffe Grille", descripcion: "Acompañado de Queso grille Chorizo Ranchero, Ensalada de la casa. Yuca frita y Chimichurri", imagen: "assets/imagenes/Toffe Grille/img92.jpg" },
     { id: 91, nombre: "Costillas BBQ", precio: 36900, categoria: "Toffe Grille", descripcion: "350gr de Deliciosas costillas de Cerdo. bañadas en salsa bbq. Acompañado de Aros de Cebolla. Papa Francesa y ensalada de la casa", imagen: "assets/imagenes/Toffe Grille/img89.jpg" },
     { id: 92, nombre: "Filet Mignon", precio: 48900, categoria: "Toffe Grille", descripcion: "Tierno de lomo fino de res bañada en salsa demi-glace. Acompañado de papa francesa. ensalada de la casa", imagen: "assets/imagenes/Toffe Grille/img86.jpg" },
-    { id: 93, nombre: "Mini Churrasco", precio: 29900, categoria: "Toffe Grille", descripcion: "Delicioso Corte de Chata. acompañado de Yuca y chimichurri, PIDELO con Ensalada de la casa", imagen: "assets/imagenes/Toffe Grille/img88.jpg" }
+    { id: 93, nombre: "Mini Churrasco", precio: 29900, categoria: "Toffe Grille", descripcion: "Delicioso Corte de Chata. acompañado de Yuca y chimichurri, PIDELO con Ensalada de la casa", imagen: "assets/imagenes/Toffe Grille/img88.jpg" },
+    { id: 94, nombre: "Michelada", precio: 8000, categoria: "Bebidas", descripcion: "Cerveza con limón y sal", imagen: "assets/imagenes/Bebidas/michelada.jpg" },
+    { id: 95, nombre: "Cerveza Club Colombia", precio: 7500, categoria: "Bebidas", descripcion: "Botella 330ml", imagen: "assets/imagenes/Bebidas/club_colombia.jpg" },
+    { id: 96, nombre: "Vino de la Casa (Copa)", precio: 15000, categoria: "Bebidas", descripcion: "Vino tinto o blanco (Copa)", imagen: "assets/imagenes/Bebidas/vino_copa.jpg" },
+    { id: 97, nombre: "Vino de la Casa (Botella)", precio: 60000, categoria: "Bebidas", descripcion: "Vino tinto o blanco (Botella 750ml)", imagen: "assets/imagenes/Bebidas/vino_botella.jpg" },
+    { id: 98, nombre: "Mojito Clásico", precio: 20900, categoria: "Cocteles", descripcion: "Ron, hierbabuena, azúcar, limón, soda", imagen: "assets/imagenes/Cocteles/mojito.jpg" },
+    { id: 99, nombre: "Margarita", precio: 22900, categoria: "Cocteles", descripcion: "Tequila, Triple Sec, limón", imagen: "assets/imagenes/Cocteles/margarita.jpg" },
+    { id: 100, nombre: "Daiquirí Fresa", precio: 21900, categoria: "Cocteles", descripcion: "Ron, fresa, limón", imagen: "assets/imagenes/Cocteles/daiquiri_fresa.jpg" },
+    { id: 101, nombre: "Gin Tonic", precio: 23900, categoria: "Cocteles", descripcion: "Ginebra, tónica, limón", imagen: "assets/imagenes/Cocteles/gin_tonic.jpg" },
+    { id: 102, nombre: "Piña Colada", precio: 23900, categoria: "Cocteles", descripcion: "Ron, crema de coco, piña", imagen: "assets/imagenes/Cocteles/pina_colada.jpg" },
+    { id: 103, nombre: "Jugo de Mango Natural", precio: 6000, categoria: "Bebidas", descripcion: "Jugo natural recién preparado en agua o leche", imagen: "assets/imagenes/Bebidas/jugo_mango.jpg" },
+    { id: 104, nombre: "Jugo de Guanábana Natural", precio: 6500, categoria: "Bebidas", descripcion: "Jugo natural recién preparado en agua o leche", imagen: "assets/imagenes/Bebidas/jugo_guanabana.jpg" },
+    { id: 105, nombre: "Sopa de Pollo con Pasta", precio: 10000, categoria: "Sopas", descripcion: "Caldo de pollo con verduras y pasta corta", imagen: "assets/imagenes/Sopas/sopa_pollo_pasta.jpg" },
+    { id: 106, nombre: "Sopa de Verduras", precio: 10000, categoria: "Sopas", descripcion: "Caldo de verduras frescas de la huerta", imagen: "assets/imagenes/Sopas/sopa_verduras.jpg" },
+    { id: 107, nombre: "Lentejas", precio: 12000, categoria: "Sopas", descripcion: "Sopa de lentejas espesa con tocineta", imagen: "assets/imagenes/Sopas/lentejas.jpg" },
+    { id: 108, nombre: "Arepa de Maíz con Queso", precio: 7000, categoria: "Horneados", descripcion: "Arepa asada de maíz con queso costeño", imagen: "assets/imagenes/Horneados/arepa_maiz_queso.jpg" },
+    { id: 109, nombre: "Empanada de Carne", precio: 3000, categoria: "Horneados", descripcion: "Empanada de maíz frita rellena de carne y papa", imagen: "assets/imagenes/Horneados/empanada_carne.jpg" },
+    { id: 110, nombre: "Empanada de Pollo", precio: 3000, categoria: "Horneados", descripcion: "Empanada de maíz frita rellena de pollo y papa", imagen: "assets/imagenes/Horneados/empanada_pollo.jpg" },
+    { id: 111, nombre: "Chorizo con Arepa", precio: 10000, categoria: "Entradas", descripcion: "Chorizo de la casa a la parrilla con arepa", imagen: "assets/imagenes/Entradas/chorizo_arepa.jpg" },
+    { id: 112, nombre: "Morcilla con Arepa", precio: 10000, categoria: "Entradas", descripcion: "Morcilla tradicional con arepa", imagen: "assets/imagenes/Entradas/morcilla_arepa.jpg" },
+    { id: 113, nombre: "Picada para 2", precio: 35000, categoria: "Entradas", descripcion: "Chorizo, morcilla, papa, yuca, costilla, pollo", imagen: "assets/imagenes/Entradas/picada_2.jpg" },
+    { id: 114, nombre: "Hamburguesa Doble Carne", precio: 24900, categoria: "Comidas Rápidas", descripcion: "Doble carne, doble queso, tocineta y salsas", imagen: "assets/imagenes/Comidas Rápidas/hamburguesa_doble.jpg" },
+    { id: 115, nombre: "Sandwich Vegetariano", precio: 15900, categoria: "Sandwiches y Wraps", descripcion: "Pan integral, queso, aguacate, tomate y espinaca", imagen: "assets/imagenes/Sandwiches y Wraps/sandwich_vegano.jpg" },
+    { id: 116, nombre: "Wrap de Atún", precio: 17900, categoria: "Sandwiches y Wraps", descripcion: "Tortilla de trigo, atún, maíz, lechuga y mayonesa", imagen: "assets/imagenes/Sandwiches y Wraps/wrap_atun.jpg" },
+    { id: 117, nombre: "Ensalada de Atún", precio: 19900, categoria: "Ensaladas", descripcion: "Atún, lechuga, tomate, maíz dulce, aderezo ranch", imagen: "assets/imagenes/Ensaladas/ensalada_atun.jpg" },
+    { id: 118, nombre: "Ensalada de Pollo y Aguacate", precio: 22900, categoria: "Ensaladas", descripcion: "Pollo a la parrilla, aguacate, lechuga, vinagreta de la casa", imagen: "assets/imagenes/Ensaladas/ensalada_pollo_aguacate.jpg" },
+    { id: 119, nombre: "Filet Mignon en Salsa de Champiñones", precio: 51900, categoria: "Toffe Grille", descripcion: "Lomo fino de res con salsa de champiñones y papa gratinada", imagen: "assets/imagenes/Toffe Grille/filet_mignon_champi.jpg" },
+    { id: 120, nombre: "Baby Beef", precio: 43900, categoria: "Toffe Grille", descripcion: "Corte tierno de res (300gr) con papa y ensalada", imagen: "assets/imagenes/Toffe Grille/baby_beef.jpg" },
+    { id: 121, nombre: "Lomo de Cerdo en Salsa de Ciruela", precio: 37900, categoria: "Toffe Grille", descripcion: "Lomo de cerdo a la parrilla con salsa dulce de ciruela y puré", imagen: "assets/imagenes/Toffe Grille/lomo_cerdo_ciruela.jpg" },
+    { id: 122, nombre: "Cazuela de Mariscos", precio: 45900, categoria: "A La Marinera", descripcion: "Cazuela cremosa con camarones, calamares y pescado", imagen: "assets/imagenes/A La Marinera/cazuela_mariscos.jpg" },
+    { id: 123, nombre: "Arroz Marinero", precio: 39900, categoria: "A La Marinera", descripcion: "Arroz con camarones, anillos de calamar, mejillones y verduras", imagen: "assets/imagenes/A La Marinera/arroz_marinero.jpg" },
+    { id: 124, nombre: "Pasta Pomodoro", precio: 27900, categoria: "Pastas De La Casa", descripcion: "Pasta con salsa de tomate natural y albahaca", imagen: "assets/imagenes/Pastas De La Casa/pasta_pomodoro.jpg" },
+    { id: 125, nombre: "Lasagna Vegetariana", precio: 32900, categoria: "Pastas De La Casa", descripcion: "Lasagna con capas de zucchini, espinaca, ricotta y salsa blanca", imagen: "assets/imagenes/Pastas De La Casa/lasagna_vegetariana.jpg" },
+    { id: 126, nombre: "Torta de Zanahoria", precio: 8500, categoria: "Postres", descripcion: "Porción de torta húmeda de zanahoria con glaseado de queso crema", imagen: "assets/imagenes/Postres/torta_zanahoria.jpg" },
+    { id: 127, nombre: "Waffles con Helado y Frutas", precio: 17900, categoria: "Postres", descripcion: "Waffles recién hechos con frutas de estación y helado de vainilla", imagen: "assets/imagenes/Postres/waffles.jpg" },
+    { id: 128, nombre: "Smoothie de Fresa y Banano", precio: 9500, categoria: "Bebidas", descripcion: "Batido de fresa, banano, yogurt y miel", imagen: "assets/imagenes/Bebidas/smoothie_fresa.jpg" },
+    { id: 129, nombre: "Té Frío de Durazno", precio: 5000, categoria: "Bebidas", descripcion: "Té negro con sabor a durazno (Bebida embotellada)", imagen: "assets/imagenes/Bebidas/te_frio.jpg" },
+    { id: 130, nombre: "Café con Leche", precio: 4500, categoria: "Bebidas", descripcion: "Café con leche caliente", imagen: "assets/imagenes/Bebidas/cafe_leche.jpg" },
+    { id: 131, nombre: "Desayuno Americano", precio: 19900, categoria: "Desayunos", descripcion: "Huevos revueltos, tocineta, pancakes y jugo", imagen: "assets/imagenes/Desayunos/desayuno_americano.jpg" },
+    { id: 132, nombre: "Parfait de Granola", precio: 11900, categoria: "Desayunos", descripcion: "Yogurt griego, granola, miel y frutos rojos", imagen: "assets/imagenes/Desayunos/parfait.jpg" },
+    { id: 133, nombre: "Crepes de Nutella y Banano", precio: 14900, categoria: "Desayunos", descripcion: "Crepes rellenos de Nutella y rodajas de banano", imagen: "assets/imagenes/Desayunos/crepes_nutella.jpg" },
+    { id: 134, nombre: "Sandwich de Jamón y Queso", precio: 12900, categoria: "Sandwiches y Wraps", descripcion: "Pan blanco, jamón de cerdo y queso mozzarella derretido", imagen: "assets/imagenes/Sandwiches y Wraps/sandwich_jamon_queso.jpg" },
+    { id: 135, nombre: "Cerveza Poker", precio: 7000, categoria: "Bebidas", descripcion: "Botella 330ml", imagen: "assets/imagenes/Bebidas/cerveza_poker.jpg" },
+    { id: 136, nombre: "Cerveza Águila", precio: 7000, categoria: "Bebidas", descripcion: "Botella 330ml", imagen: "assets/imagenes/Bebidas/cerveza_aguila.jpg" },
+    { id: 137, nombre: "Cuba Libre", precio: 20900, categoria: "Cocteles", descripcion: "Ron, Coca-Cola y limón", imagen: "assets/imagenes/Cocteles/cuba_libre.jpg" },
+    { id: 138, nombre: "Whisky Sour", precio: 22900, categoria: "Cocteles", descripcion: "Whisky, limón y azúcar", imagen: "assets/imagenes/Cocteles/whisky_sour.jpg" },
+    { id: 139, nombre: "Tequila Sunrise", precio: 21900, categoria: "Cocteles", descripcion: "Tequila, Naranja, Granadina", imagen: "assets/imagenes/Cocteles/tequila_sunrise.jpg" },
+    { id: 140, nombre: "Paloma Sierra", precio: 21900, categoria: "Cocteles", descripcion: "Tequila, limón, Toronja", imagen: "assets/imagenes/Cocteles/paloma.jpg" },
+    { id: 141, nombre: "Mojito Oceanic", precio: 20900, categoria: "Cocteles", descripcion: "Ron, Convier, limón, soda", imagen: "assets/imagenes/Cocteles/mojito_oceanic.jpg" },
+    { id: 142, nombre: "Amaretto Soul", precio: 18900, categoria: "Cocteles", descripcion: "Amaretto, limón", imagen: "assets/imagenes/Cocteles/amaretto.jpg" },
+    { id: 143, nombre: "Tarta de Queso con Mora", precio: 8000, categoria: "Postres", descripcion: "Porción de tarta de queso con mermelada de mora", imagen: "assets/imagenes/Postres/tarta_mora.jpg" },
+    { id: 144, nombre: "Red Velvet", precio: 8000, categoria: "Postres", descripcion: "Porción de pastel Red Velvet con crema de queso", imagen: "assets/imagenes/Postres/red_velvet.jpg" },
+    { id: 145, nombre: "Churros con Chocolate", precio: 10900, categoria: "Postres", descripcion: "Porción de churros crujientes con salsa de chocolate caliente", imagen: "assets/imagenes/Postres/churros.jpg" },
+    { id: 146, nombre: "Mini-Churros (4 unid)", precio: 5000, categoria: "Postres", descripcion: "4 mini-churros con azúcar y canela", imagen: "assets/imagenes/Postres/mini_churros.jpg" },
+    { id: 147, nombre: "Torta de Ciruela", precio: 8000, categoria: "Postres", descripcion: "Porción de torta casera con ciruelas pasas", imagen: "assets/imagenes/Postres/torta_ciruela.jpg" },
+    { id: 148, nombre: "Empanada de Queso", precio: 3000, categoria: "Horneados", descripcion: "Empanada frita rellena de queso", imagen: "assets/imagenes/Horneados/empanada_queso.jpg" },
+    { id: 149, nombre: "Pastel Gloria", precio: 4500, categoria: "Horneados", descripcion: "Hojaldre relleno de queso y bocadillo", imagen: "assets/imagenes/Horneados/pastel_gloria.jpg" },
+    { id: 150, nombre: "Pan de Bono", precio: 3500, categoria: "Horneados", descripcion: "Pan de bono con queso fresco", imagen: "assets/imagenes/Horneados/pan_de_bono.jpg" },
+    { id: 151, nombre: "Croissant de Jamón y Queso", precio: 7500, categoria: "Horneados", descripcion: "Croissant relleno de jamón y queso", imagen: "assets/imagenes/Horneados/croissant_jq.jpg" },
+    { id: 152, nombre: "Donut Glaseada", precio: 4000, categoria: "Postres", descripcion: "Dona cubierta con glaseado de azúcar", imagen: "assets/imagenes/Postres/donut.jpg" },
+    { id: 153, nombre: "Avena sin Azúcar", precio: 5000, categoria: "Bebidas", descripcion: "Avena embotellada o casera sin adición de azúcar", imagen: "assets/imagenes/Bebidas/avena_sin_azucar.jpg" },
+    { id: 154, nombre: "Brownie Vegano", precio: 14900, categoria: "Postres", descripcion: "Brownie vegano con trozos de nueces", imagen: "assets/imagenes/Postres/brownie_vegano.jpg" },
+    { id: 155, nombre: "Tarta de Manzana", precio: 9000, categoria: "Postres", descripcion: "Porción de tarta de manzana con canela", imagen: "assets/imagenes/Postres/tarta_manzana.jpg" },
+    { id: 156, nombre: "Jugo de Pera Natural", precio: 6000, categoria: "Bebidas", descripcion: "Jugo natural recién preparado en agua o leche", imagen: "assets/imagenes/Bebidas/jugo_pera.jpg" },
+    { id: 157, nombre: "Jugo de Piña Natural", precio: 5500, categoria: "Bebidas", descripcion: "Jugo natural de piña", imagen: "assets/imagenes/Bebidas/jugo_pina.jpg" },
+    { id: 158, nombre: "Sopa Azteca", precio: 13000, categoria: "Sopas", descripcion: "Caldo de tomate, pollo desmechado, aguacate y tiras de tortilla", imagen: "assets/imagenes/Sopas/sopa_azteca.jpg" },
+    { id: 159, nombre: "Crema de Ahuyama", precio: 12000, categoria: "Sopas", descripcion: "Crema de calabaza con semillas de sésamo", imagen: "assets/imagenes/Sopas/crema_ahuyama.jpg" },
+    { id: 160, nombre: "Pan Integrall", precio: 3500, categoria: "Horneados", descripcion: "Porción de pan integral artesanal", imagen: "assets/imagenes/Horneados/pan_integral.jpg" },
+    { id: 161, nombre: "Galleta de Avena", precio: 3000, categoria: "Horneados", descripcion: "Galleta grande de avena y pasas", imagen: "assets/imagenes/Horneados/galleta_avena.jpg" },
+    { id: 162, nombre: "Empanada Chilena", precio: 8000, categoria: "Horneados", descripcion: "Empanada horneada rellena de pino (carne, cebolla, huevo)", imagen: "assets/imagenes/Horneados/empanada_chilena.jpg" },
+    { id: 163, nombre: "Canasta de Plátano con Queso", precio: 12000, categoria: "Entradas", descripcion: "Plátano maduro en canasta con queso y bocadillo", imagen: "assets/imagenes/Entradas/canasta_platano.jpg" },
+    { id: 164, nombre: "Bocaditos de Pollo", precio: 14000, categoria: "Entradas", descripcion: "Trozos de pechuga apanados con salsa agridulce", imagen: "assets/imagenes/Entradas/bocaditos_pollo.jpg" },
+    { id: 165, nombre: "Tacos de Pollo", precio: 16900, categoria: "Comidas Rápidas", descripcion: "Dos tacos de tortilla de maíz rellenos de pollo, lechuga y salsa", imagen: "assets/imagenes/Comidas Rápidas/tacos_pollo.jpg" },
+    { id: 166, nombre: "Chuzo de Res", precio: 17900, categoria: "Comidas Rápidas", descripcion: "Chuzo de carne de res a la parrilla con papa y ensalada", imagen: "assets/imagenes/Comidas Rápidas/chuzo_res.jpg" },
+    { id: 167, nombre: "Long Island Iced Tea", precio: 24900, categoria: "Cocteles", descripcion: "Vodka, Tequila, Ron, Ginebra, Triple Sec, Coca-Cola y limón", imagen: "assets/imagenes/Cocteles/long_island.jpg" },
+    { id: 168, nombre: "Jugo de Tomate de Árbol", precio: 6000, categoria: "Bebidas", descripcion: "Jugo natural recién preparado en agua o leche", imagen: "assets/imagenes/Bebidas/jugo_tomate_arbol.jpg" }
 ];
 
 
@@ -170,8 +244,9 @@ function renderMenu(productos) {
     for (const categoria in productosAgrupados) {
         menuContainer.innerHTML += `<h2 id="cat-${categoria.replace(/\s/g, '-')}" data-categoria="${categoria}">${categoria}</h2>`;
         
-        // Define las categorías que usan formato LISTA compacta
-        const isCompactList = ['Horneados', 'Bebidas'].includes(categoria); 
+        // ✅ CATEGORÍAS QUE USAN FORMATO LISTA COMPACTA
+        // Horneados, Bebidas, Postres y Cocteles
+        const isCompactList = ['Horneados', 'Bebidas', 'Postres', 'Cocteles'].includes(categoria); 
         // Define las categorías que usan formato TARJETA compacta (hover)
         const isCompactCard = ['Desayunos', 'Sandwiches y Wraps', 'Ensaladas'].includes(categoria);
 
