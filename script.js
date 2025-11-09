@@ -2,13 +2,14 @@
 // CONFIGURACIÓN GLOBAL
 // =======================================================
 
-// URL Directa (Raw) de tu archivo CSV en GitHub.
+// URL Directa (Raw) de tu archivo CSV en GitHub, la más limpia y funcional.
 const CSV_URL = 'https://raw.githubusercontent.com/toffeeparrilla-ui/menusuba/main/menu.csv'; 
 
 let allProducts = [];
 const productsListEl = document.getElementById('products-list');
 const categoriesListEl = document.getElementById('categories-list');
-const PLACEHOLDER_IMAGE = 'assets/placeholder.jpg'; // Imagen por defecto si la ruta falla o está vacía
+// Imagen de reemplazo para rutas que fallan, no para productos con '(Vacio)'.
+const PLACEHOLDER_IMAGE = 'assets/placeholder.jpg'; 
 
 // =======================================================
 // 1. UTILIDADES
@@ -16,20 +17,14 @@ const PLACEHOLDER_IMAGE = 'assets/placeholder.jpg'; // Imagen por defecto si la 
 
 /**
  * Formatea el precio a un formato de moneda local.
- * @param {string} priceString El precio en formato de cadena (ej: "35.900").
- * @returns {string} El precio formateado (ej: "$ 35.900").
  */
 function formatPrice(priceString) {
     if (!priceString) return '';
-    // Podrías usar toLocaleString() si manejas el precio como número, 
-    // pero mantendremos el formato de cadena del CSV por simplicidad.
     return `$ ${priceString}`;
 }
 
 /**
  * Función robusta para parsear líneas CSV, respetando las comillas.
- * @param {string} csvText El contenido completo del archivo CSV.
- * @returns {Array<Object>} Un array de objetos, donde cada objeto es un producto.
  */
 function parseCsv(csvText) {
     const products = [];
@@ -38,14 +33,15 @@ function parseCsv(csvText) {
     const lines = csvText.trim().split('\r\n').slice(1);
     
     lines.forEach(line => {
-        // Regex para dividir por comas, excepto si están dentro de comillas (para las descripciones)
+        // Regex para dividir por comas, excepto si están dentro de comillas
         const rawFields = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         
-        // Aseguramos que tenemos al menos 6 campos (Columnas A a F)
         if (rawFields.length < 6) return; 
 
-        // Limpiar comillas de los campos
         const fields = rawFields.map(f => f.trim().replace(/^"|"$/g, ''));
+        
+        // >> Lógica de Imagen: Si F (imagen) es (Vacio) o está vacío, establecemos 'null'
+        const productImage = (fields[5] === '(Vacio)' || !fields[5]) ? null : fields[5];
         
         const product = {
             id: fields[0],           
@@ -53,8 +49,7 @@ function parseCsv(csvText) {
             price: fields[2],        
             category: fields[3],     
             description: fields[4] === '(Vacio)' ? '' : fields[4], 
-            // Usa la imagen del CSV o el placeholder si está vacía
-            image: (fields[5] === '(Vacio)' || !fields[5]) ? PLACEHOLDER_IMAGE : fields[5] 
+            image: productImage // Será la ruta o null
         };
         
         if (product.name) {
@@ -78,18 +73,16 @@ async function fetchCsvData() {
     try {
         const response = await fetch(CSV_URL);
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}. Verifica la URL.`);
+            throw new Error(`HTTP error! Status: ${response.status}.`);
         }
         const csvText = await response.text();
         allProducts = parseCsv(csvText);
         
         if (allProducts.length > 0) {
             renderCategories(allProducts);
-            // Mostrar todos los productos por defecto
             const defaultCategory = 'all'; 
             renderProducts(allProducts, defaultCategory);
             
-            // Activar el botón 'Todos'
             const allButton = document.querySelector(`[data-category="${defaultCategory}"]`);
             if(allButton) allButton.classList.add('active');
         } else {
@@ -107,30 +100,26 @@ async function fetchCsvData() {
 // =======================================================
 
 /**
- * Extrae categorías únicas y crea los botones de filtro en la navegación.
- * @param {Array<Object>} products El array de productos.
+ * Extrae categorías únicas y crea los botones de filtro.
  */
 function renderCategories(products) {
     const categories = new Set(products.map(p => p.category));
     categoriesListEl.innerHTML = '';
     
-    // 1. Botón "Todos"
+    // Botón "Todos"
     const allBtn = createCategoryButton('Todos', 'all');
     categoriesListEl.appendChild(allBtn);
 
-    // 2. Botones para cada categoría única
+    // Botones para cada categoría
     categories.forEach(category => {
         const li = createCategoryButton(category, category);
         categoriesListEl.appendChild(li);
     });
 
-    // Añadir el listener una sola vez al contenedor padre
+    // Delegación de eventos
     categoriesListEl.addEventListener('click', handleCategoryFilter);
 }
 
-/**
- * Helper para crear el elemento <li> con el botón de categoría.
- */
 function createCategoryButton(text, dataCategory) {
     const button = document.createElement('button');
     button.className = 'category-btn';
@@ -142,26 +131,19 @@ function createCategoryButton(text, dataCategory) {
     return li;
 }
 
-/**
- * Maneja el evento de clic en los botones de categoría para filtrar.
- * @param {Event} event El evento de clic.
- */
 function handleCategoryFilter(event) {
     const button = event.target.closest('.category-btn');
     if (!button) return;
 
     const selectedCategory = button.dataset.category;
 
-    // Actualizar la clase 'active' para el estilo
+    // Actualizar clase 'active'
     document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
 
-    let filteredProducts;
-    if (selectedCategory === 'all') {
-        filteredProducts = allProducts;
-    } else {
-        filteredProducts = allProducts.filter(p => p.category === selectedCategory);
-    }
+    let filteredProducts = (selectedCategory === 'all')
+        ? allProducts
+        : allProducts.filter(p => p.category === selectedCategory);
 
     renderProducts(filteredProducts, selectedCategory);
 }
@@ -172,11 +154,9 @@ function handleCategoryFilter(event) {
 
 /**
  * Dibuja las tarjetas de producto en el contenedor principal.
- * @param {Array<Object>} products El array de productos a mostrar.
- * @param {string} currentCategory La categoría actual para el mensaje.
  */
 function renderProducts(products, currentCategory) {
-    productsListEl.innerHTML = ''; // Limpiar la lista actual
+    productsListEl.innerHTML = ''; 
 
     if (products.length === 0) {
         productsListEl.innerHTML = `<p class="error-message">No hay productos en la categoría: ${currentCategory}</p>`;
@@ -185,7 +165,6 @@ function renderProducts(products, currentCategory) {
 
     products.forEach(product => {
         const card = document.createElement('div');
-        card.className = 'product-card';
         
         const formattedPrice = formatPrice(product.price); 
         
@@ -193,13 +172,28 @@ function renderProducts(products, currentCategory) {
             ? `<p class="product-description">${product.description}</p>`
             : ''; 
         
+        // >> Lógica de Imagen y Clase CSS
+        let imageHtml = '';
+        card.className = 'product-card';
+
+        if (product.image) {
+            // Si hay imagen (no es null), genera el <img>
+            imageHtml = `
+                <img 
+                    src="${product.image}" 
+                    alt="${product.name}" 
+                    class="product-image" 
+                    onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}';"
+                >
+            `;
+        } else {
+            // Si NO hay imagen (es null), añade la clase especial para CSS
+            card.classList.add('product-card-no-image');
+        }
+
+        // Montar la tarjeta
         card.innerHTML = `
-            <img 
-                src="${product.image}" 
-                alt="${product.name}" 
-                class="product-image" 
-                onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}';"
-            >
+            ${imageHtml}
             <div class="product-info">
                 <h3 class="product-name">${product.name}</h3>
                 ${descriptionHtml}
@@ -214,5 +208,5 @@ function renderProducts(products, currentCategory) {
 // 5. INICIALIZACIÓN
 // =======================================================
 
-// Inicia el proceso de carga de datos cuando el DOM esté completamente cargado.
+// Inicia el proceso de carga cuando el documento esté listo
 document.addEventListener('DOMContentLoaded', fetchCsvData);

@@ -21,7 +21,7 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif; /* Usando la fuente enlazada en el HTML */
+    font-family: 'Roboto', sans-serif;
     background-color: var(--color-background);
     color: var(--color-text);
     line-height: 1.6;
@@ -43,9 +43,9 @@ body {
 }
 
 .logo {
-    max-width: 150px; /* Tamaño máximo del logo */
+    max-width: 150px;
     height: auto;
-    border-radius: 50%; /* Opcional: para un look circular */
+    border-radius: 50%;
 }
 
 .title {
@@ -60,8 +60,10 @@ body {
     background-color: var(--color-light);
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
-    overflow-x: auto; /* Permite scroll horizontal en móviles */
+    overflow-x: auto; 
     white-space: nowrap;
+    /* Para navegadores iOS */
+    -webkit-overflow-scrolling: touch; 
 }
 
 .category-buttons-container {
@@ -81,6 +83,7 @@ body {
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s, transform 0.2s;
+    flex-shrink: 0; /* Evita que los botones se achiquen en scroll */
 }
 
 .category-btn:hover {
@@ -89,7 +92,6 @@ body {
 }
 
 .category-btn.active {
-    /* Estilo para la categoría actualmente seleccionada */
     background-color: var(--color-primary);
     box-shadow: 0 0 0 3px var(--color-secondary);
 }
@@ -105,7 +107,7 @@ body {
 
 .products-grid {
     display: grid;
-    /* 1 columna en móvil, 2 en tablet, 3 en escritorio */
+    /* 1 columna en móvil, se expande según el tamaño */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--padding-base);
     margin-top: var(--padding-base);
@@ -120,10 +122,19 @@ body {
     flex-direction: column;
 }
 
+/* 4.1. AJUSTE DE IMAGEN */
 .product-image {
     width: 100%;
-    height: 200px; /* Altura fija para la imagen */
-    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
+    height: 200px;
+    
+    /* Muestra la imagen completa dentro del área, sin recortar */
+    object-fit: contain; 
+    
+    /* Fondo para rellenar las barras laterales que crea 'contain' */
+    background-color: #f0f0f0; 
+    
+    /* Pequeño padding para asegurar que la imagen no toque el borde */
+    padding: 5px; 
 }
 
 .product-info {
@@ -143,14 +154,42 @@ body {
     font-size: 0.9em;
     color: var(--color-text);
     margin-bottom: 10px;
-    flex-grow: 1; /* Empuja el precio hacia abajo */
+    flex-grow: 1; 
 }
 
 .product-price {
     font-size: 1.5em;
     font-weight: bold;
     color: var(--color-accent);
-    align-self: flex-end; /* Alinea el precio a la derecha en la base */
+    align-self: flex-end;
+}
+
+/* 4.2. AJUSTE PARA PRODUCTOS SIN IMAGEN (product-card-no-image) */
+.product-card-no-image {
+    height: auto; 
+    /* Estilos más discretos y centrados para productos sin foto */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03); 
+    text-align: center;
+}
+
+.product-card-no-image .product-info {
+    justify-content: center;
+}
+
+.product-card-no-image .product-name {
+    font-size: 1.2em;
+    margin-bottom: 0;
+}
+
+.product-card-no-image .product-description {
+    /* Oculta la descripción si no es necesaria en tarjetas compactas */
+    display: none; 
+}
+
+.product-card-no-image .product-price {
+    align-self: center; 
+    margin-top: 5px;
+    font-size: 1.3em;
 }
 
 /* ======================== */
@@ -166,7 +205,7 @@ body {
 
 .location-details {
     display: flex;
-    flex-direction: column; /* Apilado en móvil */
+    flex-direction: column;
     gap: var(--padding-base);
     margin-top: var(--padding-base);
 }
@@ -188,7 +227,7 @@ body {
 .btn-how-to-get {
     display: inline-block;
     background-color: var(--color-secondary);
-    color: var(--color-primary); /* Texto oscuro sobre el botón toffe */
+    color: var(--color-primary);
     text-decoration: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -201,8 +240,8 @@ body {
 }
 
 .map-container iframe {
-    width: 100%; /* Ajusta el ancho al contenedor */
-    max-width: 600px; /* Limita el tamaño del mapa en escritorio */
+    width: 100%;
+    max-width: 600px; 
     height: 300px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -220,7 +259,7 @@ body {
 }
 
 /* ======================== */
-/* 7. MEDIA QUERIES (RESPONSIVIDAD PARA TABLETS Y ESCRITORIO) */
+/* 7. MEDIA QUERIES (RESPONSIVIDAD) */
 /* ======================== */
 @media (min-width: 768px) {
     .title {
@@ -232,7 +271,6 @@ body {
     }
     
     .location-details {
-        /* Lado a lado en pantallas grandes */
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
@@ -240,7 +278,6 @@ body {
     }
     
     .map-container {
-        /* Permite que el mapa tenga un tamaño fijo sin afectar el texto */
         flex-basis: 50%;
     }
     
