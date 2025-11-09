@@ -1,529 +1,250 @@
-/* =======================================================
-   1. VARIABLES DE MARCA Y COLORES (NUEVO)
-   ======================================================= */
+/* ======================== */
+/* 1. CONFIGURACIÓN BÁSICA Y FUENTES */
+/* ======================== */
 :root {
-    /* Colores de Marca */
-    --primary-color: #4B0082; /* Violeta Oscuro / Indigo (Botones, Títulos) */
-    --secondary-color: #FFD700; /* Dorado / Amarillo Oro (Acentos, Hover) */
-    --background-color: #F8F8FF; /* Fondo claro general */
-    
-    /* Colores funcionales */
-    --text-color: #333; /* Texto principal oscuro */
-    --text-color-light: #f4f4f4; /* Texto en fondos oscuros */
-    --text-color-dark: #666; /* Notas o texto secundario */
-    --cart-bg: #fff; /* Fondo del carrito */
-    --border-color: #ddd; /* Color de borde sutil */
-    --success-color: #28a745; /* Color para botones de éxito/finalizar */
+    /* Paleta de Colores Toffe */
+    --color-primary: #5a3e36;    /* Marrón Oscuro / Café Principal */
+    --color-secondary: #c99e7f;  /* Color Toffe / Caramelo */
+    --color-accent: #8b5e3c;     /* Un tono intermedio para acentos */
+    --color-background: #fdf5e6; /* Fondo Crema / Blanco Hueso */
+    --color-text: #333333;       /* Texto Oscuro */
+    --color-light: #ffffff;      /* Texto Claro (para botones) */
+
+    /* Espaciado */
+    --padding-base: 20px;
 }
 
-/* =======================================================
-   2. ESTILOS BASE Y ESTRUCTURA GENERAL
-   ======================================================= */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
+    font-family: 'Roboto', sans-serif; /* Usando la fuente enlazada en el HTML */
+    background-color: var(--color-background);
+    color: var(--color-text);
     line-height: 1.6;
 }
 
-.container {
-    display: flex;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 20px;
-    gap: 30px;
-}
-
-/* =======================================================
-   3. ESTILOS DEL ENCABEZADO Y FILTROS
-   ======================================================= */
-header {
-    background-color: var(--primary-color);
-    color: var(--text-color-light);
-    padding: 20px 0;
+/* ======================== */
+/* 2. ENCABEZADO Y LOGO */
+/* ======================== */
+.header {
+    background-color: var(--color-primary);
+    color: var(--color-light);
+    padding: var(--padding-base);
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-header h1 {
+.logo-container {
     margin-bottom: 10px;
 }
 
-#filtros-container {
-    padding: 20px;
-    background-color: var(--cart-bg);
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    overflow-x: auto;
+.logo {
+    max-width: 150px; /* Tamaño máximo del logo */
+    height: auto;
+    border-radius: 50%; /* Opcional: para un look circular */
+}
+
+.title {
+    font-size: 1.8em;
+    margin-top: 5px;
+}
+
+/* ======================== */
+/* 3. NAVEGACIÓN Y FILTROS */
+/* ======================== */
+.categories-nav {
+    background-color: var(--color-light);
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    overflow-x: auto; /* Permite scroll horizontal en móviles */
     white-space: nowrap;
 }
 
-#botones-filtro {
+.category-buttons-container {
+    list-style: none;
     display: flex;
+    justify-content: center;
     gap: 10px;
-    padding-bottom: 5px;
+    padding: 0 var(--padding-base);
 }
 
-.filtro-btn {
+.category-btn {
+    background-color: var(--color-secondary);
+    color: var(--color-light);
+    border: none;
     padding: 8px 15px;
-    border: 1px solid var(--border-color);
     border-radius: 20px;
-    background-color: #fff;
-    color: var(--text-color);
     cursor: pointer;
-    transition: all 0.3s ease;
-    flex-shrink: 0; /* Evita que los botones se encojan */
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.filtro-btn:hover {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    border-color: var(--secondary-color);
+.category-btn:hover {
+    background-color: var(--color-accent);
+    transform: translateY(-2px);
 }
 
-.filtro-btn.active {
-    background-color: var(--primary-color);
-    color: var(--text-color-light);
-    border-color: var(--primary-color);
+.category-btn.active {
+    /* Estilo para la categoría actualmente seleccionada */
+    background-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-secondary);
 }
 
-/* =======================================================
-   4. ESTILOS DE LA SECCIÓN DEL MENÚ
-   ======================================================= */
-
-.menu-section {
-    flex: 2.5;
-    min-width: 60%;
+/* ======================== */
+/* 4. SECCIÓN PRINCIPAL DEL MENÚ (PRODUCTOS) */
+/* ======================== */
+.menu-container {
+    padding: var(--padding-base);
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.menu-section h2 {
-    color: var(--primary-color);
-    border-bottom: 3px solid var(--secondary-color);
-    padding-bottom: 5px;
-    margin: 30px 0 20px 0;
-    font-size: 1.8em;
-}
-
-/* --- ESTILO GRID PREDETERMINADO (Platos Principales) --- */
-.items-grid {
+.products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    /* 1 columna en móvil, 2 en tablet, 3 en escritorio */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--padding-base);
+    margin-top: var(--padding-base);
 }
 
-.menu-item {
-    background-color: var(--cart-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+.product-card {
+    background-color: var(--color-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.menu-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-.item-imagen {
+.product-image {
     width: 100%;
-    height: 180px;
-    object-fit: cover;
-    display: block;
+    height: 200px; /* Altura fija para la imagen */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
 }
 
-.no-image-placeholder {
-    width: 100%;
-    height: 180px;
-    background-color: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-color-dark);
-}
-
-.item-info {
+.product-info {
     padding: 15px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
 
-.item-info h3 {
-    font-size: 1.2em;
-    margin-bottom: 5px;
-    color: var(--primary-color);
-}
-
-.item-info .item-nota {
-    font-size: 0.9em;
-    color: var(--text-color-dark);
-    margin-bottom: 10px;
-    min-height: 40px; /* Asegura espacio si la descripción es corta */
-}
-
-.item-info p:last-of-type {
+.product-name {
     font-size: 1.3em;
-    font-weight: bold;
-    color: var(--text-color);
-    margin-top: 5px;
-}
-
-.item-info input, .item-info button {
-    margin-top: 10px;
-}
-
-/* --- ESTILO TARJETA COMPACTA (Desayunos, Wraps, Ensaladas) --- */
-.menu-item.compact-card {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    height: 120px;
-    align-items: center;
-}
-
-.menu-item.compact-card .item-imagen,
-.menu-item.compact-card .no-image-placeholder {
-    height: 100%;
-    width: 100px;
-}
-
-.menu-item.compact-card .item-info {
-    padding: 10px;
-}
-
-.menu-item.compact-card .item-info .item-nota {
-    min-height: auto;
-    max-height: 30px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.menu-item.compact-card .item-info p:last-of-type,
-.menu-item.compact-card .item-info .nota-input,
-.menu-item.compact-card .item-info button {
-    display: none; /* Ocultar precio, nota, y botón por defecto */
-}
-
-.menu-item.compact-card:hover .item-info p:last-of-type,
-.menu-item.compact-card:hover .item-info .nota-input,
-.menu-item.compact-card:hover .item-info button {
-    display: block; /* Mostrar al hacer hover */
-}
-
-
-/* --- ESTILO LISTA COMPACTA (Bebidas, Postres, Horneados, Cocteles) --- */
-.items-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.menu-item-list {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    background-color: var(--cart-bg);
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.2s ease;
-    min-height: 60px;
-}
-
-.menu-item-list:last-child {
-    border-bottom: none;
-}
-
-.menu-item-list:hover {
-    background-color: #f0f0f0;
-}
-
-.item-thumb {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 15px;
-    flex-shrink: 0;
-}
-
-.menu-item-list.no-image {
-    padding-left: 15px; /* Ajuste si no tiene imagen */
-}
-
-.item-info-list {
-    flex-grow: 1;
-    min-width: 0;
-}
-
-.item-info-list h3 {
-    font-size: 1em;
-    margin-bottom: 2px;
-    color: var(--text-color);
-    font-weight: 600;
-}
-
-.item-info-list .item-nota {
-    font-size: 0.85em;
-    color: var(--text-color-dark);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.item-actions-list {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.item-actions-list p {
-    font-weight: bold;
-    color: var(--primary-color);
-    width: 80px;
-    text-align: right;
-}
-
-.item-actions-list .nota-input {
-    width: 100px; /* Ancho más compacto para la nota en lista */
-    padding: 5px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 0.8em;
-}
-
-/* =======================================================
-   5. ESTILOS DE BOTONES E INPUTS
-   ======================================================= */
-
-input[type="text"], input[type="tel"], select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 1em;
-}
-
-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    background-color: var(--primary-color);
-    color: var(--text-color-light);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-weight: bold;
-}
-
-button:hover {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-}
-
-/* Estilo específico para el botón de agregar en lista */
-.item-actions-list button {
-    padding: 5px 10px;
-    width: 30px;
-    height: 30px;
-    font-size: 1.2em;
-    line-height: 1;
-}
-
-/* =======================================================
-   6. ESTILOS DEL CARRITO (SIDEBAR)
-   ======================================================= */
-#carrito {
-    flex: 1;
-    background-color: var(--cart-bg);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: fit-content; /* Se ajusta al contenido */
-    position: sticky;
-    top: 20px; /* Se pega a 20px de la parte superior */
-    min-width: 300px;
-}
-
-#carrito h2 {
-    color: var(--primary-color);
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    font-size: 1.5em;
-}
-
-#carrito-items {
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-}
-
-.pedido-item-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 0.95em;
-    align-items: center;
-}
-
-.pedido-item-row span:first-child {
-    flex-grow: 1;
-}
-
-.remove-btn {
-    background-color: #f44336;
-    color: white;
-    padding: 3px 7px;
-    margin-left: 10px;
-    font-size: 0.8em;
-    line-height: 1;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.remove-btn:hover {
-    background-color: #d32f2f;
-}
-
-/* Totales */
-.totales {
-    margin-top: 15px;
-    padding-top: 10px;
-}
-
-.total-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.1em;
+    color: var(--color-primary);
     margin-bottom: 5px;
 }
 
-.total-row.final {
-    font-size: 1.4em;
+.product-description {
+    font-size: 0.9em;
+    color: var(--color-text);
+    margin-bottom: 10px;
+    flex-grow: 1; /* Empuja el precio hacia abajo */
+}
+
+.product-price {
+    font-size: 1.5em;
     font-weight: bold;
-    border-top: 2px solid var(--border-color);
-    padding-top: 10px;
-    margin-top: 10px;
-    color: var(--primary-color);
+    color: var(--color-accent);
+    align-self: flex-end; /* Alinea el precio a la derecha en la base */
 }
 
-.total-row.final span:last-child {
-    color: var(--primary-color);
+/* ======================== */
+/* 5. SECCIÓN DE UBICACIÓN Y MAPA */
+/* ======================== */
+.location-section {
+    background-color: var(--color-primary);
+    color: var(--color-light);
+    padding: var(--padding-base);
+    margin-top: 30px;
+    text-align: center;
 }
 
-#finalizar-pedido-btn {
-    width: 100%;
-    margin-top: 20px;
-    background-color: var(--success-color);
+.location-details {
+    display: flex;
+    flex-direction: column; /* Apilado en móvil */
+    gap: var(--padding-base);
+    margin-top: var(--padding-base);
 }
 
-#finalizar-pedido-btn:hover {
-    background-color: #1e7e34;
+.address-info {
+    padding: 10px;
 }
 
-#finalizar-pedido-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+.address-info h3 {
+    color: var(--color-secondary);
+    margin-bottom: 5px;
 }
 
-/* =======================================================
-   7. ESTILOS MÓVILES (MENOS DE 992px)
-   ======================================================= */
-
-#ver-pedido-movil {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    background-color: var(--primary-color);
-    color: var(--text-color-light);
-    border-radius: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    font-weight: bold;
-    z-index: 100;
-    display: none; /* Oculto por defecto, JS lo muestra */
-    align-items: center;
-    gap: 8px;
+.address-info p {
     font-size: 1.1em;
-    transition: background-color 0.3s ease;
+    margin-bottom: 15px;
 }
 
-#ver-pedido-movil:hover {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
+.btn-how-to-get {
+    display: inline-block;
+    background-color: var(--color-secondary);
+    color: var(--color-primary); /* Texto oscuro sobre el botón toffe */
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-@media (max-width: 992px) {
-    .container {
-        flex-direction: column;
-        margin: 10px auto;
-        padding: 0 10px;
-        gap: 10px;
+.btn-how-to-get:hover {
+    background-color: var(--color-light);
+}
+
+.map-container iframe {
+    width: 100%; /* Ajusta el ancho al contenedor */
+    max-width: 600px; /* Limita el tamaño del mapa en escritorio */
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ======================== */
+/* 6. PIE DE PÁGINA */
+/* ======================== */
+.footer {
+    background-color: var(--color-text);
+    color: var(--color-light);
+    text-align: center;
+    padding: 10px var(--padding-base);
+    font-size: 0.9em;
+}
+
+/* ======================== */
+/* 7. MEDIA QUERIES (RESPONSIVIDAD PARA TABLETS Y ESCRITORIO) */
+/* ======================== */
+@media (min-width: 768px) {
+    .title {
+        font-size: 2.2em;
     }
 
-    .menu-section {
-        min-width: 100%;
-    }
-
-    #carrito {
-        position: static;
-        top: auto;
-        min-width: 100%;
-        margin-top: 20px;
-    }
-
-    /* Ajuste de la cuadrícula en móvil */
-    .items-grid {
-        grid-template-columns: 1fr;
+    .logo {
+        max-width: 180px;
     }
     
-    /* Mostrar elementos ocultos de la tarjeta compacta en móvil para interacción */
-    .menu-item.compact-card .item-info p:last-of-type,
-    .menu-item.compact-card .item-info .nota-input,
-    .menu-item.compact-card .item-info button {
-        display: block; 
+    .location-details {
+        /* Lado a lado en pantallas grandes */
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        text-align: left;
     }
     
-    /* El botón flotante se gestiona por JavaScript, pero aseguramos su estilo base */
-    #ver-pedido-movil {
-        display: none; 
+    .map-container {
+        /* Permite que el mapa tenga un tamaño fijo sin afectar el texto */
+        flex-basis: 50%;
     }
     
-    /* Ajuste de la lista compacta en móvil */
-    .menu-item-list {
-        flex-wrap: wrap;
-        padding: 10px;
-    }
-    
-    .item-info-list {
-        flex-basis: 100%; /* Ocupa todo el ancho superior */
-        margin-bottom: 5px;
-    }
-    
-    .item-actions-list {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .item-actions-list p {
-        width: auto;
-    }
-    
-    .item-actions-list .nota-input {
-        flex-grow: 1;
-        margin-right: 10px;
+    .address-info {
+        flex-basis: 40%;
     }
 }
