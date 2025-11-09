@@ -3,17 +3,16 @@
 // =======================================================
 
 // URL de la aplicación web de Google Apps Script para guardar pedidos
-// ESTE ES EL NUEVO URL DE TU CUENTA DE EMPRESA
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqb3YaoRm3Qfn3krLQW4WsmjxQ8DsPpb6QTfwJH_mv2hzelbORxrZjpFRd72FRhy-v/exec'; 
 
 // Número de WhatsApp al que se enviará el pedido
 // ⚠️ RECUERDA CAMBIAR ESTO POR TU NÚMERO REAL
-const numeroWhatsApp = '573246812450'; 
+const numeroWhatsApp = '573100000000'; 
 
 // Costo de envío (puede ser 0 si no aplica)
 const costoEnvio = 4000; 
 
-// Base de datos de productos (ejemplo, debe coincidir con tu CSV)
+// Base de datos de productos (ejemplo, debes usar la tuya o el CSV)
 const data = [
     { id: 1, nombre: "Bagre en Salsa Criolla", precio: 35900, categoria: "A La Marinera", descripcion: "Acompañado de Arroz, Ensalada de la casa, patacon y yuca frita", imagen: "assets/imagenes/A La Marinera/img13.jpg" },
     { id: 2, nombre: "Filete de Merlusa", precio: 25900, categoria: "A La Marinera", descripcion: "Pidelo Con ensalada de la casa o Vegetales al Wok", imagen: "assets/imagenes/A La Marinera/img9.jpg" },
@@ -36,20 +35,8 @@ const data = [
 let carrito = [];
 let productosAgrupados = {};
 
-// Elementos del DOM
-const menuContainer = document.getElementById('menu-container');
-const carritoItems = document.getElementById('carrito-items');
-const subtotalElement = document.getElementById('subtotal');
-const envioElement = document.getElementById('envio');
-const totalElement = document.getElementById('total');
-const finalizarPedidoBtn = document.getElementById('finalizar-pedido-btn');
-const carritoElement = document.getElementById('carrito');
-const botonesFiltroContainer = document.getElementById('botones-filtro');
-const nombreInput = document.getElementById('nombre');
-const telefonoInput = document.getElementById('telefono');
-const direccionInput = document.getElementById('direccion');
-const pagoSelect = document.getElementById('metodo-pago');
-const verPedidoMovilBtn = document.getElementById('ver-pedido-movil');
+// Elementos del DOM (Declaración de variables para el ámbito global)
+let menuContainer, carritoItems, subtotalElement, envioElement, totalElement, finalizarPedidoBtn, carritoElement, botonesFiltroContainer, nombreInput, telefonoInput, direccionInput, pagoSelect, verPedidoMovilBtn;
 
 
 // =======================================================
@@ -83,10 +70,6 @@ function limpiarFormularioYCarrito() {
     telefonoInput.value = '';
     direccionInput.value = '';
     pagoSelect.value = 'efectivo'; // Devolver al valor por defecto
-    
-    // Si tienes un reset en tu HTML, usa el método reset del form
-    // document.getElementById('form-pedido').reset(); 
-    
     renderCarrito();
 }
 
@@ -260,162 +243,179 @@ function renderCarrito() {
 // 6. MANEJO DE EVENTOS
 // =======================================================
 
-// Lógica de filtrado al hacer clic en los botones
-botonesFiltroContainer.addEventListener('click', (event) => {
-    if (event.target.classList.contains('filtro-btn')) {
-        const target = event.target;
-        const categoriaFiltro = target.dataset.categoria;
-        
-        // 1. Quitar 'active' de todos y ponerlo en el botón actual
-        document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
-        target.classList.add('active');
-        
-        // 2. Filtrar y mostrar/ocultar secciones
-        const seccionesMenu = document.querySelectorAll('#menu-container > h2');
-        let primeraSeccionVisible = null;
-
-        seccionesMenu.forEach(h2 => {
-            const id = h2.id;
-            const categoria = h2.dataset.categoria;
-            const container = h2.nextElementSibling; // El div items-grid/list
+function configurarEventos() {
+    
+    // Lógica de filtrado al hacer clic en los botones
+    botonesFiltroContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('filtro-btn')) {
+            const target = event.target;
+            const categoriaFiltro = target.dataset.categoria;
             
-            if (categoriaFiltro === 'todos' || id === `cat-${categoriaFiltro}`) {
-                h2.style.display = 'block';
-                container.style.display = 'grid'; // o 'flex' para items-list
-                if (container.classList.contains('items-list')) {
-                    container.style.display = 'flex';
+            // 1. Quitar 'active' de todos y ponerlo en el botón actual
+            document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
+            target.classList.add('active');
+            
+            // 2. Filtrar y mostrar/ocultar secciones
+            const seccionesMenu = document.querySelectorAll('#menu-container > h2');
+            let primeraSeccionVisible = null;
+
+            seccionesMenu.forEach(h2 => {
+                const id = h2.id;
+                const categoria = h2.dataset.categoria;
+                const container = h2.nextElementSibling; // El div items-grid/list
+                
+                if (categoriaFiltro === 'todos' || id === `cat-${categoriaFiltro}`) {
+                    h2.style.display = 'block';
+                    container.style.display = 'grid'; // o 'flex' para items-list
+                    if (container.classList.contains('items-list')) {
+                        container.style.display = 'flex';
+                    }
+                    if (!primeraSeccionVisible) {
+                        primeraSeccionVisible = h2;
+                    }
+                } else {
+                    h2.style.display = 'none';
+                    container.style.display = 'none';
                 }
-                if (!primeraSeccionVisible) {
-                    primeraSeccionVisible = h2;
-                }
-            } else {
-                h2.style.display = 'none';
-                container.style.display = 'none';
+            });
+            
+            // 3. Scroll a la primera sección visible (si no es 'Todos')
+            if (categoriaFiltro !== 'todos' && primeraSeccionVisible) {
+                // Usa el ID del H2 para hacer scroll
+                primeraSeccionVisible.scrollIntoView({ behavior: 'smooth' });
             }
+        }
+    });
+
+    // Lógica para mostrar/ocultar el botón flotante móvil (scroll)
+    window.addEventListener('scroll', () => {
+        // Si la pantalla es pequeña (ej: < 992px)
+        if (window.innerWidth < 992) {
+            if (window.scrollY > 100 && carrito.length > 0) {
+                verPedidoMovilBtn.style.display = 'flex';
+            } else {
+                if (carrito.length === 0) {
+                    verPedidoMovilBtn.style.display = 'none';
+                }
+            }
+        }
+    });
+
+    // Evento para el botón flotante móvil (muestra el carrito)
+    verPedidoMovilBtn.addEventListener('click', () => {
+        // En móviles, hacer scroll hacia el carrito
+        carritoElement.scrollIntoView({ behavior: 'smooth' });
+        nombreInput.focus(); 
+    });
+
+
+    // Lógica del envío de pedido (FINAL)
+    finalizarPedidoBtn.addEventListener('click', () => {
+        // 1. Validaciones
+        if (carrito.length === 0 || !nombreInput.value || !telefonoInput.value || !direccionInput.value) {
+            alert("Por favor, completa tus datos de contacto y agrega al menos un producto al carrito.");
+            return;
+        }
+        
+        const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        const totalFinal = subtotal + costoEnvio;
+
+        // --- 2. PREPARACIÓN DE DATOS PARA GOOGLE SHEET ---
+        const pedidoData = {
+            nombrecliente: nombreInput.value,
+            telefono: telefonoInput.value,
+            direccion: direccionInput.value,
+            metodopago: pagoSelect.value, 
+            total: totalFinal,
+            carrito: carrito 
+        };
+        
+        // --- 3. PREPARACIÓN DEL MENSAJE DE WHATSAPP ---
+        let mensaje = `*¡NUEVO PEDIDO TOFFE RESTAURANTE!*%0A%0A`;
+        mensaje += `*Datos del Cliente:*%0A`;
+        mensaje += `*Nombre:* ${nombreInput.value}%0A`;
+        mensaje += `*Teléfono:* ${telefonoInput.value}%0A`;
+        mensaje += `*Dirección:* ${direccionInput.value}%0A`;
+        mensaje += `*Pago:* ${pagoSelect.options[pagoSelect.selectedIndex].text}%0A%0A`; 
+        
+        mensaje += `*Detalle del Pedido:*%0A`;
+        carrito.forEach(item => {
+            const notaStr = item.nota ? ` (Nota: ${item.nota})` : '';
+            mensaje += `${item.cantidad} x ${item.nombre} - $${formatPrecio(item.precio * item.cantidad)}${notaStr}%0A`;
+        });
+
+        mensaje += `%0A*Resumen de Costos:*%0A`;
+        mensaje += `Subtotal: $${formatPrecio(subtotal)}%0A`;
+        mensaje += `Costo de Envío: $${formatPrecio(costoEnvio)}%0A`;
+        mensaje += `*TOTAL FINAL: $${formatPrecio(totalFinal)}*%0A%0A`;
+        mensaje += `¡Gracias por tu pedido!`;
+
+        const whatsappURL = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+
+        // --- 4. ENVÍO DE DATOS A GOOGLE SHEET ---
+        
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(pedidoData), 
+            headers: {
+                'Content-Type': 'text/plain' 
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.result === 'success') {
+                console.log('Pedido registrado en Google Sheet con ID:', result.pedidoId);
+            } else {
+                console.error('Error al registrar pedido en Google Sheet:', result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error de conexión con Google Sheet:', error);
         });
         
-        // 3. Scroll a la primera sección visible (si no es 'Todos')
-        if (categoriaFiltro !== 'todos' && primeraSeccionVisible) {
-            // Usa el ID del H2 para hacer scroll
-            primeraSeccionVisible.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-});
-
-
-// Lógica para mostrar/ocultar el botón flotante móvil (scroll)
-window.addEventListener('scroll', () => {
-    // Si la pantalla es pequeña (ej: < 992px)
-    if (window.innerWidth < 992) {
-        // Mostrar el botón solo cuando se hace scroll hacia abajo
-        if (window.scrollY > 100 && carrito.length > 0) {
-            // Este display: 'flex' está aquí para sobreescribir el 'none' temporal del scroll
-            verPedidoMovilBtn.style.display = 'flex';
-        } else {
-            // Evita que se oculte si el carrito está vacío
-            if (carrito.length === 0) {
-                verPedidoMovilBtn.style.display = 'none';
+        // --- 5. ABRIR WHATSAPP Y LIMPIAR ---
+        
+        window.open(whatsappURL, '_blank');
+        
+        setTimeout(() => {
+            if (confirm('✅ El pedido se envió a WhatsApp. ¿Deseas limpiar el formulario ahora?')) {
+                 limpiarFormularioYCarrito();
             }
-        }
-    }
-});
-
-// Evento para el botón flotante móvil (muestra el carrito)
-verPedidoMovilBtn.addEventListener('click', () => {
-    // En móviles, hacer scroll hacia el carrito
-    carritoElement.scrollIntoView({ behavior: 'smooth' });
-    // Opcional: enfocar el primer campo de input para que el teclado se abra
-    nombreInput.focus(); 
-});
-
-
-// Lógica del envío de pedido (FINAL)
-finalizarPedidoBtn.addEventListener('click', () => {
-    // 1. Validaciones
-    if (carrito.length === 0 || !nombreInput.value || !telefonoInput.value || !direccionInput.value) {
-        alert("Por favor, completa tus datos de contacto y agrega al menos un producto al carrito.");
-        return;
-    }
-    
-    const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-    const totalFinal = subtotal + costoEnvio;
-
-    // --- 2. PREPARACIÓN DE DATOS PARA GOOGLE SHEET ---
-    // Estos datos se enviarán a tu script de Google Apps
-    const pedidoData = {
-        nombrecliente: nombreInput.value,
-        telefono: telefonoInput.value,
-        direccion: direccionInput.value,
-        metodopago: pagoSelect.value, // Valor 'efectivo', 'transferencia', etc.
-        total: totalFinal,
-        carrito: carrito // Array de productos con nombre, cantidad y nota
-    };
-    
-    // --- 3. PREPARACIÓN DEL MENSAJE DE WHATSAPP ---
-    let mensaje = `*¡NUEVO PEDIDO TOFFE RESTAURANTE!*%0A%0A`;
-    mensaje += `*Datos del Cliente:*%0A`;
-    mensaje += `*Nombre:* ${nombreInput.value}%0A`;
-    mensaje += `*Teléfono:* ${telefonoInput.value}%0A`;
-    mensaje += `*Dirección:* ${direccionInput.value}%0A`;
-    mensaje += `*Pago:* ${pagoSelect.options[pagoSelect.selectedIndex].text}%0A%0A`; // Texto legible del método de pago
-    
-    mensaje += `*Detalle del Pedido:*%0A`;
-    carrito.forEach(item => {
-        const notaStr = item.nota ? ` (Nota: ${item.nota})` : '';
-        mensaje += `${item.cantidad} x ${item.nombre} - $${formatPrecio(item.precio * item.cantidad)}${notaStr}%0A`;
+        }, 1000); 
     });
+}
 
-    mensaje += `%0A*Resumen de Costos:*%0A`;
-    mensaje += `Subtotal: $${formatPrecio(subtotal)}%0A`;
-    mensaje += `Costo de Envío: $${formatPrecio(costoEnvio)}%0A`;
-    mensaje += `*TOTAL FINAL: $${formatPrecio(totalFinal)}*%0A%0A`;
-    mensaje += `¡Gracias por tu pedido!`;
-
-    const whatsappURL = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
-
-    // --- 4. ENVÍO DE DATOS A GOOGLE SHEET (Usando el nuevo URL) ---
-    
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify(pedidoData), 
-        headers: {
-            // Es CRUCIAL que el Content-Type sea text/plain para Apps Script
-            'Content-Type': 'text/plain' 
-        }
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.result === 'success') {
-            console.log('Pedido registrado en Google Sheet con ID:', result.pedidoId);
-            // El ID generado (ej: 202511091234) ya está disponible en el objeto result
-        } else {
-            console.error('Error al registrar pedido en Google Sheet:', result.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error de conexión con Google Sheet:', error);
-    });
-    
-    // --- 5. ABRIR WHATSAPP Y LIMPIAR ---
-    
-    // Abrir WhatsApp en una nueva pestaña (o ventana)
-    window.open(whatsappURL, '_blank');
-    
-    // Limpiar el formulario y el carrito después del intento de envío
-    setTimeout(() => {
-        if (confirm('✅ El pedido se envió a WhatsApp. ¿Deseas limpiar el formulario ahora?')) {
-             limpiarFormularioYCarrito();
-        }
-    }, 1000); 
-});
 
 // =======================================================
 // 7. INICIALIZACIÓN
 // =======================================================
 
+function inicializarDOM() {
+    // Asignación de elementos del DOM AHORA que el HTML está completamente cargado
+    menuContainer = document.getElementById('menu-container');
+    carritoItems = document.getElementById('carrito-items');
+    subtotalElement = document.getElementById('subtotal');
+    envioElement = document.getElementById('envio');
+    totalElement = document.getElementById('total');
+    finalizarPedidoBtn = document.getElementById('finalizar-pedido-btn');
+    carritoElement = document.getElementById('carrito');
+    botonesFiltroContainer = document.getElementById('botones-filtro');
+    nombreInput = document.getElementById('nombre');
+    telefonoInput = document.getElementById('telefono');
+    direccionInput = document.getElementById('direccion');
+    pagoSelect = document.getElementById('metodo-pago');
+    verPedidoMovilBtn = document.getElementById('ver-pedido-movil');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializa el renderizado
+    // 1. Obtener todos los elementos del DOM
+    inicializarDOM();
+    
+    // 2. Renderizar contenido
     renderMenu(data);
     renderFiltros();
     renderCarrito();
+    
+    // 3. Configurar Event Listeners (Solo después de que los elementos existan)
+    configurarEventos();
 });
