@@ -5,6 +5,10 @@
 // URL Directa (Raw) de tu archivo CSV en GitHub.
 const CSV_URL = 'https://raw.githubusercontent.com/toffeeparrilla-ui/menusuba/main/menu.csv'; 
 
+// **NÚMERO DE WHATSAPP ACTUALIZADO**
+// Usamos el código de país (57 para Colombia) + el número de 10 dígitos.
+const WHATSAPP_NUMBER = '573219959831'; 
+
 let allProducts = [];
 let cart = []; // Array para almacenar los productos en el carrito
 
@@ -57,6 +61,7 @@ function parseCsv(csvText) {
     const lines = csvText.trim().split('\r\n').slice(1);
     
     lines.forEach(line => {
+        // Regex para manejar campos que contienen comas si están entre comillas dobles
         const rawFields = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         
         if (rawFields.length < 6) return; 
@@ -335,6 +340,46 @@ function closeCart() {
     cartOverlayEl.classList.remove('open');
 }
 
+/**
+ * FUNCIÓN PRINCIPAL DE ENVÍO POR WHATSAPP
+ */
+function handleCheckout() {
+    if (cart.length === 0) return;
+
+    // 1. Construir el encabezado del mensaje
+    let message = `¡Hola Toffe! 👋 Tengo un nuevo pedido desde el Menú Digital.\n\n`;
+    message += `*DETALLES DEL PEDIDO*\n`;
+    message += `---------------------------------\n`;
+
+    // 2. Listar los productos
+    cart.forEach((item, index) => {
+        message += `${index + 1}. ${item.quantity}x ${item.name} (${formatPrice(item.price * item.quantity)})\n`;
+    });
+    
+    // 3. Añadir resumen de totales
+    message += `---------------------------------\n`;
+    // Nota: Leemos los totales formateados directamente de los elementos del DOM
+    message += `Subtotal: ${cartSubtotalEl.textContent}\n`;
+    message += `Envío: ${cartShippingEl.textContent}\n`;
+    message += `*TOTAL A PAGAR: ${cartTotalEl.textContent}*\n\n`;
+
+    // 4. Instrucciones para el cliente (lo que el cliente debe completar)
+    message += `*DATOS PARA EL ENVÍO:*\n`;
+    message += `Nombre: (Escribe tu nombre aquí)\n`;
+    message += `Teléfono: (Escribe tu teléfono aquí)\n`;
+    message += `Dirección: (Escribe tu dirección exacta aquí)\n`;
+    message += `Método de Pago: (Escribe Efectivo, Datafono o Transferencia)\n`;
+    
+    // 5. Codificar el mensaje para la URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // 6. Generar el enlace de WhatsApp
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+    
+    // 7. Abrir WhatsApp en una nueva pestaña
+    window.open(whatsappUrl, '_blank');
+}
+
 // =======================================================
 // 5. INICIALIZACIÓN Y EVENTOS GLOBALES
 // =======================================================
@@ -347,13 +392,8 @@ cartOverlayEl.addEventListener('click', closeCart);
 // Listener para modificar items en el carrito (delegación)
 cartItemsEl.addEventListener('click', handleCartItemAction);
 
-// Evento para finalizar el pedido
-checkoutBtn.addEventListener('click', () => {
-    if (cart.length === 0) return;
-    
-    // Aquí se implementaría el formulario de datos del cliente
-    alert(`¡Pedido de ${formatPrice(parseFloat(cartTotalEl.textContent.replace(/[$. ]/g, '')))} listo para enviar!`);
-});
+// Evento para finalizar el pedido: Llama a la función de WhatsApp
+checkoutBtn.addEventListener('click', handleCheckout);
 
 
 document.addEventListener('DOMContentLoaded', () => {
