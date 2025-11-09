@@ -4,9 +4,9 @@
 
 :root {
     /* COLORES SOLICITADOS */
-    --primary-color: #156082; 
-    --secondary-color: #000000; 
-    --text-color-dark: #969696; 
+    --primary-color: #156082; /* Azul Fuerte (Acentos, botones, precios) */
+    --secondary-color: #000000; /* Negro (Títulos, texto principal, DESCRIPCIONES) */
+    --text-color-dark: #969696; /* Gris Medio (Detalles, placeholder) */
     
     /* COLORES COMPLEMENTARIOS */
     --background-color: #f4f4f4;
@@ -39,6 +39,7 @@ h2 {
     padding-bottom: 5px;
     border-bottom: 2px solid var(--primary-color);
     display: inline-block;
+    /* Necesario para que el scroll a las categorías no quede tapado por la barra sticky */
     padding-top: 60px; 
     margin-top: -60px; 
 }
@@ -50,7 +51,6 @@ h3.subcategoria-title {
     margin-bottom: 15px;
     border: none;
 }
-
 
 /* ========================================= */
 /* 1. ESTILOS DE CABECERA Y LOGO */
@@ -167,7 +167,7 @@ h3.subcategoria-title {
 
 
 /* ========================================= */
-/* 4. MENÚ EN FORMATO DE TARJETA (GRID) - COMPACTADO */
+/* 4. MENÚ EN FORMATO DE TARJETA (GRID) - COMPACTADO Y CON HOVER */
 /* ========================================= */
 
 .items-grid {
@@ -182,7 +182,7 @@ h3.subcategoria-title {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s; /* Asegura transición suave */
 }
 
 .menu-item:hover {
@@ -192,7 +192,6 @@ h3.subcategoria-title {
 
 .item-imagen {
     width: 100%;
-    /* ⚠️ CAMBIO: Altura reducida para compactar tarjetas */
     height: 150px; 
     object-fit: contain; 
     display: block;
@@ -208,17 +207,27 @@ h3.subcategoria-title {
     margin-bottom: 5px;
 }
 
+/* ESTILO CLAVE PARA DESCRIPCIONES LARGAS (3 líneas por defecto) */
 .item-nota {
     font-size: 0.9em;
     color: var(--secondary-color); 
-    /* ⚠️ CAMBIO: Limitar descripción a 2 líneas */
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limita a 2 líneas */
+    -webkit-line-clamp: 3; /* Límite de 3 líneas */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 30px; /* Reducción de la altura mínima */
-    margin-bottom: 8px; /* Reducción de margin */
+    min-height: 40px; /* Altura mínima ajustada */
+    margin-bottom: 8px; 
+    transition: all 0.3s ease-in-out; /* Transición para la expansión */
+}
+
+/* EXPANDIR LA DESCRIPCIÓN AL PASAR EL MOUSE (SOLO ESCRITORIO) */
+.menu-item:hover .item-nota {
+    -webkit-line-clamp: unset; 
+    -webkit-box-orient: unset;
+    overflow: visible; 
+    white-space: normal; 
+    min-height: auto; 
 }
 
 .item-info p {
@@ -230,8 +239,8 @@ h3.subcategoria-title {
 .nota-input {
     width: 100%;
     padding: 8px;
-    margin-top: 8px; /* Reducido */
-    margin-bottom: 8px; /* Reducido */
+    margin-top: 8px; 
+    margin-bottom: 8px; 
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 0.9em;
@@ -256,7 +265,6 @@ h3.subcategoria-title {
 /* PLACEHOLDER PARA CARD SIN IMAGEN */
 .menu-item .no-image-placeholder {
     width: 100%;
-    /* ⚠️ CAMBIO: Altura reducida para compactar tarjetas */
     height: 150px; 
     background-color: #f0f0f0; 
     display: flex;
@@ -267,8 +275,6 @@ h3.subcategoria-title {
     padding: 15px;
     border-bottom: 1px solid #ddd;
 }
-
-/* ... (resto de estilos de tarjeta sin cambios) ... */
 
 
 /* ========================================= */
@@ -372,7 +378,6 @@ h3.subcategoria-title {
 /* ========================================= */
 /* 6. CARRITO (ASIDE) ESTILOS */
 /* ========================================= */
-/* ... (Se mantienen iguales) ... */
 
 #datos-envio input, #datos-envio select {
     width: 100%;
@@ -465,6 +470,7 @@ h3.subcategoria-title {
 /* ========================================= */
 
 @media (max-width: 992px) {
+    /* Layout principal para tabletas y dispositivos grandes en vertical */
     #app-container {
         grid-template-columns: 1fr;
         padding: 10px;
@@ -488,11 +494,16 @@ h3.subcategoria-title {
 }
 
 @media (max-width: 600px) {
-    /* ... (ajustes de lista y tarjeta se vuelven más estrictos en móvil) ... */
     
     .item-imagen, .menu-item .no-image-placeholder {
         /* Altura aún más pequeña en móvil */
         height: 120px; 
+    }
+    
+    /* Asegurar que las notas mantengan el límite de 3 líneas en móvil (sin hover) */
+    .item-nota {
+        -webkit-line-clamp: 3; 
+        min-height: 40px; 
     }
     
     /* Ajustes de Cabecera y Logo */
@@ -518,6 +529,40 @@ h3.subcategoria-title {
 
     h2 {
         font-size: 1.5em;
+    }
+    
+    /* ARREGLO DE IMÁGENES GRANDES EN LISTA */
+    .menu-item-list {
+        flex-wrap: nowrap; 
+    }
+
+    .menu-item-list .item-thumb {
+        width: 100px; 
+        height: 100px;
+        margin-right: 10px;
+        border-radius: 8px 0 0 8px; 
+    }
+
+    .menu-item-list.with-image .item-info-list {
+        padding: 10px 10px 10px 0; 
+    }
+
+    .item-actions-list {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: auto;
+        padding: 10px 15px;
+    }
+    
+    /* Ocultamos el input de nota en el formato de lista para ahorrar espacio */
+    .item-actions-list .nota-input {
+        display: none; 
+    }
+
+    .item-actions-list button {
+        width: 35px;
+        height: 35px;
     }
 }
 
