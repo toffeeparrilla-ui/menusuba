@@ -13,14 +13,17 @@ const productsListEl = document.getElementById('products-list');
 const categoriesListEl = document.getElementById('categories-list');
 const cartCountEl = document.getElementById('cart-count');
 const cartSidebarEl = document.getElementById('cart-sidebar');
-const cartItemsEl = document.getElementById('cart-items');
 const cartOverlayEl = document.getElementById('cart-overlay');
+const cartItemsEl = document.getElementById('cart-items');
 const cartSubtotalEl = document.getElementById('cart-subtotal');
+const cartShippingEl = document.getElementById('cart-shipping');
 const cartTotalEl = document.getElementById('cart-total');
 const checkoutBtn = document.getElementById('checkout-btn');
+const closeCartBtn = document.getElementById('close-cart-btn');
+const openCartBtn = document.getElementById('open-cart-btn');
 
 const PLACEHOLDER_IMAGE = 'assets/placeholder.jpg'; 
-const SHIPPING_COST = 5000; // Costo de envío (ejemplo: $ 5.000)
+const SHIPPING_COST = 5000; // Costo de envío (ejemplo: $ 5.000 COP)
 
 // =======================================================
 // 1. UTILIDADES Y PARSEO
@@ -31,12 +34,12 @@ const SHIPPING_COST = 5000; // Costo de envío (ejemplo: $ 5.000)
  */
 function priceStringToNumber(priceString) {
     if (!priceString) return 0;
-    // Elimina puntos, comas y espacios, luego convierte a número.
+    // Remueve separadores de miles y convierte a número
     return parseFloat(priceString.replace(/[$. ]/g, '')) || 0;
 }
 
 /**
- * Formatea un número a formato de moneda local.
+ * Formatea un número a formato de moneda local (COP).
  */
 function formatPrice(number) {
     return new Intl.NumberFormat('es-CO', { 
@@ -60,14 +63,14 @@ function parseCsv(csvText) {
 
         const fields = rawFields.map(f => f.trim().replace(/^"|"$/g, ''));
         
-        // Si F (imagen) es (Vacio) o está vacío, establecemos 'null'
+        // Lógica: Si la columna imagen es (Vacio) o está vacía, es null
         const productImage = (fields[5] === '(Vacio)' || !fields[5]) ? null : fields[5];
         
         const product = {
             id: fields[0],           
             name: fields[1],         
-            priceText: fields[2],   // Guardamos el texto original
-            price: priceStringToNumber(fields[2]), // Guardamos el valor numérico
+            priceText: fields[2],   
+            price: priceStringToNumber(fields[2]), 
             category: fields[3],     
             description: fields[4] === '(Vacio)' ? '' : fields[4], 
             image: productImage 
@@ -98,13 +101,12 @@ async function fetchCsvData() {
         
         if (allProducts.length > 0) {
             renderCategories(allProducts);
-            const defaultCategory = 'all'; 
-            renderProducts(allProducts, defaultCategory);
+            renderProducts(allProducts, 'all');
             
-            const allButton = document.querySelector(`[data-category="${defaultCategory}"]`);
+            const allButton = document.querySelector(`[data-category="all"]`);
             if(allButton) allButton.classList.add('active');
             
-            // Añadir listener para añadir al carrito
+            // Listener de evento delegado para añadir al carrito
             productsListEl.addEventListener('click', handleAddToCartClick);
         } else {
             productsListEl.innerHTML = '<p class="error-message">No se encontraron productos.</p>';
@@ -117,220 +119,8 @@ async function fetchCsvData() {
 }
 
 // =======================================================
-// 3. RENDERIZADO DE PRODUCTOS (Con Botón de Carrito)
+// 3. RENDERIZADO DE PRODUCTOS Y CATEGORÍAS
 // =======================================================
-
-function renderProducts(products, currentCategory) {
-    productsListEl.innerHTML = ''; 
-
-    if (products.length === 0) {
-        productsListEl.innerHTML = `<p class="error-message">No hay productos en la categoría: ${currentCategory}</p>`;
-        return;
-    }
-
-    products.forEach(product => {
-        const card = document.createElement('div');
-        
-        // Usamos priceText para la visualización (ej: "35.900")
-        const formattedPrice = formatPrice(product.price); 
-        
-        const descriptionHtml = product.description 
-            ? `<p class="product-description">${product.description}</p>`
-            : ''; 
-        
-        let imageHtml = '';
-        card.className = 'product-card';
-
-        if (product.image) {
-            imageHtml = `
-                <img 
-                    src="${product.image}" 
-                    alt="${product.name}" 
-                    class="product-image" 
-                    onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}';"
-                >
-            `;
-        } else {
-            card.classList.add('product-card-no-image');
-        }
-
-        // Montar la tarjeta con el botón
-        card.innerHTML = `
-            ${imageHtml}
-            <div class="product-info">
-                <h3 class="product-name">${product.name}</h3>
-                ${descriptionHtml}
-                <span class="product-price">${formattedPrice}</span>
-                
-                <button 
-                    class="add-to-cart-btn" 
-                    data-id="${product.id}"
-                    data-name="${product.name}"
-                    data-price="${product.price}" 
-                    data-price-text="${product.priceText}"
-                    data-image="${product.image || ''}"
-                >
-                    🛒 Añadir al Carrito
-                </button>
-            </div>
-        `;
-        productsListEl.appendChild(card);
-    });
-}
-
-// =======================================================
-// 4. LÓGICA DEL CARRITO
-// =======================================================
-
-/**
- * Maneja el clic en el botón "Añadir al Carrito".
- */
-function handleAddToCartClick(event) {
-    const button = event.target.closest('.add-to-cart-btn');
-    if (!button) return;
-
-    const productId = button.dataset.id;
-    const existingItem = cart.find(item => item.id === productId);
-
-    if (existingItem) {
-        existingItem.quantity++;
-    } else {
-        const newItem = {
-            id: productId,
-            name: button.dataset.name,
-            price: parseFloat(button.dataset.price),
-            priceText: button.dataset.priceText,
-            image: button.dataset.image,
-            quantity: 1
-        };
-        cart.push(newItem);
-    }
-    
-    updateCart();
-    openCart();
-}
-
-/**
- * Renderiza los items en el panel lateral del carrito.
- */
-function renderCartItems() {
-    cartItemsEl.innerHTML = '';
-    
-    if (cart.length === 0) {
-        cartItemsEl.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
-        return;
-    }
-
-    cart.forEach(item => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'cart-item';
-        
-        itemEl.innerHTML = `
-            <div class="item-details">
-                <p class="item-name">${item.name}</p>
-                <small>${formatPrice(item.price)} x ${item.quantity}</small>
-            </div>
-            <div class="item-quantity-controls">
-                <button data-id="${item.id}" data-action="decrease">-</button>
-                <span>${item.quantity}</span>
-                <button data-id="${item.id}" data-action="increase">+</button>
-            </div>
-        `;
-        cartItemsEl.appendChild(itemEl);
-    });
-    
-    // Añadir listener para modificar/eliminar items
-    cartItemsEl.addEventListener('click', handleCartItemAction);
-}
-
-/**
- * Maneja las acciones de aumentar, disminuir o eliminar items del carrito.
- */
-function handleCartItemAction(event) {
-    const button = event.target.closest('button');
-    if (!button) return;
-    
-    const id = button.dataset.id;
-    const action = button.dataset.action;
-    const itemIndex = cart.findIndex(item => item.id === id);
-
-    if (itemIndex === -1) return;
-
-    if (action === 'increase') {
-        cart[itemIndex].quantity++;
-    } else if (action === 'decrease') {
-        if (cart[itemIndex].quantity > 1) {
-            cart[itemIndex].quantity--;
-        } else {
-            // Eliminar el producto si la cantidad llega a 0
-            cart.splice(itemIndex, 1);
-        }
-    }
-    
-    updateCart();
-}
-
-/**
- * Calcula el total y actualiza la UI del carrito.
- */
-function updateCart() {
-    let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    let total = subtotal + SHIPPING_COST;
-
-    // Actualizar elementos
-    cartCountEl.textContent = totalItems;
-    cartSubtotalEl.textContent = formatPrice(subtotal);
-    cartTotalEl.textContent = formatPrice(total);
-    document.getElementById('cart-shipping').textContent = (subtotal > 0) ? formatPrice(SHIPPING_COST) : formatPrice(0);
-    checkoutBtn.disabled = cart.length === 0;
-
-    renderCartItems();
-}
-
-/**
- * Abre el panel lateral del carrito.
- */
-function openCart() {
-    cartSidebarEl.classList.add('open');
-    cartOverlayEl.classList.add('open');
-}
-
-/**
- * Cierra el panel lateral del carrito.
- */
-function closeCart() {
-    cartSidebarEl.classList.remove('open');
-    cartOverlayEl.classList.remove('open');
-}
-
-// =======================================================
-// 5. INICIALIZACIÓN Y EVENTOS GLOBALES
-// =======================================================
-
-// Eventos para abrir y cerrar el carrito
-document.getElementById('open-cart-btn').addEventListener('click', openCart);
-document.getElementById('close-cart-btn').addEventListener('click', closeCart);
-cartOverlayEl.addEventListener('click', closeCart);
-
-// Evento para finalizar el pedido
-checkoutBtn.addEventListener('click', () => {
-    if (cart.length === 0) return;
-    alert("¡Pedido listo para finalizar! Aquí iniciarías la ventana de datos del cliente.");
-    // Aquí se implementaría la lógica de Checkout con un formulario
-});
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicia el proceso de carga de datos
-    fetchCsvData();
-    // 2. Otras funciones de inicialización
-    // ...
-});
-
-// [Función renderCategories, createCategoryButton y handleCategoryFilter] (Deben ser copiadas 
-// de la versión anterior de script.js y pegadas aquí para que la navegación funcione).
-// ...
 
 function renderCategories(products) {
     const categories = new Set(products.map(p => p.category));
@@ -373,3 +163,200 @@ function handleCategoryFilter(event) {
 
     renderProducts(filteredProducts, selectedCategory);
 }
+
+
+function renderProducts(products, currentCategory) {
+    productsListEl.innerHTML = ''; 
+
+    if (products.length === 0) {
+        productsListEl.innerHTML = `<p class="error-message">No hay productos en la categoría: ${currentCategory}</p>`;
+        return;
+    }
+
+    products.forEach(product => {
+        const card = document.createElement('div');
+        
+        const formattedPrice = formatPrice(product.price); 
+        
+        const descriptionHtml = product.description 
+            ? `<p class="product-description">${product.description}</p>`
+            : ''; 
+        
+        let imageHtml = '';
+        card.className = 'product-card';
+
+        if (product.image) {
+            imageHtml = `
+                <img 
+                    src="${product.image}" 
+                    alt="${product.name}" 
+                    class="product-image" 
+                    onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}';"
+                >
+            `;
+        } else {
+            // Aplica la clase especial si no hay imagen
+            card.classList.add('product-card-no-image');
+        }
+
+        card.innerHTML = `
+            ${imageHtml}
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                ${descriptionHtml}
+                <span class="product-price">${formattedPrice}</span>
+                
+                <button 
+                    class="add-to-cart-btn" 
+                    data-id="${product.id}"
+                    data-name="${product.name}"
+                    data-price="${product.price}" 
+                    data-price-text="${product.priceText}"
+                    data-image="${product.image || ''}"
+                >
+                    🛒 Añadir al Carrito
+                </button>
+            </div>
+        `;
+        productsListEl.appendChild(card);
+    });
+}
+
+// =======================================================
+// 4. LÓGICA DEL CARRITO
+// =======================================================
+
+function handleAddToCartClick(event) {
+    const button = event.target.closest('.add-to-cart-btn');
+    if (!button) return;
+
+    const productId = button.dataset.id;
+    const existingItem = cart.find(item => item.id === productId);
+
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        const newItem = {
+            id: productId,
+            name: button.dataset.name,
+            price: parseFloat(button.dataset.price),
+            priceText: button.dataset.priceText,
+            image: button.dataset.image,
+            quantity: 1,
+            note: '' 
+        };
+        cart.push(newItem);
+    }
+    
+    updateCart();
+    openCart();
+}
+
+function renderCartItems() {
+    cartItemsEl.innerHTML = '';
+    
+    if (cart.length === 0) {
+        cartItemsEl.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
+        return;
+    }
+
+    cart.forEach(item => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item';
+        
+        itemEl.innerHTML = `
+            <div class="item-details">
+                <p class="item-name">${item.name}</p>
+                <small>${formatPrice(item.price)} x ${item.quantity}</small>
+            </div>
+            <div class="item-quantity-controls">
+                <button data-id="${item.id}" data-action="decrease">-</button>
+                <span>${item.quantity}</span>
+                <button data-id="${item.id}" data-action="increase">+</button>
+            </div>
+        `;
+        cartItemsEl.appendChild(itemEl);
+    });
+}
+
+function handleCartItemAction(event) {
+    const button = event.target.closest('button');
+    if (!button) return;
+    
+    const id = button.dataset.id;
+    const action = button.dataset.action;
+    const itemIndex = cart.findIndex(item => item.id === id);
+
+    if (itemIndex === -1) return;
+
+    if (action === 'increase') {
+        cart[itemIndex].quantity++;
+    } else if (action === 'decrease') {
+        if (cart[itemIndex].quantity > 1) {
+            cart[itemIndex].quantity--;
+        } else {
+            cart.splice(itemIndex, 1);
+        }
+    }
+    
+    updateCart();
+}
+
+function updateCart() {
+    let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    let shipping = 0;
+    let total = subtotal;
+
+    if (subtotal > 0) {
+        shipping = SHIPPING_COST;
+        total += SHIPPING_COST;
+    }
+    
+
+    // Actualizar elementos
+    cartCountEl.textContent = totalItems;
+    cartSubtotalEl.textContent = formatPrice(subtotal);
+    cartShippingEl.textContent = formatPrice(shipping);
+    cartTotalEl.textContent = formatPrice(total);
+    checkoutBtn.disabled = cart.length === 0;
+
+    renderCartItems();
+}
+
+function openCart() {
+    cartSidebarEl.classList.add('open');
+    cartOverlayEl.classList.add('open');
+}
+
+function closeCart() {
+    cartSidebarEl.classList.remove('open');
+    cartOverlayEl.classList.remove('open');
+}
+
+// =======================================================
+// 5. INICIALIZACIÓN Y EVENTOS GLOBALES
+// =======================================================
+
+// Eventos para abrir y cerrar el carrito
+openCartBtn.addEventListener('click', openCart);
+closeCartBtn.addEventListener('click', closeCart);
+cartOverlayEl.addEventListener('click', closeCart);
+
+// Listener para modificar items en el carrito (delegación)
+cartItemsEl.addEventListener('click', handleCartItemAction);
+
+// Evento para finalizar el pedido
+checkoutBtn.addEventListener('click', () => {
+    if (cart.length === 0) return;
+    
+    // Aquí se implementaría el formulario de datos del cliente
+    alert(`¡Pedido de ${formatPrice(parseFloat(cartTotalEl.textContent.replace(/[$. ]/g, '')))} listo para enviar!`);
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchCsvData();
+    updateCart(); 
+});
