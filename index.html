@@ -455,9 +455,62 @@
             cursor: not-allowed;
             color: var(--text-color-dark);
         }
+        
+        /* =======================================================
+           7. ESTILOS DE UBICACIÓN (FOOTER)
+           ======================================================= */
+        footer {
+            max-width: 1200px;
+            margin: 40px auto 20px auto;
+            padding: 20px;
+            background-color: var(--cart-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        footer h3 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .mapa-container {
+            margin: 20px 0;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            height: 300px; /* Altura fija para el mapa */
+            width: 100%;
+        }
+
+        .mapa-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        .mapa-link-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: var(--secondary-color);
+            color: var(--text-color-light);
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mapa-link-btn:hover {
+            background-color: #8B4513; /* Tono más oscuro de siena */
+        }
+        
 
         /* =======================================================
-           7. ESTILOS MÓVILES (MENOS DE 992px)
+           8. ESTILOS MÓVILES (MENOS DE 992px)
            ======================================================= */
 
         #ver-pedido-movil {
@@ -606,6 +659,30 @@
     <button id="ver-pedido-movil" style="display:none;">
         <i class="fa fa-shopping-cart"></i> Ver Pedido
     </button>
+    
+    <footer>
+        <h3>Ubicación y Contacto</h3>
+        <p><strong>Dirección:</strong> Cra. 93 #129C-23, Suba, Bogotá</p>
+        <p><strong>Teléfono:</strong> +57 321 9959831</p>
+        
+        <div class="mapa-container">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.337021319241!2d-74.0991953!3d4.7397775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f8481ff23b9d5%3A0x69f95f4c577007a8!2sCra.%2093%20%23129C-23%2C%20Suba%2C%20Bogot%C3%A1!5e0!3m2!1ses-419!2sco!4v1700244000000!5m2!1ses-419!2sco" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Ubicación de Toffe Restaurante en Suba, Bogotá">
+            </iframe>
+        </div>
+        
+        <a 
+            href="https://www.google.com/maps/dir/?api=1&destination=Cra.+93+%23129C-23%2C+Suba%2C+Bogot%C3%A1" 
+            target="_blank" 
+            class="mapa-link-btn"
+        >
+            <i class="fas fa-map-marker-alt"></i> Ver en Google Maps / Cómo Llegar
+        </a>
+    </footer>
 
 
     <script>
@@ -742,7 +819,7 @@
             { id: 89, nombre: "Bife de Chorizo", precio: 46900, categoria: "Toffe Grille", descripcion: "Acompañado de papa francesa. ensalada de la casa y chimichurri", imagen: "assets/imagenes/Toffe Grille/img79.jpg" },
             { id: 90, nombre: "Churrasco Argentino", precio: 45900, categoria: "Toffe Grille", descripcion: "Acompañado de Queso grille Chorizo Ranchero, Ensalada de la casa. Yuca frita y Chimichurri", imagen: "assets/imagenes/Toffe Grille/img92.jpg" },
             { id: 91, nombre: "Costillas BBQ", precio: 36900, categoria: "Toffe Grille", descripcion: "350gr de Deliciosas costillas de Cerdo. bañadas en salsa bbq. Acompañado de Aros de Cebolla. Papa Francesa y ensalada de la casa", imagen: "assets/imagenes/Toffe Grille/img89.jpg" },
-            { id: 92, nombre: "Filet Mignon", precio: 48900, categoria: "Toffe Grille", descripcion: "Tierno de lomo fino de res bañada en salsa demi-glace. Acompañado de papa francesa. ensalada de la casa", imagen: "assets/imagenes/Toffe Grille/img86.jpg" },
+            { id: 92, nombre: "Filet Mignon", precio: 48900, categoria: "Toffe Grille", descripcion: "Tierno de lomo fino de res bañada en salsa demi-glace. Acompañado de papa francesa. ensalada de la casa,assets/imagenes/Toffe Grille/img86.jpg" },
             { id: 93, nombre: "Mini Churrasco", precio: 29900, categoria: "Toffe Grille", descripcion: "Delicioso Corte de Chata. acompañado de Yuca y chimichurri, PIDELO con Ensalada de la casa", imagen: "assets/imagenes/Toffe Grille/img88.jpg" },
             // Cervezas (Antes: Bebidas)
             { id: 94, nombre: "Michelada", precio: 8000, categoria: "Cervezas", descripcion: "Cerveza con limón y sal", imagen: "assets/imagenes/Bebidas/michelada.jpg" },
