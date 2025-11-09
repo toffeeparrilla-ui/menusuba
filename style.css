@@ -10,7 +10,6 @@
     --color-text: #333333;       /* Texto Oscuro */
     --color-light: #ffffff;      /* Texto Claro (para botones) */
 
-    /* Espaciado */
     --padding-base: 20px;
 }
 
@@ -36,6 +35,7 @@ body {
     padding: var(--padding-base);
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative; /* Necesario para posicionar el botón del carrito */
 }
 
 .logo-container {
@@ -53,6 +53,26 @@ body {
     margin-top: 5px;
 }
 
+/* 2.1. Botón de Abrir Carrito */
+.open-cart-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    z-index: 50; /* Sobre la navegación */
+}
+
+.open-cart-btn:hover {
+    background-color: var(--color-light);
+}
+
 /* ======================== */
 /* 3. NAVEGACIÓN Y FILTROS */
 /* ======================== */
@@ -62,7 +82,6 @@ body {
     border-bottom: 1px solid #ddd;
     overflow-x: auto; 
     white-space: nowrap;
-    /* Para navegadores iOS */
     -webkit-overflow-scrolling: touch; 
 }
 
@@ -83,7 +102,7 @@ body {
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s, transform 0.2s;
-    flex-shrink: 0; /* Evita que los botones se achiquen en scroll */
+    flex-shrink: 0; 
 }
 
 .category-btn:hover {
@@ -107,7 +126,6 @@ body {
 
 .products-grid {
     display: grid;
-    /* 1 columna en móvil, se expande según el tamaño */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--padding-base);
     margin-top: var(--padding-base);
@@ -126,14 +144,8 @@ body {
 .product-image {
     width: 100%;
     height: 200px;
-    
-    /* Muestra la imagen completa dentro del área, sin recortar */
-    object-fit: contain; 
-    
-    /* Fondo para rellenar las barras laterales que crea 'contain' */
+    object-fit: contain; /* No recorta la imagen, usa el espacio */
     background-color: #f0f0f0; 
-    
-    /* Pequeño padding para asegurar que la imagen no toque el borde */
     padding: 5px; 
 }
 
@@ -164,10 +176,9 @@ body {
     align-self: flex-end;
 }
 
-/* 4.2. AJUSTE PARA PRODUCTOS SIN IMAGEN (product-card-no-image) */
+/* 4.2. AJUSTE PARA PRODUCTOS SIN IMAGEN */
 .product-card-no-image {
     height: auto; 
-    /* Estilos más discretos y centrados para productos sin foto */
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03); 
     text-align: center;
 }
@@ -182,7 +193,6 @@ body {
 }
 
 .product-card-no-image .product-description {
-    /* Oculta la descripción si no es necesaria en tarjetas compactas */
     display: none; 
 }
 
@@ -192,9 +202,162 @@ body {
     font-size: 1.3em;
 }
 
+/* 4.3. Botón Añadir al Carrito */
+.add-to-cart-btn {
+    background-color: var(--color-accent); 
+    color: var(--color-light);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px; 
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.add-to-cart-btn:hover {
+    background-color: var(--color-primary); 
+}
+
 /* ======================== */
-/* 5. SECCIÓN DE UBICACIÓN Y MAPA */
+/* 5. PANEL LATERAL DEL CARRITO (SIDEBAR) */
 /* ======================== */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -350px; /* Oculto por defecto */
+    width: 100%;
+    max-width: 350px;
+    height: 100%;
+    background-color: var(--color-light);
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-base);
+}
+
+.cart-sidebar.open {
+    right: 0; /* Muestra el carrito */
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.cart-header h3 {
+    color: var(--color-primary);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.cart-items-container {
+    flex-grow: 1;
+    overflow-y: auto; 
+    padding-right: 10px;
+}
+
+.cart-summary {
+    padding: 15px 0;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+
+.cart-summary h3 {
+    color: var(--color-accent);
+    margin-top: 5px;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-primary);
+    color: var(--color-light);
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.checkout-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none; 
+}
+
+.cart-overlay.open {
+    display: block;
+}
+
+/* Estilo para cada item en el carrito */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dotted #eee;
+}
+
+.item-details {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.item-name {
+    font-weight: bold;
+    color: var(--color-primary);
+    font-size: 0.95em;
+}
+
+.item-quantity-controls {
+    display: flex;
+    align-items: center;
+}
+
+.item-quantity-controls button {
+    background-color: var(--color-secondary);
+    color: var(--color-light);
+    border: none;
+    padding: 4px 8px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.item-quantity-controls button:hover {
+    background-color: var(--color-accent);
+}
+
+/* ======================== */
+/* 6. SECCIÓN DE UBICACIÓN Y MAPA */
+/* ======================== */
+/* ... (Mismo CSS de ubicación/mapa/footer que en la respuesta anterior) ... */
 .location-section {
     background-color: var(--color-primary);
     color: var(--color-light);
@@ -248,7 +411,7 @@ body {
 }
 
 /* ======================== */
-/* 6. PIE DE PÁGINA */
+/* 7. PIE DE PÁGINA */
 /* ======================== */
 .footer {
     background-color: var(--color-text);
@@ -259,7 +422,7 @@ body {
 }
 
 /* ======================== */
-/* 7. MEDIA QUERIES (RESPONSIVIDAD) */
+/* 8. MEDIA QUERIES (RESPONSIVIDAD) */
 /* ======================== */
 @media (min-width: 768px) {
     .title {
