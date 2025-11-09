@@ -26,26 +26,22 @@ body {
     color: var(--text-color-dark);
 }
 
-#app-container {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
 h1, h2, h3 {
     color: var(--secondary-color);
     font-weight: 700;
     margin-top: 0;
 }
 
+/* Encabezado de Categoría */
 h2 {
     font-size: 1.8em;
     margin-bottom: 15px;
     padding-bottom: 5px;
-    /* Usar el nuevo color primario azul para el borde de la categoría */
     border-bottom: 2px solid var(--primary-color);
     display: inline-block;
+    /* Necesario para que el scroll a las categorías no quede tapado por la barra sticky */
+    padding-top: 60px; 
+    margin-top: -60px; 
 }
 
 h3.subcategoria-title {
@@ -71,16 +67,16 @@ h3.subcategoria-title {
     margin-bottom: 20px;
     text-align: center;
     width: 100%;
-    grid-column: 1 / -1; 
 }
 
 #logo-empresa {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
+    /* 1. Logo Rectangular */
+    width: 150px; 
+    height: auto; 
+    /* 2. Sin marco/borde */
+    border-radius: 0; 
+    object-fit: contain; 
     margin-right: 15px;
-    border: 3px solid var(--primary-color); 
 }
 
 #info-empresa {
@@ -101,20 +97,26 @@ h3.subcategoria-title {
 }
 
 /* ========================================= */
-/* 2. CONTENEDOR DE MENÚ Y CARRITO */
+/* 2. CONTENEDOR DE MENÚ Y CARRITO (CSS GRID) */
 /* ========================================= */
 
 #app-container {
     display: grid;
+    /* Define 2 columnas para el menú y el carrito */
     grid-template-columns: 3fr 1fr;
     gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 #menu-container {
+    /* Ocupa la primera columna (3fr) */
     grid-column: 1 / 2;
 }
 
 #carrito {
+    /* Ocupa la segunda columna (1fr) */
     grid-column: 2 / 3;
     position: sticky;
     top: 20px;
@@ -127,11 +129,14 @@ h3.subcategoria-title {
 
 
 /* ========================================= */
-/* 3. FILTROS (NAVEGACIÓN) - FLOTANTE */
+/* 3. FILTROS (NAVEGACIÓN) - FLOTANTE (STICKY) */
 /* ========================================= */
 
 #botones-filtro {
-    grid-column: 1 / 2;
+    /* ARREGLO PARA QUE OCUPE TODA EL ANCHO Y PERMITA EL STICKY */
+    grid-column: 1 / -1; 
+    
+    width: 100%;
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
@@ -155,6 +160,7 @@ h3.subcategoria-title {
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 600;
+    white-space: nowrap; 
 }
 
 .filtro-btn:hover {
@@ -211,7 +217,7 @@ h3.subcategoria-title {
 
 .item-nota {
     font-size: 0.9em;
-    color: var(--secondary-color); /* DESCRIPCIÓN EN COLOR NEGRO */
+    color: var(--secondary-color); 
     margin-bottom: 10px;
     min-height: 36px;
 }
@@ -274,50 +280,53 @@ h3.subcategoria-title {
 
 
 /* ========================================= */
-/* 5. MENÚ EN FORMATO DE LISTA - AHORA COMO TARJETA HORIZONTAL (LIST + IMAGEN) */
+/* 5. MENÚ EN FORMATO DE LISTA - COMPACTADO PARA HORNEADOS */
 /* ========================================= */
 
 .items-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding: 10px 0;
-    margin-bottom: 40px;
+    /* 3. Compactación */
+    gap: 5px; 
+    padding: 5px 0; 
+    margin-bottom: 30px; 
 }
 
 .menu-item-list {
     display: flex;
-    /* Ajuste para la imagen lateral */
     align-items: stretch; 
     padding: 0; 
-    border-bottom: none; /* Quitamos el borde inferior de lista */
+    border-bottom: none; 
     background-color: var(--card-background);
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    overflow: hidden; /* Importante para el radio de borde */
+    box-shadow: 0 0px 2px rgba(0, 0, 0, 0.04); 
+    overflow: hidden; 
 }
 
 /* Estilo para la IMAGEN LATERAL (Thumbnail) */
 .menu-item-list .item-thumb {
-    width: 120px; /* Ancho fijo para el thumbnail */
-    height: 120px; /* Alto fijo */
-    object-fit: cover; /* Recortar si es necesario, pero cubrir el área */
-    flex-shrink: 0; /* Evita que se encoja */
-    margin-right: 15px;
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover; 
+    flex-shrink: 0; 
+    margin-right: 10px; 
 }
 
+/* Ajuste para el caso de HORNEADOS (Sin imagen) - Compactado */
 .menu-item-list.no-image {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px; /* Restaura el padding para listas sin imagen */
+    /* 3. Compactación */
+    padding: 6px 12px; 
 }
 
 /* Ajuste para el contenido al lado de la imagen */
 .menu-item-list.with-image .item-info-list {
     flex-grow: 1;
-    padding: 15px 0; /* Padding vertical para centrar contenido */
-    padding-right: 15px;
+    /* 3. Compactación */
+    padding: 10px 0; 
+    padding-right: 10px; 
 }
 
 .item-info-list {
@@ -327,46 +336,52 @@ h3.subcategoria-title {
 
 .item-info-list h3 {
     margin: 0;
-    font-size: 1.1em;
+    /* 3. Compactación - fuente un poco más pequeña */
+    font-size: 1em; 
     font-weight: 600;
     color: var(--secondary-color);
 }
 
 .item-info-list .item-nota {
-    font-size: 0.9em;
-    color: var(--secondary-color); /* DESCRIPCIÓN EN COLOR NEGRO */
-    margin-top: 5px;
+    /* 3. Compactación - fuente un poco más pequeña */
+    font-size: 0.85em; 
+    color: var(--secondary-color); 
+    margin-top: 3px; 
     margin-bottom: 0;
 }
 
 .item-actions-list {
     display: flex;
-    flex-direction: column; /* Cambiamos a columna para apilar acciones */
+    flex-direction: column; 
     justify-content: center;
     align-items: flex-end;
-    gap: 5px;
-    padding: 15px;
+    /* 3. Compactación */
+    gap: 3px; 
+    padding: 10px; 
     white-space: nowrap;
 }
 
 .item-actions-list p {
     margin: 0;
-    font-size: 1.1em;
+    /* 3. Compactación - fuente un poco más pequeña */
+    font-size: 1em; 
     font-weight: 700;
     color: var(--primary-color); 
 }
 
 .item-actions-list .nota-input {
-    width: 120px;
-    padding: 5px;
-    font-size: 0.8em;
+    /* 3. Compactación - más estrecho y pequeño */
+    width: 100px; 
+    padding: 4px; 
+    font-size: 0.75em; 
 }
 
 .item-actions-list button {
-    width: 40px; /* Botón cuadrado */
-    height: 40px;
+    /* 3. Compactación - más pequeño */
+    width: 35px; 
+    height: 35px; 
     padding: 0;
-    font-size: 1.5em;
+    font-size: 1.3em; 
     line-height: 1;
 }
 
@@ -466,6 +481,7 @@ h3.subcategoria-title {
 /* ========================================= */
 
 @media (max-width: 992px) {
+    /* Layout principal para tabletas y dispositivos grandes en vertical */
     #app-container {
         grid-template-columns: 1fr;
         padding: 10px;
@@ -486,15 +502,48 @@ h3.subcategoria-title {
     .items-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
-
-    /* En móvil, la tarjeta de lista sigue siendo horizontal pero más compacta */
-    .menu-item-list .item-thumb {
-        width: 90px;
-        height: 90px; 
-    }
 }
 
 @media (max-width: 600px) {
+    
+    /* ARREGLO DE IMÁGENES GRANDES EN LISTA */
+    .menu-item-list {
+        flex-wrap: nowrap; 
+    }
+
+    .menu-item-list .item-thumb {
+        width: 100px; 
+        height: 100px;
+        margin-right: 10px;
+        border-radius: 8px 0 0 8px; 
+    }
+
+    .menu-item-list.with-image .item-info-list {
+        padding: 10px 10px 10px 0; 
+    }
+
+    .item-actions-list {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: auto;
+        padding: 10px 15px;
+    }
+
+    .item-actions-list p {
+        font-size: 1em;
+    }
+    
+    /* Ocultamos el input de nota en el formato de lista para ahorrar espacio */
+    .item-actions-list .nota-input {
+        display: none; 
+    }
+
+    .item-actions-list button {
+        width: 35px;
+        height: 35px;
+    }
+    
     /* Ajustes de Cabecera y Logo */
     #app-header {
         flex-direction: column;
@@ -502,10 +551,11 @@ h3.subcategoria-title {
     }
     
     #logo-empresa {
+        /* Ajuste de ancho para móvil */
         margin-right: 0;
         margin-bottom: 10px;
-        width: 70px; 
-        height: 70px;
+        width: 120px; 
+        height: auto;
     }
     
     #info-empresa {
@@ -514,43 +564,6 @@ h3.subcategoria-title {
     
     #info-empresa h1 {
         font-size: 1.3em;
-    }
-    
-    /* Ajustes de Lista - Adaptación a móvil */
-    .menu-item-list {
-        flex-wrap: wrap; 
-    }
-
-    .menu-item-list .item-thumb {
-        width: 100%; /* Imagen a ancho completo arriba */
-        height: 150px; 
-        margin-right: 0;
-        border-radius: 8px 8px 0 0;
-    }
-
-    .menu-item-list.with-image .item-info-list {
-        padding: 10px 15px 0 15px; /* Ajuste de padding */
-    }
-
-    .item-actions-list {
-        flex-direction: row; /* Volvemos a fila para ahorrar espacio */
-        justify-content: space-between;
-        width: 100%;
-        padding: 10px 15px 15px 15px;
-    }
-    
-    .item-actions-list p {
-        font-size: 1em;
-        flex-grow: 1;
-    }
-
-    .item-actions-list .nota-input {
-        display: none; /* Ocultar la nota en móvil si se necesita más espacio */
-    }
-
-    .item-actions-list button {
-        width: 35px;
-        height: 35px;
     }
 
     h2 {

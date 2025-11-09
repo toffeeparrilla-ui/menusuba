@@ -1,11 +1,10 @@
 // ===============================================
-// 1. DATOS DEL MENÚ (ACTUALIZADOS CON EL NUEVO CSV - 96 PRODUCTOS)
+// 1. DATOS DEL MENÚ
 // ===============================================
 const data = [
-    // El formato (card o list) se ha inferido basado en la naturaleza del plato:
-    // card: Platos principales, combos.
-    // list: Desayunos, postres, entradas, horneados (porciones individuales).
-
+    // El formato (card o list) se ha ajustado según tu solicitud.
+    // NOTA: Las rutas de imagen deben ser relativas a la carpeta donde se ejecuta index.html
+    
     // A La Marinera (Formato Card)
     { id: 1, nombre: "Bagre en Salsa Criolla", precio: "35.900", categoria: "A La Marinera", descripcion: "Acompañado de Arroz, Ensalada de la casa, patacon y yuca frita", imagen: "assets/imagenes/A La Marinera/img13.jpg", formato: "card" },
     { id: 2, nombre: "Filete de Merlusa", precio: "25.900", categoria: "A La Marinera", descripcion: "Pidelo Con ensalada de la casa o Vegetales al Wok", imagen: "assets/imagenes/A La Marinera/img9.jpg", formato: "card" },
@@ -18,48 +17,48 @@ const data = [
     { id: 7, nombre: "Teriyaki Especial", precio: "84.900", categoria: "Combos Teriyaki", descripcion: "5 porciones con Camarones. Lomo de res. Trozos de pechuga y cerdo Acompañado de Papas a la Francesa", imagen: "assets/imagenes/Combos Teriyaki/img214.jpg", formato: "card" },
     { id: 8, nombre: "Teriyaki Familiar", precio: "78.900", categoria: "Combos Teriyaki", descripcion: "5 porciones con Lomo de res, trozos de pechuga y cerdo con vegetales al wok y arroz yakimeshi Acompañado de Papa a la Francesa y Gaseosa", imagen: "assets/imagenes/Combos Teriyaki/img211.jpg", formato: "card" },
 
-    // Crepes (Formato List)
-    { id: 9, nombre: "Champiñon y Pollo", precio: "17.000", categoria: "Crepes", descripcion: "Trozos de Pollo, bañado en salsa de champiñon con queso mozarella", imagen: "assets/imagenes/Crepes/img185.jpg", formato: "list" },
-    { id: 10, nombre: "Crepes de Dulce", precio: "16.900", categoria: "Crepes", descripcion: "Fresas, banano, trozos de durazno crema de leche y Helado", imagen: "assets/imagenes/Crepes/img188.jpg", formato: "list" },
-    { id: 11, nombre: "Crepes Mixto", precio: "17.900", categoria: "Crepes", descripcion: "Trozos de lomo y pollo. bañado en salsa de la casa, con queso mozarella", imagen: "assets/imagenes/Crepes/img191.jpg", formato: "list" },
-    { id: 12, nombre: "Wafles con Fruta", precio: "0", categoria: "Crepes", descripcion: "Crujiente por fuera y suave por dentro, decorado con frutas frescas, crema chantilly y miel maple (PRECIO NO ESPECIFICADO)", imagen: "assets/imagenes/Crepes/img197.jpg", formato: "list" },
+    // Crepes (Formato Card)
+    { id: 9, nombre: "Champiñon y Pollo", precio: "17.000", categoria: "Crepes", descripcion: "Trozos de Pollo, bañado en salsa de champiñon con queso mozarella", imagen: "assets/imagenes/Crepes/img185.jpg", formato: "card" },
+    { id: 10, nombre: "Crepes de Dulce", precio: "16.900", categoria: "Crepes", descripcion: "Fresas, banano, trozos de durazno crema de leche y Helado", imagen: "assets/imagenes/Crepes/img188.jpg", formato: "card" },
+    { id: 11, nombre: "Crepes Mixto", precio: "17.900", categoria: "Crepes", descripcion: "Trozos de lomo y pollo. bañado en salsa de la casa, con queso mozarella", imagen: "assets/imagenes/Crepes/img191.jpg", formato: "card" },
+    { id: 12, nombre: "Wafles con Fruta", precio: "0", categoria: "Crepes", descripcion: "Crujiente por fuera y suave por dentro, decorado con frutas frescas, crema chantilly y miel maple (PRECIO NO ESPECIFICADO)", imagen: "assets/imagenes/Crepes/img197.jpg", formato: "card" },
 
-    // Desayunos (Formato List)
-    { id: 13, nombre: "Amor Perfecto", precio: "18.900", categoria: "Desayunos", descripcion: "Fresco pan de Semillas - Queso Crema. Huevos Revueltos - Aguacate Fresco Yogurt Griego - Granola - Fresas Mora - Kiwy", imagen: "assets/imagenes/Desayunos/img53.jpg", formato: "list" },
-    { id: 14, nombre: "Bisteck a Caballo", precio: "18.900", categoria: "Desayunos", descripcion: "Carne en Salsa Criolla con huevo, arroz y arepa", imagen: "assets/imagenes/Desayunos/img36.jpg", formato: "list" },
-    { id: 15, nombre: "Calentao Paisa", precio: "16.500", categoria: "Desayunos", descripcion: "Frijol, arroz, chorizo, plátano, huevo frito y arepa", imagen: "assets/imagenes/Desayunos/img15.jpg", formato: "list" },
-    { id: 16, nombre: "Cereal", precio: "8.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img97.jpg", formato: "list" },
-    { id: 17, nombre: "Changua Especial", precio: "10.900", categoria: "Desayunos", descripcion: "Con Almojabana y Queso", imagen: "assets/imagenes/Desayunos/img251.jpg", formato: "list" },
-    { id: 18, nombre: "Changua Sencilla", precio: "8.500", categoria: "Desayunos", descripcion: "", imagen: "(Vacio)", formato: "list" }, // IMAGEN VACÍA
-    { id: 19, nombre: "Chocolate Toffe", precio: "14.500", categoria: "Desayunos", descripcion: "Pan de Bono. Queso Campesino Almojabana y Chocolate", imagen: "assets/imagenes/Desayunos/img258.jpg", formato: "list" },
-    { id: 20, nombre: "Croque Madame en Grano Noble", precio: "17.900", categoria: "Desayunos", descripcion: "Pan multigranos con aguacate laminado, acompañados de exquisito croque madame, bañado en salsa holandesa y bacon ahumado", imagen: "assets/imagenes/Desayunos/img74.jpg", formato: "list" },
-    { id: 21, nombre: "Cumbre Italiana", precio: "18.900", categoria: "Desayunos", descripcion: "Pan Focaccia - Crema de Aguacate Trozos de Pollo Tomate Cherry Huevo Cocido - Salsa Bechamel", imagen: "assets/imagenes/Desayunos/img54.jpg", formato: "list" },
-    { id: 22, nombre: "Desayuno Buenos Días", precio: "16.500", categoria: "Desayunos", descripcion: "Delicioso desayuno al estilo texano. Huevos rancheros en mozarella, acompañado de frutas frescas, rodajas de pan aliñado y jugo de naranja natural", imagen: "assets/imagenes/Desayunos/img255.jpg", formato: "list" },
-    { id: 23, nombre: "Extasis en Crocancia de Pan", precio: "18.900", categoria: "Desayunos", descripcion: "Tajada de pan de Centeno esparcidas en cheese cream, con el frescar de la lechuga, la dulzura de los tomates cherry, la intesnidad del pimiento y la elegancia de la cebolla asada, acompañadas de champiñones, huevos pochados y crocancia de bacon.", imagen: "assets/imagenes/Desayunos/img71.jpg", formato: "list" },
-    { id: 24, nombre: "Fruti Granola", precio: "13.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img95.jpg", formato: "list" },
-    { id: 25, nombre: "Huerto de Atun", precio: "15.900", categoria: "Desayunos", descripcion: "Ensalada de lechuga con lomitos de Atún. acompañada de huevo cocido, tomates cherry. aguacate y queso", imagen: "assets/imagenes/Desayunos/img89.jpg", formato: "list" },
-    { id: 26, nombre: "Huevos al Nido", precio: "14.900", categoria: "Desayunos", descripcion: "Huevos Fritos, tocineta y Papa Francesa", imagen: "assets/imagenes/Desayunos/img35.jpg", formato: "list" },
-    { id: 27, nombre: "Huevos Escalfados", precio: "11.900", categoria: "Desayunos", descripcion: "Acompañados de Jamón, queso y arepa con Mantequilla y Mermelada", imagen: "assets/imagenes/Desayunos/img33.jpg", formato: "list" },
-    { id: 28, nombre: "Huevos Jalapeños", precio: "13.500", categoria: "Desayunos", descripcion: "Huevos batidos en mantequilla clarificada, queso mozarella. champiñon ahumado, bacón y jamón ahumado, con unos deliciosos chiles jalapeños", imagen: "assets/imagenes/Desayunos/img17.jpg", formato: "list" },
-    { id: 29, nombre: "Huevos Rancheros Especiales", precio: "13.500", categoria: "Desayunos", descripcion: "Huevos sumergidos en salsa ranchera con salchicha ranchera con arepa asada", imagen: "assets/imagenes/Desayunos/img39.jpg", formato: "list" },
-    { id: 30, nombre: "Jardin de Sabores", precio: "16.900", categoria: "Desayunos", descripcion: "Ensalada de lechuga con Pollo a las finas hierbas corte en julianas, acompañada de huevo cocido, tomates cherry y láminas de palta", imagen: "assets/imagenes/Desayunos/img88.jpg", formato: "list" },
-    { id: 31, nombre: "Migao de Chocolate", precio: "12.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img21.jpg", formato: "list" },
-    { id: 32, nombre: "Omelet de Carne", precio: "13.900", categoria: "Desayunos", descripcion: "Carne desmechada. Maíz tierno, queso mozarella y tocineta", imagen: "assets/imagenes/Desayunos/img113.jpg", formato: "list" },
-    { id: 33, nombre: "Omelet de Pollo", precio: "13.500", categoria: "Desayunos", descripcion: "Pollo salteado con finas hiervas.queso mozarella y champiñon", imagen: "assets/imagenes/Desayunos/img114.jpg", formato: "list" },
-    { id: 34, nombre: "Omelet Especial", precio: "13.900", categoria: "Desayunos", descripcion: "Maiz tierno, tocineta, champiñón queso mozarella. jamón, pollo", imagen: "assets/imagenes/Desayunos/img112.jpg", formato: "list" },
-    { id: 35, nombre: "Omelet Vegetariano", precio: "13.900", categoria: "Desayunos", descripcion: "Clara de huevo, aceite de Oliva espinaca, brocoli, champinon, , maiz tierno y queso", imagen: "assets/imagenes/Desayunos/img111.jpg", formato: "list" },
-    { id: 36, nombre: "Pancakes De la Casa", precio: "18.900", categoria: "Desayunos", descripcion: "Huevos en omelette, acompañados con unos tiernos pancakes americanos, miel de maple, frutilla y durazno laminado.", imagen: "assets/imagenes/Desayunos/img13.jpg", formato: "list" },
-    { id: 37, nombre: "Parafait Miel/Granola", precio: "13.900", categoria: "Desayunos", descripcion: "Frutal Cremoso y saludable. postre matutino en yogurth griego, acompañado de frutillas, melocotones bañados en miel natural y coulis de frutos rojos.", imagen: "assets/imagenes/Desayunos/img94.jpg", formato: "list" },
-    { id: 38, nombre: "Pollo en Hogaza y Bechamel", precio: "17.900", categoria: "Desayunos", descripcion: "Pan Ciabata - Crema de Aguacate Trozos de Pollo Tomate Cherry Huevo Cocido - Salsa Bechamel", imagen: "assets/imagenes/Desayunos/img56.jpg", formato: "list" },
-    { id: 39, nombre: "Porción de Frutas", precio: "8.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img96.jpg", formato: "list" },
-    { id: 40, nombre: "Ritual Matutino de Sibarita", precio: "19.500", categoria: "Desayunos", descripcion: "Caldo de costilla, tostadas con mantequilla, huevos revueltos al gusto de la abuela con la sinfonía de cebolla y tomate acompañado de un Chocolatico de molinillo con su espuma.", imagen: "assets/imagenes/Desayunos/img257.jpg", formato: "list" },
-    { id: 41, nombre: "Tesoros de Salmón", precio: "27.900", categoria: "Desayunos", descripcion: "Tostadas de guacamole con huevo cocido, abrazadas por el ahumado salmon del mar acompañadas de lechuga y tomates cherry.", imagen: "assets/imagenes/Desayunos/img72.jpg", formato: "list" },
-    { id: 42, nombre: "Wafles con Frutas", precio: "0", categoria: "Desayunos", descripcion: "(PRECIO NO ESPECIFICADO)", imagen: "assets/imagenes/Desayunos/img75.jpg", formato: "list" },
+    // Desayunos (Formato Card)
+    { id: 13, nombre: "Amor Perfecto", precio: "18.900", categoria: "Desayunos", descripcion: "Fresco pan de Semillas - Queso Crema. Huevos Revueltos - Aguacate Fresco Yogurt Griego - Granola - Fresas Mora - Kiwy", imagen: "assets/imagenes/Desayunos/img53.jpg", formato: "card" },
+    { id: 14, nombre: "Bisteck a Caballo", precio: "18.900", categoria: "Desayunos", descripcion: "Carne en Salsa Criolla con huevo, arroz y arepa", imagen: "assets/imagenes/Desayunos/img36.jpg", formato: "card" },
+    { id: 15, nombre: "Calentao Paisa", precio: "16.500", categoria: "Desayunos", descripcion: "Frijol, arroz, chorizo, plátano, huevo frito y arepa", imagen: "assets/imagenes/Desayunos/img15.jpg", formato: "card" },
+    { id: 16, nombre: "Cereal", precio: "8.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img97.jpg", formato: "card" },
+    { id: 17, nombre: "Changua Especial", precio: "10.900", categoria: "Desayunos", descripcion: "Con Almojabana y Queso", imagen: "assets/imagenes/Desayunos/img251.jpg", formato: "card" },
+    { id: 18, nombre: "Changua Sencilla", precio: "8.500", categoria: "Desayunos", descripcion: "", imagen: "(Vacio)", formato: "card" }, 
+    { id: 19, nombre: "Chocolate Toffe", precio: "14.500", categoria: "Desayunos", descripcion: "Pan de Bono. Queso Campesino Almojabana y Chocolate", imagen: "assets/imagenes/Desayunos/img258.jpg", formato: "card" },
+    { id: 20, nombre: "Croque Madame en Grano Noble", precio: "17.900", categoria: "Desayunos", descripcion: "Pan multigranos con aguacate laminado, acompañados de exquisito croque madame, bañado en salsa holandesa y bacon ahumado", imagen: "assets/imagenes/Desayunos/img74.jpg", formato: "card" },
+    { id: 21, nombre: "Cumbre Italiana", precio: "18.900", categoria: "Desayunos", descripcion: "Pan Focaccia - Crema de Aguacate Trozos de Pollo Tomate Cherry Huevo Cocido - Salsa Bechamel", imagen: "assets/imagenes/Desayunos/img54.jpg", formato: "card" },
+    { id: 22, nombre: "Desayuno Buenos Días", precio: "16.500", categoria: "Desayunos", descripcion: "Delicioso desayuno al estilo texano. Huevos rancheros en mozarella, acompañado de frutas frescas, rodajas de pan aliñado y jugo de naranja natural", imagen: "assets/imagenes/Desayunos/img255.jpg", formato: "card" },
+    { id: 23, nombre: "Extasis en Crocancia de Pan", precio: "18.900", categoria: "Desayunos", descripcion: "Tajada de pan de Centeno esparcidas en cheese cream, con el frescar de la lechuga, la dulzura de los tomates cherry, la intesnidad del pimiento y la elegancia de la cebolla asada, acompañadas de champiñones, huevos pochados y crocancia de bacon.", imagen: "assets/imagenes/Desayunos/img71.jpg", formato: "card" },
+    { id: 24, nombre: "Fruti Granola", precio: "13.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img95.jpg", formato: "card" },
+    { id: 25, nombre: "Huerto de Atun", precio: "15.900", categoria: "Desayunos", descripcion: "Ensalada de lechuga con lomitos de Atún. acompañada de huevo cocido, tomates cherry. aguacate y queso", imagen: "assets/imagenes/Desayunos/img89.jpg", formato: "card" },
+    { id: 26, nombre: "Huevos al Nido", precio: "14.900", categoria: "Desayunos", descripcion: "Huevos Fritos, tocineta y Papa Francesa", imagen: "assets/imagenes/Desayunos/img35.jpg", formato: "card" },
+    { id: 27, nombre: "Huevos Escalfados", precio: "11.900", categoria: "Desayunos", descripcion: "Acompañados de Jamón, queso y arepa con Mantequilla y Mermelada", imagen: "assets/imagenes/Desayunos/img33.jpg", formato: "card" },
+    { id: 28, nombre: "Huevos Jalapeños", precio: "13.500", categoria: "Desayunos", descripcion: "Huevos batidos en mantequilla clarificada, queso mozarella. champiñon ahumado, bacón y jamón ahumado, con unos deliciosos chiles jalapeños", imagen: "assets/imagenes/Desayunos/img17.jpg", formato: "card" },
+    { id: 29, nombre: "Huevos Rancheros Especiales", precio: "13.500", categoria: "Desayunos", descripcion: "Huevos sumergidos en salsa ranchera con salchicha ranchera con arepa asada", imagen: "assets/imagenes/Desayunos/img39.jpg", formato: "card" },
+    { id: 30, nombre: "Jardin de Sabores", precio: "16.900", categoria: "Desayunos", descripcion: "Ensalada de lechuga con Pollo a las finas hierbas corte en julianas, acompañada de huevo cocido, tomates cherry y láminas de palta", imagen: "assets/imagenes/Desayunos/img88.jpg", formato: "card" },
+    { id: 31, nombre: "Migao de Chocolate", precio: "12.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img21.jpg", formato: "card" },
+    { id: 32, nombre: "Omelet de Carne", precio: "13.900", categoria: "Desayunos", descripcion: "Carne desmechada. Maíz tierno, queso mozarella y tocineta", imagen: "assets/imagenes/Desayunos/img113.jpg", formato: "card" },
+    { id: 33, nombre: "Omelet de Pollo", precio: "13.500", categoria: "Desayunos", descripcion: "Pollo salteado con finas hiervas.queso mozarella y champiñon", imagen: "assets/imagenes/Desayunos/img114.jpg", formato: "card" },
+    { id: 34, nombre: "Omelet Especial", precio: "13.900", categoria: "Desayunos", descripcion: "Maiz tierno, tocineta, champiñón queso mozarella. jamón, pollo", imagen: "assets/imagenes/Desayunos/img112.jpg", formato: "card" },
+    { id: 35, nombre: "Omelet Vegetariano", precio: "13.900", categoria: "Desayunos", descripcion: "Clara de huevo, aceite de Oliva espinaca, brocoli, champinon, , maiz tierno y queso", imagen: "assets/imagenes/Desayunos/img111.jpg", formato: "card" },
+    { id: 36, nombre: "Pancakes De la Casa", precio: "18.900", categoria: "Desayunos", descripcion: "Huevos en omelette, acompañados con unos tiernos pancakes americanos, miel de maple, frutilla y durazno laminado.", imagen: "assets/imagenes/Desayunos/img13.jpg", formato: "card" },
+    { id: 37, nombre: "Parafait Miel/Granola", precio: "13.900", categoria: "Desayunos", descripcion: "Frutal Cremoso y saludable. postre matutino en yogurth griego, acompañado de frutillas, melocotones bañados en miel natural y coulis de frutos rojos.", imagen: "assets/imagenes/Desayunos/img94.jpg", formato: "card" },
+    { id: 38, nombre: "Pollo en Hogaza y Bechamel", precio: "17.900", categoria: "Desayunos", descripcion: "Pan Ciabata - Crema de Aguacate Trozos de Pollo Tomate Cherry Huevo Cocido - Salsa Bechamel", imagen: "assets/imagenes/Desayunos/img56.jpg", formato: "card" },
+    { id: 39, nombre: "Porción de Frutas", precio: "8.900", categoria: "Desayunos", descripcion: "", imagen: "assets/imagenes/Desayunos/img96.jpg", formato: "card" },
+    { id: 40, nombre: "Ritual Matutino de Sibarita", precio: "19.500", categoria: "Desayunos", descripcion: "Caldo de costilla, tostadas con mantequilla, huevos revueltos al gusto de la abuela con la sinfonía de cebolla y tomate acompañado de un Chocolatico de molinillo con su espuma.", imagen: "assets/imagenes/Desayunos/img257.jpg", formato: "card" },
+    { id: 41, nombre: "Tesoros de Salmón", precio: "27.900", categoria: "Desayunos", descripcion: "Tostadas de guacamole con huevo cocido, abrazadas por el ahumado salmon del mar acompañadas de lechuga y tomates cherry.", imagen: "assets/imagenes/Desayunos/img72.jpg", formato: "card" },
+    { id: 42, nombre: "Wafles con Frutas", precio: "0", categoria: "Desayunos", descripcion: "(PRECIO NO ESPECIFICADO)", imagen: "assets/imagenes/Desayunos/img75.jpg", formato: "card" },
 
-    // Entradas (Formato List)
-    { id: 43, nombre: "Coctel de Camarones", precio: "18.900", categoria: "Entradas", descripcion: "Canasta Crocante de Platano con Camarones", imagen: "assets/imagenes/Entradas/img40.jpg", formato: "list" },
-    { id: 44, nombre: "Patacón con Hogao", precio: "15.000", categoria: "Entradas", descripcion: "Crocante Patacón con hogao y carne desmechada", imagen: "assets/imagenes/Entradas/img43.jpg", formato: "list" },
-    { id: 45, nombre: "Salchipapa Americana", precio: "15.900", categoria: "Entradas", descripcion: "", imagen: "assets/imagenes/Entradas/img49.jpg", formato: "list" },
+    // Entradas (Formato Card)
+    { id: 43, nombre: "Coctel de Camarones", precio: "18.900", categoria: "Entradas", descripcion: "Canasta Crocante de Platano con Camarones", imagen: "assets/imagenes/Entradas/img40.jpg", formato: "card" },
+    { id: 44, nombre: "Patacón con Hogao", precio: "15.000", categoria: "Entradas", descripcion: "Crocante Patacón con hogao y carne desmechada", imagen: "assets/imagenes/Entradas/img43.jpg", formato: "card" },
+    { id: 45, nombre: "Salchipapa Americana", precio: "15.900", categoria: "Entradas", descripcion: "", imagen: "assets/imagenes/Entradas/img49.jpg", formato: "card" },
 
     // Especiales Gourmet (Formato Card)
     { id: 46, nombre: "Cerdo Tipacay", precio: "24.900", categoria: "Especiales Gourmet", descripcion: "Cerdo con vegetales al wok ACOMPAÑADO DE papa a la Francesa", imagen: "assets/imagenes/Especiales Gourmet/img53.jpg", formato: "card" },
@@ -106,11 +105,11 @@ const data = [
     { id: 83, nombre: "Sandwich de Pollo", precio: "8.500", categoria: "Horneados", descripcion: "", imagen: "(Vacio)", formato: "list" },
     { id: 84, nombre: "Trufas de Chocolate", precio: "2.500", categoria: "Horneados", descripcion: "", imagen: "(Vacio)", formato: "list" },
 
-    // Pastas De La Casa (Formato List)
-    { id: 85, nombre: "Pasta a la Marinera", precio: "31.900", categoria: "Pastas De La Casa", descripcion: "ACOMPAÑADO de Pan de Ajo", imagen: "assets/imagenes/Pastas De La Casa/img120.jpg", formato: "list" },
-    { id: 86, nombre: "Pasta Alfredo", precio: "20.900", categoria: "Pastas De La Casa", descripcion: "Con jamón y Maiz Tierno ACOMPAÑADO de Pan de Ajo", imagen: "assets/imagenes/Pastas De La Casa/img131.jpg", formato: "list" },
-    { id: 87, nombre: "Pasta Carbonara", precio: "22.900", categoria: "Pastas De La Casa", descripcion: "Con tocineta y champiñones ACOMPAÑADO de Pan de Ajo", imagen: "assets/imagenes/Pastas De La Casa/img133.jpg", formato: "list" },
-    { id: 88, nombre: "Pasta de la Casa", precio: "35.900", categoria: "Pastas De La Casa", descripcion: "Con cubos de Salmón y Langostinos", imagen: "assets/imagenes/Pastas De La Casa/img123.jpg", formato: "list" },
+    // Pastas De La Casa (Formato Card)
+    { id: 85, nombre: "Pasta a la Marinera", precio: "31.900", categoria: "Pastas De La Casa", descripcion: "ACOMPAÑADO de Pan de Ajo", imagen: "assets/imagenes/Pastas De La Casa/img120.jpg", formato: "card" },
+    { id: 86, nombre: "Pasta Alfredo", precio: "20.900", categoria: "Pastas De La Casa", descripcion: "Con jamón y Maiz Tierno ACOMPAÑADO de Pan de Ajo", imagen: "assets/imagenes/Pastas De La Casa/img131.jpg", formato: "card" },
+    { id: 87, nombre: "Pasta Carbonara", precio: "22.900", categoria: "Pastas De La Casa", descripcion: "Con tocineta y champiñones ACOMPAÑADO de Pan de Ajo", imagen: "assets/imagenes/Pastas De La Casa/img133.jpg", formato: "card" },
+    { id: 88, nombre: "Pasta de la Casa", precio: "35.900", categoria: "Pastas De La Casa", descripcion: "Con cubos de Salmón y Langostinos", imagen: "assets/imagenes/Pastas De La Casa/img123.jpg", formato: "card" },
 
     // Toffe Grille (Formato Card)
     { id: 89, nombre: "Bife de Chorizo", precio: "46.900", categoria: "Toffe Grille", descripcion: "Acompañado de papa francesa. ensalada de la casa y chimichurri", imagen: "assets/imagenes/Toffe Grille/img79.jpg", formato: "card" },
@@ -144,7 +143,7 @@ const categoriasUnicas = [...new Set(data.map(item => item.categoria))];
 // ===============================================
 
 function parsePrecio(precioString) {
-    // Maneja casos donde el precio puede ser "0" o un string vacío (como en algunos de tus Wafles)
+    // Maneja casos donde el precio puede ser "0" o un string vacío
     if (!precioString || precioString.trim() === '0') return 0;
     return parseInt(precioString.replace(/\./g, ''));
 }
@@ -155,6 +154,7 @@ function formatPrecio(numero) {
 }
 
 function isValidImage(imagePath) {
+    // Verifica si la ruta no está vacía, nula, o marcada como "(Vacio)"
     return imagePath && imagePath.trim() !== '' && imagePath.trim().toLowerCase() !== '(vacio)';
 }
 
@@ -167,12 +167,11 @@ function renderItemCard(item) {
     const precioNumerico = parsePrecio(item.precio);
     const precioDisplay = precioNumerico > 0 ? `$${item.precio}` : 'Precio no especificado';
     
-    // Verificación y manejo de imagen para formato CARD
     const hasImage = isValidImage(item.imagen);
     
     const imageHtml = hasImage ? 
         `<img class="item-imagen" src="${item.imagen}" alt="${item.nombre}">` :
-        `<div class="item-imagen no-image-placeholder"><h3>${item.nombre}</h3><p>Sin imagen disponible</p></div>`; // Placeholder sin imagen
+        `<div class="item-imagen no-image-placeholder"><h3>${item.nombre}</h3><p>Sin imagen disponible</p></div>`;
 
     return `
         <div class="menu-item" data-id="${item.id}" data-categoria="${item.categoria}" data-precio="${precioNumerico}">
@@ -192,12 +191,13 @@ function renderItemList(item) {
     const precioNumerico = parsePrecio(item.precio);
     const precioDisplay = precioNumerico > 0 ? `$${item.precio}` : 'Precio no especificado';
     
-    // NOTA: Para formato LISTA, se omite la imagen si no es válida para no distorsionar el layout
     const hasImage = isValidImage(item.imagen);
     const hasDescription = item.descripcion && item.descripcion.trim() !== '';
+    
+    const itemClass = hasImage ? 'menu-item-list with-image' : 'menu-item-list no-image';
 
     return `
-        <div class="menu-item-list ${hasImage ? 'with-image' : 'no-image'}" data-id="${item.id}" data-categoria="${item.categoria}" data-precio="${precioNumerico}">
+        <div class="${itemClass}" data-id="${item.id}" data-categoria="${item.categoria}" data-precio="${precioNumerico}">
             ${hasImage ? `<img class="item-thumb" src="${item.imagen}" alt="${item.nombre}">` : ''} 
             <div class="item-info-list">
                 <h3>${item.nombre}</h3>
@@ -212,23 +212,28 @@ function renderItemList(item) {
     `;
 }
 
-function renderMenu(filtroCategoria = 'Todos') {
+// Renderiza todas las categorías en el orden de los datos
+function renderMenu() {
     menuContainer.innerHTML = '';
     const itemsAgrupados = {};
 
+    // 1. Agrupar todos los elementos por categoría
     data.forEach(item => {
-        if (filtroCategoria === 'Todos' || item.categoria === filtroCategoria) {
-            if (!itemsAgrupados[item.categoria]) {
-                itemsAgrupados[item.categoria] = [];
-            }
-            itemsAgrupados[item.categoria].push(item);
+        if (!itemsAgrupados[item.categoria]) {
+            itemsAgrupados[item.categoria] = [];
         }
+        itemsAgrupados[item.categoria].push(item);
     });
 
+    // 2. Renderizar todas las categorías
     for (const categoria in itemsAgrupados) {
-        let htmlCategoria = `<h2 id="categoria-${categoria.replace(/\s/g, '-')}" class="subcategoria-title">${categoria}</h2>`;
+        // Genera el ID para que los botones puedan hacer scroll a él
+        const categoriaId = `categoria-${categoria.replace(/\s/g, '-')}`; 
         
-        // Determina el formato basándose en el primer elemento de la categoría
+        // El h2 tiene un padding/margin especial en CSS para que el scroll funcione debajo de la barra sticky
+        let htmlCategoria = `<h2 id="${categoriaId}" class="subcategoria-title">${categoria}</h2>`;
+        
+        // Determina el formato
         const formato = itemsAgrupados[categoria][0].formato;
         let itemsHtml = '';
         
@@ -348,7 +353,7 @@ function calcularTotal() {
 
 
 // ===============================================
-// 6. LÓGICA DE WHATSAPP
+// 6. LÓGICA DE WHATSAPP (NÚMERO ACTUALIZADO)
 // ===============================================
 
 function generarMensajeWhatsApp() {
@@ -357,8 +362,8 @@ function generarMensajeWhatsApp() {
         return;
     }
 
-    // ⚠️ CRÍTICO: REEMPLAZA ESTE NÚMERO
-    const whatsappNumber = '573101234567'; // Coloca tu número real aquí
+    // ⚠️ NÚMERO DE WHATSAPP ACTUALIZADO A 3246812450
+    const whatsappNumber = '3246812450'; 
 
     const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('telefono').value;
@@ -400,15 +405,17 @@ _Agradecemos tu pedido. ¡Lo preparamos de inmediato!_
 
 
 // ===============================================
-// 7. LISTENERS Y EJECUCIÓN INICIAL
+// 7. LISTENERS Y EJECUCIÓN INICIAL (LÓGICA DE SCROLL)
 // ===============================================
 
 function attachEventListeners() {
+    // Escucha eventos del menú (añadir al carrito)
     document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
         btn.removeEventListener('click', handleAddToCart); 
         btn.addEventListener('click', handleAddToCart);
     });
 
+    // Escucha eventos de los filtros (scroll de navegación)
     document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.removeEventListener('click', handleFilterClick);
         btn.addEventListener('click', handleFilterClick);
@@ -430,18 +437,39 @@ function handleAddToCart(e) {
     addToCart(id, nota);
 }
 
+// Función de navegación con Scroll
 function handleFilterClick(e) {
+    // 1. Manejo de la clase activa en los botones
     document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     e.target.classList.add('active');
-    renderMenu(e.target.dataset.categoria);
+
+    // 2. Lógica de Scroll
+    const categoria = e.target.dataset.categoria;
+    
+    // Si la categoría es 'Todos', simplemente vuelve al inicio del menú.
+    if (categoria === 'Todos') {
+        // Scroll a la parte superior del contenedor principal del menú
+        document.getElementById('app-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        // Scroll a la categoría específica (el elemento h2 con su ID)
+        const targetId = `categoria-${categoria.replace(/\s/g, '-')}`;
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+            // Utilizamos scrollIntoView con un desplazamiento hacia el inicio.
+            // El CSS (padding/margin) se encarga de que el título quede visible bajo la barra sticky.
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+        }
+    }
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
     renderFiltros();
-    renderMenu('Todos');
+    // Llamar a renderMenu sin filtro para mostrar todo el contenido
+    renderMenu();
     renderCarrito(); 
 
     finalizarPedidoBtn.addEventListener('click', generarMensajeWhatsApp);
