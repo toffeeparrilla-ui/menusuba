@@ -133,6 +133,22 @@ const carritoItemsScroll = document.getElementById('carrito-items-scroll');
 const carritoVacioMsg = document.getElementById('carrito-vacio-msg');
 const finalizarPedidoBtn = document.getElementById('finalizar-pedido-btn');
 
+// NUEVAS CONSTANTES:
+const datosEnvio = document.getElementById('datos-envio'); // Contenedor de inputs
+const verPedidoMovilBtn = document.getElementById('ver-pedido-movil');
+const cantidadMovilSpan = document.getElementById('cantidad-movil');
+
+
+const subtotalSpan = document.getElementById('subtotal');
+const costoEnvioSpan = document.getElementById('costo-envio');
+const totalFinalSpan = document.getElementById('total-final');
+
+const nombreInput = document.getElementById('nombre');
+const telefonoInput = document.getElementById('telefono');
+const direccionInput = document.getElementById('direccion');
+const pagoSelect = document.getElementById('pago-select');
+
+
 const costoEnvio = 5000; // Costo de envío en COP
 
 let carrito = [];
@@ -143,7 +159,6 @@ const categoriasUnicas = [...new Set(data.map(item => item.categoria))];
 // ===============================================
 
 function parsePrecio(precioString) {
-    // Maneja casos donde el precio puede ser "0" o un string vacío
     if (!precioString || precioString.trim() === '0') return 0;
     return parseInt(precioString.replace(/\./g, ''));
 }
@@ -154,10 +169,8 @@ function formatPrecio(numero) {
 }
 
 function isValidImage(imagePath) {
-    // Verifica si la ruta no está vacía, nula, o marcada como "(Vacio)"
     return imagePath && imagePath.trim() !== '' && imagePath.trim().toLowerCase() !== '(vacio)';
 }
-
 
 // ===============================================
 // 4. LÓGICA DE RENDERIZADO DEL MENÚ
@@ -212,12 +225,10 @@ function renderItemList(item) {
     `;
 }
 
-// Renderiza todas las categorías en el orden de los datos
 function renderMenu() {
     menuContainer.innerHTML = '';
     const itemsAgrupados = {};
 
-    // 1. Agrupar todos los elementos por categoría
     data.forEach(item => {
         if (!itemsAgrupados[item.categoria]) {
             itemsAgrupados[item.categoria] = [];
@@ -225,252 +236,304 @@ function renderMenu() {
         itemsAgrupados[item.categoria].push(item);
     });
 
-    // 2. Renderizar todas las categorías
     for (const categoria in itemsAgrupados) {
-        // Genera el ID para que los botones puedan hacer scroll a él
-        const categoriaId = `categoria-${categoria.replace(/\s/g, '-')}`; 
+        const categoriaId = categoria.replace(/\s/g, '-').toLowerCase();
         
-        // El h2 tiene un padding/margin especial en CSS para que el scroll funcione debajo de la barra sticky
-        let htmlCategoria = `<h2 id="${categoriaId}" class="subcategoria-title">${categoria}</h2>`;
-        
-        // Determina el formato
-        const formato = itemsAgrupados[categoria][0].formato;
-        let itemsHtml = '';
-        
-        if (formato === 'card') {
-            itemsHtml += '<div class="items-grid">';
-            itemsAgrupados[categoria].forEach(item => {
-                itemsHtml += renderItemCard(item);
-            });
-            itemsHtml += '</div>';
-        } else if (formato === 'list') {
-            itemsHtml += '<div class="items-list">';
-            itemsAgrupados[categoria].forEach(item => {
-                itemsHtml += renderItemList(item);
-            });
-            itemsHtml += '</div>';
-        }
+        // Contenedor de la categoría con ID para scroll
+        const categoriaSection = document.createElement('section');
+        categoriaSection.id = categoriaId;
 
-        menuContainer.innerHTML += htmlCategoria + itemsHtml;
+        // Título de la categoría
+        const titulo = document.createElement('h2');
+        titulo.textContent = categoria;
+        categoriaSection.appendChild(titulo);
+        
+        // Contenedor para los ítems de la cuadrícula o lista
+        const itemsContainer = document.createElement('div');
+        itemsContainer.className = itemsAgrupados[categoria][0].formato === 'card' ? 'items-grid' : 'items-list';
+        
+        itemsAgrupados[categoria].forEach(item => {
+            const itemHtml = item.formato === 'card' ? renderItemCard(item) : renderItemList(item);
+            itemsContainer.innerHTML += itemHtml;
+        });
+
+        categoriaSection.appendChild(itemsContainer);
+        menuContainer.appendChild(categoriaSection);
     }
-
-    attachEventListeners();
+    
+    renderFiltros();
 }
+
+// ===============================================
+// 5. LÓGICA DE FILTROS Y NAVEGACIÓN
+// ===============================================
 
 function renderFiltros() {
     botonesFiltro.innerHTML = '';
-
-    let allBtn = document.createElement('button');
+    
+    // Botón "Ver Todo"
+    const allBtn = document.createElement('button');
     allBtn.className = 'filtro-btn active';
-    allBtn.textContent = 'Todos';
-    allBtn.dataset.categoria = 'Todos';
+    allBtn.textContent = 'Ver Todo';
+    allBtn.addEventListener('click', () => filtrarMenu('all', allBtn));
     botonesFiltro.appendChild(allBtn);
 
+    // Botones de Categoría
     categoriasUnicas.forEach(categoria => {
-        let btn = document.createElement('button');
+        const btn = document.createElement('button');
         btn.className = 'filtro-btn';
         btn.textContent = categoria;
-        btn.dataset.categoria = categoria;
+        btn.addEventListener('click', () => filtrarMenu(categoria, btn));
         botonesFiltro.appendChild(btn);
     });
 }
 
-// ===============================================
-// 5. LÓGICA DEL CARRITO
-// ===============================================
+function filtrarMenu(categoria, clickedBtn) {
+    // 1. Quitar 'active' de todos los botones y ponerlo en el clickeado
+    document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
+    clickedBtn.classList.add('active');
 
-function addToCart(id, nota = '') {
-    const item = data.find(p => p.id === id);
-    if (item && parsePrecio(item.precio) > 0) { // Solo añadir si el precio es > 0
-        const cartItemId = `${item.id}-${Date.now()}`; 
-        
-        carrito.push({
-            cartId: cartItemId,
-            id: item.id,
-            nombre: item.nombre,
-            precio: parsePrecio(item.precio),
-            nota: nota
+    if (categoria === 'all') {
+        // Mostrar todas las secciones
+        document.querySelectorAll('#menu-container section').forEach(section => {
+            section.style.display = 'block';
         });
-        renderCarrito();
     } else {
-        alert("Este producto no puede ser añadido al carrito porque no tiene un precio válido.");
+        // Ocultar todas las secciones
+        document.querySelectorAll('#menu-container section').forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Mostrar solo la sección correspondiente y hacer scroll
+        const targetId = categoria.replace(/\s/g, '-').toLowerCase();
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            // Scroll suave con offset para evitar que la barra flotante tape el título
+            const offset = 70; // Altura aproximada de la barra flotante
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = targetSection.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
     }
 }
 
 
-function removeFromCart(cartId) {
-    carrito = carrito.filter(item => item.cartId !== cartId);
-    renderCarrito();
+// ===============================================
+// 6. LÓGICA DEL CARRITO
+// ===============================================
+
+function findMenuItem(id) {
+    return data.find(item => item.id === parseInt(id));
 }
 
-function renderCarrito() {
+function addToCart(id, nota) {
+    const itemData = findMenuItem(id);
+    if (!itemData || parsePrecio(itemData.precio) === 0) return;
+
+    // Buscar si el item (con la misma nota) ya está en el carrito
+    const existingItem = carrito.find(item => item.id === itemData.id && item.nota === nota);
+
+    if (existingItem) {
+        existingItem.cantidad++;
+    } else {
+        carrito.push({
+            id: itemData.id,
+            nombre: itemData.nombre,
+            precio: parsePrecio(itemData.precio),
+            cantidad: 1,
+            nota: nota 
+        });
+    }
+    updateCarritoDOM();
+}
+
+function removeFromCart(index) {
+    carrito.splice(index, 1);
+    updateCarritoDOM();
+}
+
+function updateBotonMovil() {
+    const totalCantidad = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+
+    cantidadMovilSpan.textContent = totalCantidad;
+
+    // Solo mostrar si hay ítems y estamos en móvil/tablet (ancho menor a 992px)
+    if (totalCantidad > 0 && window.innerWidth < 992) {
+        verPedidoMovilBtn.style.display = 'flex'; 
+    } else {
+        verPedidoMovilBtn.style.display = 'none';
+    }
+}
+
+
+function updateCarritoDOM() {
     carritoItemsScroll.innerHTML = '';
-    
+    let subtotal = 0;
+
     if (carrito.length === 0) {
         carritoVacioMsg.style.display = 'block';
         finalizarPedidoBtn.disabled = true;
     } else {
         carritoVacioMsg.style.display = 'none';
         finalizarPedidoBtn.disabled = false;
-        
-        carrito.forEach(item => {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'pedido-item-row';
-            itemElement.innerHTML = `
-                <span>${item.nombre}</span>
-                <span>
-                    $${formatPrecio(item.precio)}
-                    <button class="remove-btn" data-cart-id="${item.cartId}">x</button>
+
+        carrito.forEach((item, index) => {
+            const itemTotal = item.precio * item.cantidad;
+            subtotal += itemTotal;
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'pedido-item-row';
+            itemDiv.innerHTML = `
+                <span>${item.cantidad} x ${item.nombre}</span>
+                <span class="pedido-total">$${formatPrecio(itemTotal)}
+                    <button class="remove-btn" data-index="${index}">x</button>
                 </span>
             `;
+            
+            // Si tiene nota, añadirla
             if (item.nota) {
-                const notaElement = document.createElement('p');
-                notaElement.className = 'item-nota-carrito';
-                notaElement.textContent = `Nota: ${item.nota}`;
-                itemElement.appendChild(notaElement);
+                const notaP = document.createElement('p');
+                notaP.style.fontSize = '0.8em';
+                notaP.style.color = '#7e7e7e';
+                notaP.style.margin = '0';
+                notaP.textContent = `(${item.nota})`;
+                itemDiv.appendChild(notaP);
             }
-            carritoItemsScroll.appendChild(itemElement);
+            
+            carritoItemsScroll.appendChild(itemDiv);
         });
         
+        // Añadir listener de eliminar
         document.querySelectorAll('.remove-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                removeFromCart(e.target.dataset.cartId);
+                removeFromCart(e.target.dataset.index);
             });
         });
     }
-
-    calcularTotal();
-}
-
-function calcularTotal() {
-    const subtotal = carrito.reduce((sum, item) => sum + item.precio, 0);
-    const totalFinal = subtotal + (carrito.length > 0 ? costoEnvio : 0);
-
-    document.getElementById('subtotal').textContent = formatPrecio(subtotal);
-    document.getElementById('costo-envio').textContent = carrito.length > 0 ? formatPrecio(costoEnvio) : '0';
-    document.getElementById('total-final').textContent = formatPrecio(totalFinal);
-}
-
-
-// ===============================================
-// 6. LÓGICA DE WHATSAPP (NÚMERO ACTUALIZADO)
-// ===============================================
-
-function generarMensajeWhatsApp() {
-    if (carrito.length === 0) {
-        alert("Tu carrito está vacío.");
-        return;
-    }
-
-    // ⚠️ NÚMERO DE WHATSAPP ACTUALIZADO A 3246812450
-    const whatsappNumber = '3246812450'; 
-
-    const nombre = document.getElementById('nombre').value;
-    const telefono = document.getElementById('telefono').value;
-    const direccion = document.getElementById('direccion').value;
-    const pago = document.getElementById('pago-select').value;
-    const totalFinal = document.getElementById('total-final').textContent;
-
-    if (!nombre || !telefono || !direccion) {
-        alert("Por favor, completa tu Nombre, Teléfono y Dirección para finalizar el pedido.");
-        return;
-    }
-
-    let itemsMessage = "--- Detalles del Pedido ---\n";
-    carrito.forEach(item => {
-        let notaStr = item.nota ? ` (Nota: ${item.nota})` : '';
-        itemsMessage += `• ${item.nombre} - $${formatPrecio(item.precio)}${notaStr}\n`;
-    });
-
-    const mensaje = `
-*🎉 ¡Nuevo Pedido de Toffe Restaurante!*
-
-*👤 Cliente:* ${nombre}
-*📞 Teléfono:* ${telefono}
-*🏠 Dirección:* ${direccion}
-*💳 Pago:* ${pago.charAt(0).toUpperCase() + pago.slice(1)}
-
-${itemsMessage}
-
-*💰 Subtotal:* $${document.getElementById('subtotal').textContent}
-*🛵 Envío:* $${document.getElementById('costo-envio').textContent}
-*✨ TOTAL A PAGAR:* $${totalFinal}
-
-_Agradecemos tu pedido. ¡Lo preparamos de inmediato!_
-    `.trim();
-
-    const url = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(mensaje)}`;
-    window.open(url, '_blank');
-}
-
-
-// ===============================================
-// 7. LISTENERS Y EJECUCIÓN INICIAL (LÓGICA DE SCROLL)
-// ===============================================
-
-function attachEventListeners() {
-    // Escucha eventos del menú (añadir al carrito)
-    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-        btn.removeEventListener('click', handleAddToCart); 
-        btn.addEventListener('click', handleAddToCart);
-    });
-
-    // Escucha eventos de los filtros (scroll de navegación)
-    document.querySelectorAll('.filtro-btn').forEach(btn => {
-        btn.removeEventListener('click', handleFilterClick);
-        btn.addEventListener('click', handleFilterClick);
-    });
-}
-
-function handleAddToCart(e) {
-    const id = parseInt(e.target.dataset.id);
-    let itemElement;
-    if (e.target.closest('.menu-item')) { 
-        itemElement = e.target.closest('.menu-item');
-    } else if (e.target.closest('.menu-item-list')) { 
-        itemElement = e.target.closest('.menu-item-list');
-    }
-
-    const notaInput = itemElement ? itemElement.querySelector('.nota-input') : null;
-    const nota = notaInput ? notaInput.value.trim() : '';
-
-    addToCart(id, nota);
-}
-
-// Función de navegación con Scroll
-function handleFilterClick(e) {
-    // 1. Manejo de la clase activa en los botones
-    document.querySelectorAll('.filtro-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    e.target.classList.add('active');
-
-    // 2. Lógica de Scroll
-    const categoria = e.target.dataset.categoria;
     
-    // Si la categoría es 'Todos', simplemente vuelve al inicio del menú.
-    if (categoria === 'Todos') {
-        // Scroll a la parte superior del contenedor principal del menú
-        document.getElementById('app-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-        // Scroll a la categoría específica (el elemento h2 con su ID)
-        const targetId = `categoria-${categoria.replace(/\s/g, '-')}`;
-        const targetElement = document.getElementById(targetId);
+    // Calcular totales
+    const totalFinal = subtotal + costoEnvio;
 
-        if (targetElement) {
-            // Utilizamos scrollIntoView con un desplazamiento hacia el inicio.
-            // El CSS (padding/margin) se encarga de que el título quede visible bajo la barra sticky.
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+    subtotalSpan.textContent = formatPrecio(subtotal);
+    costoEnvioSpan.textContent = formatPrecio(costoEnvio);
+    totalFinalSpan.textContent = formatPrecio(totalFinal);
+    
+    // Actualizar el botón móvil
+    updateBotonMovil(); 
+}
+
+// Función para limpiar el formulario y el carrito (NUEVA)
+function limpiarFormularioYCarrito() {
+    // 1. Limpiar inputs de datos de envío
+    const inputs = datosEnvio.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        if (input.type === 'select-one') {
+            input.selectedIndex = 0; // O la opción por defecto
+        } else {
+            input.value = '';
+        }
+    });
+
+    // 2. Limpiar el estado del carrito
+    carrito = [];
+    
+    // 3. Actualizar la interfaz
+    updateCarritoDOM();
+}
+
+// ===============================================
+// 7. LISTENERS
+// ===============================================
+
+// Listener para añadir al carrito (en el menú principal)
+menuContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('add-to-cart-btn')) {
+        const itemId = e.target.dataset.id;
+        
+        // Encontrar el contenedor del ítem para obtener la nota
+        const itemContainer = e.target.closest('.menu-item') || e.target.closest('.menu-item-list');
+        const notaInput = itemContainer.querySelector('.nota-input');
+        const nota = notaInput ? notaInput.value.trim() : '';
+
+        addToCart(itemId, nota);
+        
+        // Opcional: Limpiar el campo de nota después de añadir
+        if (notaInput) {
+            notaInput.value = '';
         }
     }
-}
+});
 
 
+// Listener para finalizar el pedido
+finalizarPedidoBtn.addEventListener('click', () => {
+    if (carrito.length === 0 || !nombreInput.value || !telefonoInput.value || !direccionInput.value) {
+        alert("Por favor, completa tus datos de contacto y agrega al menos un producto al carrito.");
+        return;
+    }
+    
+    const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    const totalFinal = subtotal + costoEnvio;
+
+    let mensaje = `*¡NUEVO PEDIDO TOFFE RESTAURANTE!*%0A%0A`;
+    mensaje += `*Datos del Cliente:*%0A`;
+    mensaje += `*Nombre:* ${nombreInput.value}%0A`;
+    mensaje += `*Teléfono:* ${telefonoInput.value}%0A`;
+    mensaje += `*Dirección:* ${direccionInput.value}%0A`;
+    mensaje += `*Pago:* ${pagoSelect.value.toUpperCase()}%0A%0A`;
+    
+    mensaje += `*Detalle del Pedido:*%0A`;
+    carrito.forEach(item => {
+        const notaStr = item.nota ? ` (Nota: ${item.nota})` : '';
+        mensaje += `${item.cantidad} x ${item.nombre} - $${formatPrecio(item.precio * item.cantidad)}${notaStr}%0A`;
+    });
+
+    mensaje += `%0A*Resumen de Costos:*%0A`;
+    mensaje += `Subtotal: $${formatPrecio(subtotal)}%0A`;
+    mensaje += `Costo de Envío: $${formatPrecio(costoEnvio)}%0A`;
+    mensaje += `*TOTAL FINAL: $${formatPrecio(totalFinal)}*%0A%0A`;
+    mensaje += `¡Gracias por tu pedido!`;
+
+    // Número de WhatsApp (ejemplo, reemplaza con el tuyo)
+    const numeroWhatsApp = '573100000000'; 
+    const whatsappURL = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+
+    // Abrir WhatsApp en una nueva pestaña
+    window.open(whatsappURL, '_blank');
+    
+    // Limpiar el formulario y el carrito después del intento de envío
+    // Damos una confirmación por si la ventana emergente fue bloqueada o no se envió realmente.
+    setTimeout(() => {
+        if (confirm('¿El pedido se envió correctamente por WhatsApp?')) {
+             limpiarFormularioYCarrito();
+        }
+    }, 500); // Pequeño retraso para que el usuario vea la ventana de WhatsApp
+});
+
+
+// Event Listener para el botón móvil (NUEVO)
+verPedidoMovilBtn.addEventListener('click', () => {
+    // Hacer scroll al carrito (#carrito)
+    const carritoElement = document.getElementById('carrito');
+    carritoElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// Añadir listener para actualizar el botón móvil al cambiar el tamaño de la ventana
+window.addEventListener('resize', updateBotonMovil);
+
+// ===============================================
+// 8. INICIO DE LA APLICACIÓN
+// ===============================================
 document.addEventListener('DOMContentLoaded', () => {
-    renderFiltros();
-    // Llamar a renderMenu sin filtro para mostrar todo el contenido
     renderMenu();
-    renderCarrito(); 
-
-    finalizarPedidoBtn.addEventListener('click', generarMensajeWhatsApp);
+    updateCarritoDOM();
+    updateBotonMovil();
 });

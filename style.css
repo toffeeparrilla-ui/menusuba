@@ -4,9 +4,9 @@
 
 :root {
     /* COLORES SOLICITADOS */
-    --primary-color: #156082; /* Azul Fuerte (Acentos, botones, precios) */
-    --secondary-color: #000000; /* Negro (Títulos, texto principal, DESCRIPCIONES) */
-    --text-color-dark: #969696; /* Gris Medio (Detalles, placeholder) */
+    --primary-color: #156082; 
+    --secondary-color: #000000; 
+    --text-color-dark: #969696; 
     
     /* COLORES COMPLEMENTARIOS */
     --background-color: #f4f4f4;
@@ -39,7 +39,6 @@ h2 {
     padding-bottom: 5px;
     border-bottom: 2px solid var(--primary-color);
     display: inline-block;
-    /* Necesario para que el scroll a las categorías no quede tapado por la barra sticky */
     padding-top: 60px; 
     margin-top: -60px; 
 }
@@ -70,10 +69,9 @@ h3.subcategoria-title {
 }
 
 #logo-empresa {
-    /* 1. Logo Rectangular */
+    /* Logo Rectangular */
     width: 150px; 
     height: auto; 
-    /* 2. Sin marco/borde */
     border-radius: 0; 
     object-fit: contain; 
     margin-right: 15px;
@@ -102,7 +100,6 @@ h3.subcategoria-title {
 
 #app-container {
     display: grid;
-    /* Define 2 columnas para el menú y el carrito */
     grid-template-columns: 3fr 1fr;
     gap: 30px;
     max-width: 1400px;
@@ -111,12 +108,10 @@ h3.subcategoria-title {
 }
 
 #menu-container {
-    /* Ocupa la primera columna (3fr) */
     grid-column: 1 / 2;
 }
 
 #carrito {
-    /* Ocupa la segunda columna (1fr) */
     grid-column: 2 / 3;
     position: sticky;
     top: 20px;
@@ -133,16 +128,13 @@ h3.subcategoria-title {
 /* ========================================= */
 
 #botones-filtro {
-    /* ARREGLO PARA QUE OCUPE TODA EL ANCHO Y PERMITA EL STICKY */
     grid-column: 1 / -1; 
-    
     width: 100%;
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     padding: 10px;
-    /* PROPIEDADES CLAVE PARA QUE SEA FLOTANTE (STICKY) */
     position: sticky;
     top: 0; 
     z-index: 100; 
@@ -175,7 +167,7 @@ h3.subcategoria-title {
 
 
 /* ========================================= */
-/* 4. MENÚ EN FORMATO DE TARJETA (GRID) */
+/* 4. MENÚ EN FORMATO DE TARJETA (GRID) - COMPACTADO */
 /* ========================================= */
 
 .items-grid {
@@ -200,7 +192,8 @@ h3.subcategoria-title {
 
 .item-imagen {
     width: 100%;
-    height: 200px;
+    /* ⚠️ CAMBIO: Altura reducida para compactar tarjetas */
+    height: 150px; 
     object-fit: contain; 
     display: block;
     background-color: #f8f8f8; 
@@ -218,8 +211,14 @@ h3.subcategoria-title {
 .item-nota {
     font-size: 0.9em;
     color: var(--secondary-color); 
-    margin-bottom: 10px;
-    min-height: 36px;
+    /* ⚠️ CAMBIO: Limitar descripción a 2 líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limita a 2 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 30px; /* Reducción de la altura mínima */
+    margin-bottom: 8px; /* Reducción de margin */
 }
 
 .item-info p {
@@ -231,8 +230,8 @@ h3.subcategoria-title {
 .nota-input {
     width: 100%;
     padding: 8px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 8px; /* Reducido */
+    margin-bottom: 8px; /* Reducido */
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 0.9em;
@@ -257,7 +256,8 @@ h3.subcategoria-title {
 /* PLACEHOLDER PARA CARD SIN IMAGEN */
 .menu-item .no-image-placeholder {
     width: 100%;
-    height: 200px;
+    /* ⚠️ CAMBIO: Altura reducida para compactar tarjetas */
+    height: 150px; 
     background-color: #f0f0f0; 
     display: flex;
     flex-direction: column;
@@ -268,15 +268,7 @@ h3.subcategoria-title {
     border-bottom: 1px solid #ddd;
 }
 
-.menu-item .no-image-placeholder h3 {
-    margin-bottom: 5px;
-    color: var(--secondary-color);
-}
-
-.menu-item .no-image-placeholder p {
-    font-size: 0.8em;
-    color: var(--text-color-dark);
-}
+/* ... (resto de estilos de tarjeta sin cambios) ... */
 
 
 /* ========================================= */
@@ -286,7 +278,6 @@ h3.subcategoria-title {
 .items-list {
     display: flex;
     flex-direction: column;
-    /* 3. Compactación */
     gap: 5px; 
     padding: 5px 0; 
     margin-bottom: 30px; 
@@ -317,14 +308,12 @@ h3.subcategoria-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* 3. Compactación */
     padding: 6px 12px; 
 }
 
 /* Ajuste para el contenido al lado de la imagen */
 .menu-item-list.with-image .item-info-list {
     flex-grow: 1;
-    /* 3. Compactación */
     padding: 10px 0; 
     padding-right: 10px; 
 }
@@ -336,14 +325,12 @@ h3.subcategoria-title {
 
 .item-info-list h3 {
     margin: 0;
-    /* 3. Compactación - fuente un poco más pequeña */
     font-size: 1em; 
     font-weight: 600;
     color: var(--secondary-color);
 }
 
 .item-info-list .item-nota {
-    /* 3. Compactación - fuente un poco más pequeña */
     font-size: 0.85em; 
     color: var(--secondary-color); 
     margin-top: 3px; 
@@ -355,7 +342,6 @@ h3.subcategoria-title {
     flex-direction: column; 
     justify-content: center;
     align-items: flex-end;
-    /* 3. Compactación */
     gap: 3px; 
     padding: 10px; 
     white-space: nowrap;
@@ -363,21 +349,18 @@ h3.subcategoria-title {
 
 .item-actions-list p {
     margin: 0;
-    /* 3. Compactación - fuente un poco más pequeña */
     font-size: 1em; 
     font-weight: 700;
     color: var(--primary-color); 
 }
 
 .item-actions-list .nota-input {
-    /* 3. Compactación - más estrecho y pequeño */
     width: 100px; 
     padding: 4px; 
     font-size: 0.75em; 
 }
 
 .item-actions-list button {
-    /* 3. Compactación - más pequeño */
     width: 35px; 
     height: 35px; 
     padding: 0;
@@ -389,6 +372,7 @@ h3.subcategoria-title {
 /* ========================================= */
 /* 6. CARRITO (ASIDE) ESTILOS */
 /* ========================================= */
+/* ... (Se mantienen iguales) ... */
 
 #datos-envio input, #datos-envio select {
     width: 100%;
@@ -481,7 +465,6 @@ h3.subcategoria-title {
 /* ========================================= */
 
 @media (max-width: 992px) {
-    /* Layout principal para tabletas y dispositivos grandes en vertical */
     #app-container {
         grid-template-columns: 1fr;
         padding: 10px;
@@ -505,43 +488,11 @@ h3.subcategoria-title {
 }
 
 @media (max-width: 600px) {
+    /* ... (ajustes de lista y tarjeta se vuelven más estrictos en móvil) ... */
     
-    /* ARREGLO DE IMÁGENES GRANDES EN LISTA */
-    .menu-item-list {
-        flex-wrap: nowrap; 
-    }
-
-    .menu-item-list .item-thumb {
-        width: 100px; 
-        height: 100px;
-        margin-right: 10px;
-        border-radius: 8px 0 0 8px; 
-    }
-
-    .menu-item-list.with-image .item-info-list {
-        padding: 10px 10px 10px 0; 
-    }
-
-    .item-actions-list {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: auto;
-        padding: 10px 15px;
-    }
-
-    .item-actions-list p {
-        font-size: 1em;
-    }
-    
-    /* Ocultamos el input de nota en el formato de lista para ahorrar espacio */
-    .item-actions-list .nota-input {
-        display: none; 
-    }
-
-    .item-actions-list button {
-        width: 35px;
-        height: 35px;
+    .item-imagen, .menu-item .no-image-placeholder {
+        /* Altura aún más pequeña en móvil */
+        height: 120px; 
     }
     
     /* Ajustes de Cabecera y Logo */
@@ -551,7 +502,6 @@ h3.subcategoria-title {
     }
     
     #logo-empresa {
-        /* Ajuste de ancho para móvil */
         margin-right: 0;
         margin-bottom: 10px;
         width: 120px; 
@@ -568,5 +518,41 @@ h3.subcategoria-title {
 
     h2 {
         font-size: 1.5em;
+    }
+}
+
+/* ========================================= */
+/* 8. BOTÓN MÓVIL "VER PEDIDO" */
+/* ========================================= */
+
+#ver-pedido-movil {
+    display: none; 
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%); 
+    z-index: 200; 
+    padding: 12px 20px;
+    background-color: var(--success-color); 
+    color: white;
+    border: none;
+    border-radius: 30px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    align-items: center; 
+    gap: 8px;
+}
+
+#ver-pedido-movil:hover {
+    background-color: #45a049;
+    transform: translateX(-50%) scale(1.05);
+}
+
+@media (min-width: 992px) {
+    #ver-pedido-movil {
+        display: none !important; 
     }
 }
