@@ -5,9 +5,8 @@
 // URL Directa (Raw) de tu archivo CSV en GitHub.
 const CSV_URL = 'https://raw.githubusercontent.com/toffeeparrilla-ui/menusuba/main/menu.csv'; 
 
-// **NÚMERO DE WHATSAPP ACTUALIZADO**
-// Usamos el código de país (57 para Colombia) + el número de 10 dígitos.
-const WHATSAPP_NUMBER = '573219959831'; 
+// **NÚMERO DE WHATSAPP FINAL Y ACTUALIZADO**
+const WHATSAPP_NUMBER = '573219959831'; // Código de país + Número de 10 dígitos.
 
 let allProducts = [];
 let cart = []; // Array para almacenar los productos en el carrito
@@ -33,18 +32,11 @@ const SHIPPING_COST = 5000; // Costo de envío (ejemplo: $ 5.000 COP)
 // 1. UTILIDADES Y PARSEO
 // =======================================================
 
-/**
- * Convierte una cadena de precio (ej: "35.900") a un número entero (ej: 35900).
- */
 function priceStringToNumber(priceString) {
     if (!priceString) return 0;
-    // Remueve separadores de miles y convierte a número
     return parseFloat(priceString.replace(/[$. ]/g, '')) || 0;
 }
 
-/**
- * Formatea un número a formato de moneda local (COP).
- */
 function formatPrice(number) {
     return new Intl.NumberFormat('es-CO', { 
         style: 'currency', 
@@ -53,22 +45,17 @@ function formatPrice(number) {
     }).format(number);
 }
 
-/**
- * Función robusta para parsear líneas CSV.
- */
 function parseCsv(csvText) {
     const products = [];
     const lines = csvText.trim().split('\r\n').slice(1);
     
     lines.forEach(line => {
-        // Regex para manejar campos que contienen comas si están entre comillas dobles
         const rawFields = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         
         if (rawFields.length < 6) return; 
 
         const fields = rawFields.map(f => f.trim().replace(/^"|"$/g, ''));
         
-        // Lógica: Si la columna imagen es (Vacio) o está vacía, es null
         const productImage = (fields[5] === '(Vacio)' || !fields[5]) ? null : fields[5];
         
         const product = {
@@ -111,7 +98,6 @@ async function fetchCsvData() {
             const allButton = document.querySelector(`[data-category="all"]`);
             if(allButton) allButton.classList.add('active');
             
-            // Listener de evento delegado para añadir al carrito
             productsListEl.addEventListener('click', handleAddToCartClick);
         } else {
             productsListEl.innerHTML = '<p class="error-message">No se encontraron productos.</p>';
@@ -200,7 +186,6 @@ function renderProducts(products, currentCategory) {
                 >
             `;
         } else {
-            // Aplica la clase especial si no hay imagen
             card.classList.add('product-card-no-image');
         }
 
@@ -319,8 +304,6 @@ function updateCart() {
         total += SHIPPING_COST;
     }
     
-
-    // Actualizar elementos
     cartCountEl.textContent = totalItems;
     cartSubtotalEl.textContent = formatPrice(subtotal);
     cartShippingEl.textContent = formatPrice(shipping);
@@ -341,42 +324,64 @@ function closeCart() {
 }
 
 /**
- * FUNCIÓN PRINCIPAL DE ENVÍO POR WHATSAPP
+ * FUNCIÓN PRINCIPAL DE ENVÍO POR WHATSAPP:
+ * 1. Solicita datos del cliente (nombre, teléfono, dirección).
+ * 2. Construye un mensaje con los datos y el resumen del pedido.
+ * 3. Abre WhatsApp.
  */
 function handleCheckout() {
     if (cart.length === 0) return;
+    
+    // 1. **SOLICITAR DATOS DEL CLIENTE** usando prompts
+    const clientName = prompt("Ingresa tu Nombre Completo:");
+    if (!clientName) {
+        alert("El pedido fue cancelado. Debes ingresar tu nombre.");
+        return;
+    }
+    
+    const clientPhone = prompt("Ingresa tu Teléfono (solo números):");
+    if (!clientPhone) {
+        alert("El pedido fue cancelado. Debes ingresar tu teléfono.");
+        return;
+    }
 
-    // 1. Construir el encabezado del mensaje
+    const clientAddress = prompt("Ingresa tu Dirección exacta para el envío:");
+    if (!clientAddress) {
+        alert("El pedido fue cancelado. Debes ingresar tu dirección.");
+        return;
+    }
+    
+    // 2. Construir el encabezado del mensaje con los datos del cliente
     let message = `¡Hola Toffe! 👋 Tengo un nuevo pedido desde el Menú Digital.\n\n`;
-    message += `*DETALLES DEL PEDIDO*\n`;
+    
+    message += `*--- 📝 DATOS DE ENTREGA ---*\n`;
+    message += `Nombre: ${clientName}\n`;
+    message += `Teléfono: ${clientPhone}\n`;
+    message += `Dirección: ${clientAddress}\n`;
     message += `---------------------------------\n`;
 
-    // 2. Listar los productos
+    // 3. Listar los productos (Detalles del Pedido)
+    message += `*--- 🛒 DETALLES DEL PEDIDO ---*\n`;
     cart.forEach((item, index) => {
+        // Formato: 1. 2x Producto A ($ 10.000)
         message += `${index + 1}. ${item.quantity}x ${item.name} (${formatPrice(item.price * item.quantity)})\n`;
     });
     
-    // 3. Añadir resumen de totales
+    // 4. Añadir resumen de totales
     message += `---------------------------------\n`;
-    // Nota: Leemos los totales formateados directamente de los elementos del DOM
     message += `Subtotal: ${cartSubtotalEl.textContent}\n`;
     message += `Envío: ${cartShippingEl.textContent}\n`;
-    message += `*TOTAL A PAGAR: ${cartTotalEl.textContent}*\n\n`;
+    message += `*TOTAL FINAL A PAGAR: ${cartTotalEl.textContent}*\n\n`;
 
-    // 4. Instrucciones para el cliente (lo que el cliente debe completar)
-    message += `*DATOS PARA EL ENVÍO:*\n`;
-    message += `Nombre: (Escribe tu nombre aquí)\n`;
-    message += `Teléfono: (Escribe tu teléfono aquí)\n`;
-    message += `Dirección: (Escribe tu dirección exacta aquí)\n`;
-    message += `Método de Pago: (Escribe Efectivo, Datafono o Transferencia)\n`;
+    // 5. Instrucciones de Pago
+    message += `Por favor, confirma el método de pago: (Efectivo, Datafono o Transferencia)\n`;
     
-    // 5. Codificar el mensaje para la URL
+    // 6. Codificar el mensaje para la URL
     const encodedMessage = encodeURIComponent(message);
     
-    // 6. Generar el enlace de WhatsApp
+    // 7. Generar y abrir el enlace de WhatsApp
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
     
-    // 7. Abrir WhatsApp en una nueva pestaña
     window.open(whatsappUrl, '_blank');
 }
 
