@@ -1,45 +1,45 @@
 A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
-1,Bagre en Salsa Criolla,35.900,A La Marinera,"Acompañado de Arroz, Ensalada de la casa, patacon y yuca frita",assets/imagenes/A La Marinera/img13.jpg
+"1,Bagre en Salsa Criolla,35.900,A La Marinera,""Acompañado de Arroz, Ensalada de la casa, patacon y yuca frita"",assets/imagenes/A La Marinera/img13.jpg"
 2,Filete de Merlusa,25.900,A La Marinera,Pidelo Con ensalada de la casa o Vegetales al Wok,assets/imagenes/A La Marinera/img9.jpg
 3,Mini Trucha,25.900,A La Marinera,Pidelo Con ensalada de la casa o Vegetales al Wok,assets/imagenes/A La Marinera/img8.jpg
-4,Salmon,45.000,A La Marinera,"Pidelo en salsa de Maracuya o al Ajillo, Acompañado de ensalada de la casa, con pure de papa o papa a la francesa",assets/imagenes/A La Marinera/img139.jpg
+"4,Salmon,45.000,A La Marinera,""Pidelo en salsa de Maracuya o al Ajillo, Acompañado de ensalada de la casa, con pure de papa o papa a la francesa"",assets/imagenes/A La Marinera/img139.jpg"
 5,Trucha al ajillo,35.900,A La Marinera,O tambien Pidelo en salsa de champiñones Acompañado de Ensalada de la casa o papa fracesa,assets/imagenes/A La Marinera/img12.jpg
-6,Teriyaki Clásico,66.900,Combos Teriyaki,"5 porciones con Lomo de res. trozos de pechuga y cerdo, con vegetales al wok y arroz yakimeshi",assets/imagenes/Combos Teriyaki/img223.jpg
+"6,Teriyaki Clásico,66.900,Combos Teriyaki,""5 porciones con Lomo de res. trozos de pechuga y cerdo, con vegetales al wok y arroz yakimeshi"",assets/imagenes/Combos Teriyaki/img223.jpg"
 7,Teriyaki Especial,84.900,Combos Teriyaki,5 porciones con Camarones. Lomo de res. Trozos de pechuga y cerdo Acompañado de Papas a la Francesa,assets/imagenes/Combos Teriyaki/img214.jpg
-8,Teriyaki Familiar,78.900,Combos Teriyaki,"5 porciones con Lomo de res, trozos de pechuga y cerdo con vegetales al wok y arroz yakimeshi Acompañado de Papa a la Francesa y Gaseosa",assets/imagenes/Combos Teriyaki/img211.jpg
-9,Champiñon y Pollo,17.000,Crepes,"Trozos de Pollo, bañado en salsa de champiñon con queso mozarella",assets/imagenes/Crepes/img185.jpg
-10,Crepes de Dulce,16.900,Crepes,"Fresas, banano, trozos de durazno crema de leche y Helado",assets/imagenes/Crepes/img188.jpg
-11,Crepes Mixto,17.900,Crepes,"Trozos de lomo y pollo. bañado en salsa de la casa, con queso mozarella",assets/imagenes/Crepes/img191.jpg
-12,Wafles con Fruta,15.900,Crepes,"Crujiente por fuera y suave por dentro, decorado con frutas frescas, crema chantilly y miel maple",assets/imagenes/Crepes/img197.jpg
+"8,Teriyaki Familiar,78.900,Combos Teriyaki,""5 porciones con Lomo de res, trozos de pechuga y cerdo con vegetales al wok y arroz yakimeshi Acompañado de Papa a la Francesa y Gaseosa"",assets/imagenes/Combos Teriyaki/img211.jpg"
+"9,Champiñon y Pollo,17.000,Crepes,""Trozos de Pollo, bañado en salsa de champiñon con queso mozarella"",assets/imagenes/Crepes/img185.jpg"
+"10,Crepes de Dulce,16.900,Crepes,""Fresas, banano, trozos de durazno crema de leche y Helado"",assets/imagenes/Crepes/img188.jpg"
+"11,Crepes Mixto,17.900,Crepes,""Trozos de lomo y pollo. bañado en salsa de la casa, con queso mozarella"",assets/imagenes/Crepes/img191.jpg"
+"12,Wafles con Fruta,15.900,Crepes,""Crujiente por fuera y suave por dentro, decorado con frutas frescas, crema chantilly y miel maple"",assets/imagenes/Crepes/img197.jpg"
 13,Amor Perfecto,18.900,Desayunos,Fresco pan de Semillas - Queso Crema. Huevos Revueltos - Aguacate Fresco Yogurt Griego - Granola - Fresas Mora - Kiwy,assets/imagenes/Desayunos/img53.jpg
-14,Bisteck a Caballo,18.900,Desayunos,"Carne en Salsa Criolla con huevo, arroz y arepa",assets/imagenes/Desayunos/img36.jpg
-15,Calentao Paisa,16.500,Desayunos,"Frijol, arroz, chorizo, plátano, huevo frito y arepa",assets/imagenes/Desayunos/img15.jpg
+"14,Bisteck a Caballo,18.900,Desayunos,""Carne en Salsa Criolla con huevo, arroz y arepa"",assets/imagenes/Desayunos/img36.jpg"
+"15,Calentao Paisa,16.500,Desayunos,""Frijol, arroz, chorizo, plátano, huevo frito y arepa"",assets/imagenes/Desayunos/img15.jpg"
 16,Cereal,8.900,Desayunos,,assets/imagenes/Desayunos/img97.jpg
 17,Changua Especial,10.900,Desayunos,Con Almojabana y Queso,assets/imagenes/Desayunos/img251.jpg
-18,Changua Sencilla,8.500,Desayunos,,(Vacio)
+18,Changua Sencilla,8.500,Desayunos,,assets/imagenes/Desayunos/img130.jpg
 19,Chocolate Toffe,14.500,Desayunos,Pan de Bono. Queso Campesino Almojabana y Chocolate,assets/imagenes/Desayunos/img258.jpg
-20,Croque Madame en Grano Noble,17.900,Desayunos,"Pan multigranos con aguacate laminado, acompañados de exquisito croque madame, bañado en salsa holandesa y bacon ahumado",assets/imagenes/Desayunos/img74.jpg
+"20,Croque Madame en Grano Noble,17.900,Desayunos,""Pan multigranos con aguacate laminado, acompañados de exquisito croque madame, bañado en salsa holandesa y bacon ahumado"",assets/imagenes/Desayunos/img74.jpg"
 21,Cumbre Italiana,18.900,Desayunos,Pan Focaccia - Crema de Aguacate Pollo Desmenuzado - Cebolla Salteada Huevos - Nutella - Banano Fresas,assets/imagenes/Desayunos/img54.jpg
-22,Desayuno Buenos Días,16.500,Desayunos,"Delicioso desayuno al estilo texano. Huevos rancheros en mozarella, acompañado de frutas frescas, rodajas de pan aliñado y jugo de naranja natural",assets/imagenes/Desayunos/img255.jpg
-23,Extasis en Crocancia de Pan,18.900,Desayunos,"Tajada de pan de Centeno esparcidas en cheese cream, con el frescar de la lechuga, la dulzura de los tomates cherry, la intesnidad del pimiento y la elegancia de la cebolla asada, acompañadas de champiñones, huevos pochados y crocancia de bacon.",assets/imagenes/Desayunos/img71.jpg
+"22,Desayuno Buenos Días,16.500,Desayunos,""Delicioso desayuno al estilo texano. Huevos rancheros en mozarella, acompañado de frutas frescas, rodajas de pan aliñado y jugo de naranja natural"",assets/imagenes/Desayunos/img255.jpg"
+"23,Extasis en Crocancia de Pan,18.900,Desayunos,""Tajada de pan de Centeno esparcidas en cheese cream, con el frescar de la lechuga, la dulzura de los tomates cherry, la intesnidad del pimiento y la elegancia de la cebolla asada, acompañadas de champiñones, huevos pochados y crocancia de bacon."",assets/imagenes/Desayunos/img71.jpg"
 24,Fruti Granola,13.900,Desayunos,,assets/imagenes/Desayunos/img95.jpg
-25,Huerto de Atun,15.900,Desayunos,"Ensalada de lechuga con lomitos de Atún. acompañada de huevo cocido, tomates cherry. aguacate y queso",assets/imagenes/Desayunos/img89.jpg
-26,Huevos al Nido,14.900,Desayunos,"Huevos Fritos, tocineta y Papa Francesa",assets/imagenes/Desayunos/img35.jpg
-27,Huevos Escalfados,11.900,Desayunos,"Acompañados de Jamón, queso y arepa con Mantequilla y Mermelada",assets/imagenes/Desayunos/img33.jpg
-28,Huevos Jalapeños,13.500,Desayunos,"Huevos batidos en mantequilla clarificada, queso mozarella. champiñon ahumado, bacón y jamón ahumado, con unos deliciosos chiles jalapeños",assets/imagenes/Desayunos/img17.jpg
+"25,Huerto de Atun,15.900,Desayunos,""Ensalada de lechuga con lomitos de Atún. acompañada de huevo cocido, tomates cherry. aguacate y queso"",assets/imagenes/Desayunos/img89.jpg"
+"26,Huevos al Nido,14.900,Desayunos,""Huevos Fritos, tocineta y Papa Francesa"",assets/imagenes/Desayunos/img35.jpg"
+"27,Huevos Escalfados,11.900,Desayunos,""Acompañados de Jamón, queso y arepa con Mantequilla y Mermelada"",assets/imagenes/Desayunos/img33.jpg"
+"28,Huevos Jalapeños,13.500,Desayunos,""Huevos batidos en mantequilla clarificada, queso mozarella. champiñon ahumado, bacón y jamón ahumado, con unos deliciosos chiles jalapeños"",assets/imagenes/Desayunos/img17.jpg"
 29,Huevos Rancheros Especiales,13.500,Desayunos,Huevos sumergidos en salsa ranchera con salchicha ranchera con arepa asada,assets/imagenes/Desayunos/img39.jpg
-30,Jardin de Sabores,16.900,Desayunos,"Ensalada de lechuga con Pollo a las finas hierbas corte en julianas, acompañada de huevo cocido, tomates cherry y láminas de palta",assets/imagenes/Desayunos/img88.jpg
+"30,Jardin de Sabores,16.900,Desayunos,""Ensalada de lechuga con Pollo a las finas hierbas corte en julianas, acompañada de huevo cocido, tomates cherry y láminas de palta"",assets/imagenes/Desayunos/img88.jpg"
 31,Migao de Chocolate,12.900,Desayunos,,assets/imagenes/Desayunos/img21.jpg
-32,Omelet de Carne,13.900,Desayunos,"Carne desmechada. Maíz tierno, queso mozarella y tocineta",assets/imagenes/Desayunos/img113.jpg
+"32,Omelet de Carne,13.900,Desayunos,""Carne desmechada. Maíz tierno, queso mozarella y tocineta"",assets/imagenes/Desayunos/img113.jpg"
 33,Omelet de Pollo,13.500,Desayunos,Pollo salteado con finas hiervas.queso mozarella y champiñon,assets/imagenes/Desayunos/img114.jpg
-34,Omelet Especial,13.900,Desayunos,"Maiz tierno, tocineta, champiñón queso mozarella. jamón, pollo",assets/imagenes/Desayunos/img112.jpg
-35,Omelet Vegetariano,13.900,Desayunos,"Clara de huevo, aceite de Oliva espinaca, brocoli, champinon, , maiz tierno y queso",assets/imagenes/Desayunos/img111.jpg
-36,Pancakes De la Casa,18.900,Desayunos,"Huevos en omelette, acompañados con unos tiernos pancakes americanos, miel de maple, frutilla y durazno laminado.",assets/imagenes/Desayunos/img13.jpg
-37,Parafait Miel/Granola,13.900,Desayunos,"Frutal Cremoso y saludable. postre matutino en yogurth griego, acompañado de frutillas, melocotones bañados en miel natural y coulis de frutos rojos.",assets/imagenes/Desayunos/img94.jpg
+"34,Omelet Especial,13.900,Desayunos,""Maiz tierno, tocineta, champiñón queso mozarella. jamón, pollo"",assets/imagenes/Desayunos/img112.jpg"
+"35,Omelet Vegetariano,13.900,Desayunos,""Clara de huevo, aceite de Oliva espinaca, brocoli, champinon, , maiz tierno y queso"",assets/imagenes/Desayunos/img111.jpg"
+"36,Pancakes De la Casa,18.900,Desayunos,""Huevos en omelette, acompañados con unos tiernos pancakes americanos, miel de maple, frutilla y durazno laminado."",assets/imagenes/Desayunos/img13.jpg"
+"37,Parafait Miel/Granola,13.900,Desayunos,""Frutal Cremoso y saludable. postre matutino en yogurth griego, acompañado de frutillas, melocotones bañados en miel natural y coulis de frutos rojos."",assets/imagenes/Desayunos/img94.jpg"
 38,Pollo en Hogaza y Bechamel,17.900,Desayunos,Pan Ciabata - Crema de Aguacate Trozos de Pollo Tomate Cherry Huevo Cocido - Salsa Bechamel,assets/imagenes/Desayunos/img56.jpg
 39,Porción de Frutas,8.900,Desayunos,,assets/imagenes/Desayunos/img96.jpg
-40,Ritual Matutino de Sibarita,19.500,Desayunos,"Caldo de costilla, tostadas con mantequilla, huevos revueltos al gusto de la abuela con la sinfonía de cebolla y tomate acompañado de un Chocolatico de molinillo con su espuma.",assets/imagenes/Desayunos/img257.jpg
-41,Tesoros de Salmón,27.900,Desayunos,"Tostadas de guacamole con huevo cocido, abrazadas por el ahumado salmon del mar acompañadas de lechuga y tomates cherry.",assets/imagenes/Desayunos/img72.jpg
+"40,Ritual Matutino de Sibarita,19.500,Desayunos,""Caldo de costilla, tostadas con mantequilla, huevos revueltos al gusto de la abuela con la sinfonía de cebolla y tomate acompañado de un Chocolatico de molinillo con su espuma."",assets/imagenes/Desayunos/img257.jpg"
+"41,Tesoros de Salmón,27.900,Desayunos,""Tostadas de guacamole con huevo cocido, abrazadas por el ahumado salmon del mar acompañadas de lechuga y tomates cherry."",assets/imagenes/Desayunos/img72.jpg"
 42,Wafles con Frutas,,Desayunos,,assets/imagenes/Desayunos/img75.jpg
 43,Coctel de Camarones,18.900,Entradas,Canasta Crocante de Platano con Camarones,assets/imagenes/Entradas/img40.jpg
 44,Patacón con Hogao,15.000,Entradas,Crocante Patacón con hogao y carne desmechada,assets/imagenes/Entradas/img43.jpg
@@ -49,15 +49,15 @@ A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
 48,Salteado del Atlántico,32.000,Especiales Gourmet,Cubos de Salmón salteados con vegetales al wok ACOMPAÑADOS con papa a la francesa,assets/imagenes/Especiales Gourmet/img60.jpg
 49,Steak la Parrilla,25.900,Especiales Gourmet,PIDELO CON Ensalada de la casa o Vegetales al wok,assets/imagenes/Especiales Gourmet/img66.jpg
 50,Beef Teriyaki,27.900,Especiales Wok,Lomo de res en salsa teriyaki Acompañado de Vegetales a la Plancha,assets/imagenes/Especiales Wok/img157.jpg
-51,Chiken Noodles,25.900,Especiales Wok,"Pasta Ramel al wok con 200gr de pollo ACOMPAÑADO Champiñones, maiz tierno y Brocoli, Bañado en salsa teriyaki",assets/imagenes/Especiales Wok/img161.jpg
+"51,Chiken Noodles,25.900,Especiales Wok,""Pasta Ramel al wok con 200gr de pollo ACOMPAÑADO Champiñones, maiz tierno y Brocoli, Bañado en salsa teriyaki"",assets/imagenes/Especiales Wok/img161.jpg"
 52,Chiken Teriyaki,26.900,Especiales Wok,Pechuga de Pollo en salsa teriyaki ACOMPAÑADO de vegetales al wok,assets/imagenes/Especiales Wok/img145.jpg
 53,Especial Jakimeshi Lomo,26.900,Especiales Wok,Mezcla de Pollo o lomo de res con arroz frito y vegetales,assets/imagenes/Especiales Wok/img152.jpg
 54,Especial Jakimeshi Pollo,24.900,Especiales Wok,Mezcla de Pollo o lomo de res con arroz frito y vegetales,assets/imagenes/Especiales Wok/img151.jpg
 55,Menu Infantil,25.900,Especiales Wok,Trozos de Pollo en salsa teriyaki Acompañado de arroz yakimeshi o pastas. Incluye Jugo y Helado NOTA: Este menu es solo para niños.,assets/imagenes/Especiales Wok/img194.jpg
-56,Teppanyaki Conection,29.900,Especiales Wok,"Lomo de res y pechuga a la plancha, marinados en salsa teriyaki, acompañado de vegetales a la planchay arroz yakimechi",assets/imagenes/Especiales Wok/img170.jpg
+"56,Teppanyaki Conection,29.900,Especiales Wok,""Lomo de res y pechuga a la plancha, marinados en salsa teriyaki, acompañado de vegetales a la planchay arroz yakimechi"",assets/imagenes/Especiales Wok/img170.jpg"
 57,Teppanyaki de Camarones,35.900,Especiales Wok,Vegetales al wok con camarones salteados,assets/imagenes/Especiales Wok/img167.jpg
-58,Teriyaki Mixto,35.900,Especiales Wok,"Langostinos, lomo de res, camarones, trozos de pollo. marinados en salsa teriyaki ACOMPAÑADO de vegetales a la plancha y Arroz Yakimeshi",assets/imagenes/Especiales Wok/img164.jpg
-59,Tokio Mignon,29.600,Especiales Wok,"200gr de Lomo con tocineta (libre de Grasa), Acompañado de Champiñones y arroz yakimeshi",assets/imagenes/Especiales Wok/img148.jpg
+"58,Teriyaki Mixto,35.900,Especiales Wok,""Langostinos, lomo de res, camarones, trozos de pollo. marinados en salsa teriyaki ACOMPAÑADO de vegetales a la plancha y Arroz Yakimeshi"",assets/imagenes/Especiales Wok/img164.jpg"
+"59,Tokio Mignon,29.600,Especiales Wok,""200gr de Lomo con tocineta (libre de Grasa), Acompañado de Champiñones y arroz yakimeshi"",assets/imagenes/Especiales Wok/img148.jpg"
 60,Alfajor,3.600,Horneados,,(Vacio)
 61,Almojabana,3.500,Horneados,,(Vacio)
 62,Corazones,3.800,Horneados,,(Vacio)
@@ -88,12 +88,12 @@ A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
 87,Pasta Carbonara,22.900,Pastas De La Casa,Con tocineta y champiñones ACOMPAÑADO de Pan de Ajo,assets/imagenes/Pastas De La Casa/img133.jpg
 88,Pasta de la Casa,35.900,Pastas De La Casa,Con cubos de Salmón y Langostinos,assets/imagenes/Pastas De La Casa/img123.jpg
 89,Bife de Chorizo,46.900,Toffe Grille,Acompañado de papa francesa. ensalada de la casa y chimichurri,assets/imagenes/Toffe Grille/img79.jpg
-90,Churrasco Argentino,45.900,Toffe Grille,"Acompañado de Queso grille Chorizo Ranchero, Ensalada de la casa. Yuca frita y Chimichurri",assets/imagenes/Toffe Grille/img92.jpg
+"90,Churrasco Argentino,45.900,Toffe Grille,""Acompañado de Queso grille Chorizo Ranchero, Ensalada de la casa. Yuca frita y Chimichurri"",assets/imagenes/Toffe Grille/img92.jpg"
 91,Costillas BBQ,36.900,Toffe Grille,350gr de Deliciosas costillas de Cerdo. bañadas en salsa bbq. Acompañado de Aros de Cebolla. Papa Francesa y ensalada de la casa,assets/imagenes/Toffe Grille/img89.jpg
 92,Filet Mignon,48.900,Toffe Grille,Tierno de lomo fino de res bañada en salsa demi-glace. Acompañado de papa francesa. ensalada de la casa,assets/imagenes/Toffe Grille/img86.jpg
-93,Mini Churrasco,29.900,Toffe Grille,"Delicioso Corte de Chata. acompañado de Yuca y chimichurri, PIDELO con Ensalada de la casa o Vegetales al wok",assets/imagenes/Toffe Grille/img82.jpg
+"93,Mini Churrasco,29.900,Toffe Grille,""Delicioso Corte de Chata. acompañado de Yuca y chimichurri, PIDELO con Ensalada de la casa o Vegetales al wok"",assets/imagenes/Toffe Grille/img82.jpg"
 94,Pechuga en Salsa de Champiñones,31.900,Toffe Grille,Acompañado de yuca frita y ensalada de la Casa,assets/imagenes/Toffe Grille/img73.jpg
-95,Pechuga Parmesana,31.900,Toffe Grille,"Acompañado de tomate, ensalada de la casa y papa francesa.",assets/imagenes/Toffe Grille/img70.jpg
+"95,Pechuga Parmesana,31.900,Toffe Grille,""Acompañado de tomate, ensalada de la casa y papa francesa."",assets/imagenes/Toffe Grille/img70.jpg"
 96,Punta de Anca,44.900,Toffe Grille,Acompañado de papa francesa. ensalada de aguacate y chimichurri,assets/imagenes/Toffe Grille/img95.jpg
 97,Americano Mediano 7onz.,2.700,Bebidas Calientes,,(Vacio)
 98,Americano Grande 9onz.,3.500,Bebidas Calientes,,(Vacio)
@@ -136,16 +136,16 @@ A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
 135,Corona,9.900,Cervezas,,(Vacio)
 136,Club Colombia,7.900,Cervezas,,(Vacio)
 137,Margarita Sierra,23.900,Cocteles,,(Vacio)
-138,"Tequila, convier, limón",21.900,Cocteles,,(Vacio)
+"138,""Tequila, convier, limón"",21.900,Cocteles,,(Vacio)"
 139,Tequila Sunrise,21.900,Cocteles,,(Vacio)
-140,"Tequila, Naranja, Granadina",21.900,Cocteles,,(Vacio)
+"140,""Tequila, Naranja, Granadina"",21.900,Cocteles,,(Vacio)"
 141,Paloma Sierra,21.900,Cocteles,,(Vacio)
-142,"Tequila, limón, Toronja",21.900,Cocteles,,(Vacio)
-143,"Mojito Oceanic Ron, Convier, limón, soda",20.900,Cocteles,,(Vacio)
+"142,""Tequila, limón, Toronja"",21.900,Cocteles,,(Vacio)"
+"143,""Mojito Oceanic Ron, Convier, limón, soda"",20.900,Cocteles,,(Vacio)"
 144,Amaretto Soul,18.900,Cocteles,,(Vacio)
-145,"Amaretto, limón",18.900,Cocteles,,(Vacio)
+"145,""Amaretto, limón"",18.900,Cocteles,,(Vacio)"
 146,Piña Colada,23.900,Cocteles,,(Vacio)
-147,"Crema de Coco, Crema de Baileys, piña",21.900,Cocteles,,(Vacio)
+"147,""Crema de Coco, Crema de Baileys, piña"",21.900,Cocteles,,(Vacio)"
 148,Torta de Chocolate,8.000,Postres,,(Vacio)
 149,Torta Zanahoria,8.000,Postres,,(Vacio)
 150,Torta de Ciruela,8.000,Postres,,(Vacio)
