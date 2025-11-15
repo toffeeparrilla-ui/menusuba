@@ -2,16 +2,15 @@
 // 1. CONFIGURACIÓN INICIAL Y DATOS
 // ====================================
 
-// La cabecera real es: A(id), ORDEN, B(nombre), C(precio), D(categoria), E(descripcion), F(imagen)
-// Esto significa 7 COLUMNAS. Vamos a mapear ignorando la columna 'ORDEN' (índice 1).
+// Indices DEFINITIVOS, basados en el CSV final de 6 columnas:
+// 0 (A: id), 1 (B: nombre), 2 (C: precio), 3 (D: categoria), 4 (E: descripcion), 5 (F: imagen)
 const COLUMN_INDICES = {
     ID: 0,
-    // Ignoramos el índice 1 (Columna ORDEN)
-    NAME: 2,        // Nombre (Originalmente B)
-    PRICE: 3,       // Precio (Originalmente C)
-    CATEGORY: 4,    // Categoría (Originalmente D)
-    DESCRIPTION: 5, // Descripción (Originalmente E)
-    IMAGE: 6        // Imagen (Originalmente F)
+    NAME: 1,        // El nombre ahora está en el índice 1 (Columna B)
+    PRICE: 2,       // El precio ahora está en el índice 2 (Columna C)
+    CATEGORY: 3,    // La categoría ahora está en el índice 3 (Columna D)
+    DESCRIPTION: 4, // La descripción ahora está en el índice 4 (Columna E)
+    IMAGE: 5        // La imagen ahora está en el índice 5 (Columna F)
 };
 
 let menuData = [];
@@ -50,17 +49,13 @@ const formatPrice = (price) => {
 };
 
 // ====================================
-// 3. LECTURA Y PARSEO DEL CSV (DEFINITIVO)
+// 3. LECTURA Y PARSEO DEL CSV (ULTRA-FINAL)
 // ====================================
 
-// Función ULTRA-ROBUSTA para parsear CSV (fija la estructura a 7 campos)
 function parseCSV(csvText) {
     
-    // 1. Elimina saltos de línea internos no citados (para robustez extra)
-    let cleanCsvText = csvText.replace(/[\r\n]+/g, ' ').trim();
-    
-    // 2. Divide en líneas
-    const lines = cleanCsvText.split(/\r?\n/).filter(line => line.trim() !== '');
+    // 1. Divide en líneas
+    const lines = csvText.trim().split(/\r?\n/).filter(line => line.trim() !== '');
     if (lines.length <= 1) return []; 
     
     const dataLines = lines.slice(1);
@@ -70,16 +65,15 @@ function parseCSV(csvText) {
         // Expresión regular robusta para separar celdas, maneja comillas y vacíos
         const cells = line.match(/(".*?"|[^,]*)(?=\s*,|\s*$)/g);
         
-        if (!cells || cells.length < 7) {
-             // Si no tiene al menos 7 columnas, es inválido y lo ignoramos.
-             // Esto filtra líneas incompletas como 170,,,Wafles,,#N/A si no son 7 campos.
+        if (!cells || cells.length < 6) {
+             // Si no tiene al menos 6 columnas, es inválido y lo ignoramos.
             return; 
         }
 
         // Limpiar comillas y espacios de las celdas
         const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
         
-        // 💡 ASIGNACIÓN DEFINITIVA ASUMIENDO 7 COLUMNAS EN LA CABECERA
+        // 💡 ASIGNACIÓN DEFINITIVA A 6 COLUMNAS
         const id = cleanCells[COLUMN_INDICES.ID];
         const name = cleanCells[COLUMN_INDICES.NAME];
         const priceString = cleanCells[COLUMN_INDICES.PRICE];
