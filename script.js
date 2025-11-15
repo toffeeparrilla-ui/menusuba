@@ -2,15 +2,16 @@
 // 1. CONFIGURACIÓN INICIAL Y DATOS
 // ====================================
 
-// Define los índices de las columnas según tu estructura:
-// 0 (id), 1 (nombre), 2 (precio), 3 (categoria), 4 (descripcion), 5 (imagen)
+// La cabecera real es: A(id), ORDEN, B(nombre), C(precio), D(categoria), E(descripcion), F(imagen)
+// Esto significa 7 COLUMNAS. Vamos a mapear ignorando la columna 'ORDEN' (índice 1).
 const COLUMN_INDICES = {
-    id: 0,
-    name: 1,
-    price: 2,
-    category: 3,
-    description: 4,
-    image: 5
+    ID: 0,
+    // Ignoramos el índice 1 (Columna ORDEN)
+    NAME: 2,        // Nombre (Originalmente B)
+    PRICE: 3,       // Precio (Originalmente C)
+    CATEGORY: 4,    // Categoría (Originalmente D)
+    DESCRIPTION: 5, // Descripción (Originalmente E)
+    IMAGE: 6        // Imagen (Originalmente F)
 };
 
 let menuData = [];
@@ -18,7 +19,7 @@ let cart = [];
 
 const menuFilePath = 'menu.csv'; 
 
-// Referencias del DOM
+// Referencias del DOM (sin cambios)
 const categoriesList = document.getElementById('categories-list');
 const productsList = document.getElementById('products-list');
 const cartCount = document.getElementById('cart-count');
@@ -49,45 +50,55 @@ const formatPrice = (price) => {
 };
 
 // ====================================
-// 3. LECTURA Y PARSEO DEL CSV
+// 3. LECTURA Y PARSEO DEL CSV (DEFINITIVO)
 // ====================================
 
-// Función ULTRA-ROBUSTA para parsear CSV 
+// Función ULTRA-ROBUSTA para parsear CSV (fija la estructura a 7 campos)
 function parseCSV(csvText) {
-    // Maneja saltos de línea de Windows y Unix
-    const lines = csvText.trim().split(/\r?\n/).filter(line => line.trim() !== '');
-    if (lines.length <= 1) return []; // Retorna vacío si solo hay encabezado o nada
     
-    // Ignorar la cabecera (primera línea)
+    // 1. Elimina saltos de línea internos no citados (para robustez extra)
+    let cleanCsvText = csvText.replace(/[\r\n]+/g, ' ').trim();
+    
+    // 2. Divide en líneas
+    const lines = cleanCsvText.split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length <= 1) return []; 
+    
     const dataLines = lines.slice(1);
     const parsedData = [];
 
     dataLines.forEach(line => {
-        // Expresión regular para separar celdas de CSV (maneja celdas con comas o vacías)
+        // Expresión regular robusta para separar celdas, maneja comillas y vacíos
         const cells = line.match(/(".*?"|[^,]*)(?=\s*,|\s*$)/g);
         
-        // Verifica que la fila tenga al menos 6 columnas
-        if (cells && cells.length >= 6) { 
-            const item = {};
-            
-            // Limpiar comillas y espacios de las celdas
-            const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
-            
-            item.id = cleanCells[COLUMN_INDICES.id];
-            item.name = cleanCells[COLUMN_INDICES.name];
-            
-            // Limpia el formato de precio (quita puntos de miles, ej: 15.000 -> 15000)
-            const priceString = cleanCells[COLUMN_INDICES.price];
-            item.price = parseFloat(priceString.replace(/\./g, '').replace(/,/g, '')); 
-            
-            item.category = cleanCells[COLUMN_INDICES.category];
-            item.description = cleanCells[COLUMN_INDICES.description] === '(Vacio)' || cleanCells[COLUMN_INDICES.description] === '' ? '' : cleanCells[COLUMN_INDICES.description];
-            item.image = cleanCells[COLUMN_INDICES.image];
+        if (!cells || cells.length < 7) {
+             // Si no tiene al menos 7 columnas, es inválido y lo ignoramos.
+             // Esto filtra líneas incompletas como 170,,,Wafles,,#N/A si no son 7 campos.
+            return; 
+        }
 
-            // Solo agrega el producto si tiene un precio válido
-            if (!isNaN(item.price) && item.price > 0) {
-                parsedData.push(item);
-            }
+        // Limpiar comillas y espacios de las celdas
+        const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
+        
+        // 💡 ASIGNACIÓN DEFINITIVA ASUMIENDO 7 COLUMNAS EN LA CABECERA
+        const id = cleanCells[COLUMN_INDICES.ID];
+        const name = cleanCells[COLUMN_INDICES.NAME];
+        const priceString = cleanCells[COLUMN_INDICES.PRICE];
+        const category = cleanCells[COLUMN_INDICES.CATEGORY];
+        let description = cleanCells[COLUMN_INDICES.DESCRIPTION];
+        const image = cleanCells[COLUMN_INDICES.IMAGE];
+
+        // Procesamiento del precio
+        // Quita puntos (miles) y comas (decimales) para manejar 15.000
+        let price = parseFloat(priceString.replace(/\./g, '').replace(/,/g, '')); 
+        
+        // Limpieza de descripción
+        description = description === '(Vacio)' || description === '' ? '' : description;
+
+        // Solo agrega el producto si tiene un precio válido
+        if (!isNaN(price) && price > 0) {
+            parsedData.push({
+                id, name, price, category, description, image
+            });
         }
     });
 
@@ -102,7 +113,6 @@ async function loadMenu() {
     try {
         const response = await fetch(menuFilePath);
         if (!response.ok) {
-            // Error de red, 404, o CORS (la razón más probable)
             throw new Error(`Error al cargar el archivo: ${response.statusText}`);
         }
         const csvText = await response.text();
@@ -112,31 +122,27 @@ async function loadMenu() {
             renderCategories(menuData);
             renderProducts(menuData);
         } else {
+            // Este mensaje sale si el archivo cargó, pero ninguna línea es válida.
             productsList.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                     <h3>🚨 Error: Menú Vacío.</h3>
-                    <p>El archivo <strong>menu.csv</strong> se cargó, pero no se pudo leer ningún producto válido.</p>
-                    <p><strong>Verifica:</strong> 1. Que tengas al menos 6 columnas en cada fila. 2. Que la columna de Precio (C) solo tenga números.</p>
+                    <p>El archivo <strong>menu.csv</strong> se cargó, pero el código no pudo leer productos válidos.</p>
+                    <p>Esto puede deberse a que **el precio no es un número** (Columna C en tu archivo) o la estructura de las filas no es consistente.</p>
                 </div>`;
         }
     } catch (error) {
         console.error('Error en la carga del menú:', error);
-        // Este es el mensaje que indica un problema de servidor o ruta.
+        // Este mensaje sale si GitHub Pages o el servidor no pueden encontrar el archivo (404) o el dominio es incorrecto.
         productsList.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                 <h3>❌ ¡Error Crítico de Carga!</h3>
-                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. La razón más común es que el navegador bloquea la lectura.</p>
-                <p><strong>Solución:</strong></p>
-                <ol style="list-style: decimal inside; padding: 10px; text-align: left; display: inline-block;">
-                    <li>Asegúrate de que <strong>menu.csv</strong> esté en la misma carpeta que <strong>index.html</strong>.</li>
-                    <li>Si lo abres con <strong>file://</strong> (desde tu disco duro), usa una extensión como <strong>Live Server</strong> en VS Code para simular un servidor web.</li>
-                </ol>
+                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. Si estás en GitHub Pages, verifica que el archivo esté en la raíz del repositorio y que la URL de despliegue sea correcta.</p>
             </div>`;
     }
 }
 
 // ====================================
-// 5. RENDERIZADO (PRODUCTOS Y CATEGORÍAS)
+// 5. RENDERIZADO (PRODUCTOS Y CATEGORÍAS) (sin cambios)
 // ====================================
 
 function renderCategories(data) {
@@ -200,7 +206,7 @@ function renderProducts(data) {
 }
 
 // ====================================
-// 6. LÓGICA DEL CARRITO
+// 6. LÓGICA DEL CARRITO (sin cambios)
 // ====================================
 
 function addItemToCart(productId) {
@@ -284,7 +290,7 @@ function renderCartItems() {
 }
 
 // ====================================
-// 7. LÓGICA DE CHECKOUT Y WHATSAPP
+// 7. LÓGICA DE CHECKOUT Y WHATSAPP (sin cambios)
 // ====================================
 
 function buildWhatsAppMessage(name, phone, address, payment) {
@@ -333,7 +339,7 @@ checkoutForm.addEventListener('submit', (e) => {
 
 
 // ====================================
-// 8. EVENT LISTENERS GENERALES
+// 8. EVENT LISTENERS GENERALES (sin cambios)
 // ====================================
 
 // Abrir y cerrar el Sidebar
