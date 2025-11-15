@@ -1,407 +1,373 @@
-// =======================================================
-// CONFIGURACIÓN GLOBAL
-// =======================================================
+// ====================================
+// 1. CONFIGURACIÓN INICIAL Y DATOS
+// ====================================
 
-// URL Directa (Raw) de tu archivo CSV en GitHub.
-const CSV_URL = 'https://raw.githubusercontent.com/toffeeparrilla-ui/menusuba/main/menu.csv'; 
+// Define los índices de las columnas según tu estructura:
+// 0 (id), 1 (nombre), 2 (precio), 3 (categoria), 4 (descripcion), 5 (imagen)
+const COLUMN_INDICES = {
+    id: 0,
+    name: 1,
+    price: 2,
+    category: 3,
+    description: 4,
+    image: 5
+};
 
-// **NÚMERO DE WHATSAPP FINAL Y ACTUALIZADO**
-const WHATSAPP_NUMBER = '573219959831'; // Código de país + Número de 10 dígitos.
+let menuData = [];
+let cart = [];
 
-let allProducts = [];
-let cart = []; // Array para almacenar los productos en el carrito
+const menuFilePath = 'menu.csv'; 
 
-// Elementos del DOM
-const productsListEl = document.getElementById('products-list');
-const categoriesListEl = document.getElementById('categories-list');
-const cartCountEl = document.getElementById('cart-count');
-const cartSidebarEl = document.getElementById('cart-sidebar');
-const cartOverlayEl = document.getElementById('cart-overlay');
-const cartItemsEl = document.getElementById('cart-items');
-const cartSubtotalEl = document.getElementById('cart-subtotal');
-const cartShippingEl = document.getElementById('cart-shipping');
-const cartTotalEl = document.getElementById('cart-total');
-const checkoutBtn = document.getElementById('checkout-btn');
-const closeCartBtn = document.getElementById('close-cart-btn');
+// Referencias del DOM
+const categoriesList = document.getElementById('categories-list');
+const productsList = document.getElementById('products-list');
+const cartCount = document.getElementById('cart-count');
 const openCartBtn = document.getElementById('open-cart-btn');
+const closeCartBtn = document.getElementById('close-cart-btn');
+const cartSidebar = document.getElementById('cart-sidebar');
+const cartOverlay = document.getElementById('cart-overlay');
+const cartItemsContainer = document.getElementById('cart-items');
+const cartSubtotalSpan = document.getElementById('cart-subtotal');
+const cartTotalSpan = document.getElementById('cart-total');
+const checkoutBtn = document.getElementById('checkout-btn');
+const checkoutModal = document.getElementById('checkout-modal');
+const checkoutForm = document.getElementById('checkout-form');
+const cancelCheckoutBtn = document.getElementById('cancel-checkout-btn');
+const checkoutSubmitBtn = document.querySelector('.checkout-submit-btn');
 
-const PLACEHOLDER_IMAGE = 'assets/placeholder.jpg'; 
-const SHIPPING_COST = 5000; // Costo de envío (ejemplo: $ 5.000 COP)
+// ====================================
+// 2. UTILIDADES DEL SISTEMA
+// ====================================
 
-// =======================================================
-// 1. UTILIDADES Y PARSEO
-// =======================================================
+// Función de utilidad para formato de moneda (COP)
+const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+    }).format(price);
+};
 
-function priceStringToNumber(priceString) {
-    if (!priceString) return 0;
-    return parseFloat(priceString.replace(/[$. ]/g, '')) || 0;
-}
+// ====================================
+// 3. LECTURA Y PARSEO DEL CSV
+// ====================================
 
-function formatPrice(number) {
-    return new Intl.NumberFormat('es-CO', { 
-        style: 'currency', 
-        currency: 'COP', 
-        minimumFractionDigits: 0 
-    }).format(number);
-}
-
-function parseCsv(csvText) {
-    const products = [];
-    const lines = csvText.trim().split('\r\n').slice(1);
+// Función ULTRA-ROBUSTA para parsear CSV 
+function parseCSV(csvText) {
+    // Maneja saltos de línea de Windows y Unix
+    const lines = csvText.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length <= 1) return []; // Retorna vacío si solo hay encabezado o nada
     
-    lines.forEach(line => {
-        const rawFields = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        
-        if (rawFields.length < 6) return; 
+    // Ignorar la cabecera (primera línea)
+    const dataLines = lines.slice(1);
+    const parsedData = [];
 
-        const fields = rawFields.map(f => f.trim().replace(/^"|"$/g, ''));
+    dataLines.forEach(line => {
+        // Expresión regular para separar celdas de CSV (maneja celdas con comas o vacías)
+        const cells = line.match(/(".*?"|[^,]*)(?=\s*,|\s*$)/g);
         
-        const productImage = (fields[5] === '(Vacio)' || !fields[5]) ? null : fields[5];
-        
-        const product = {
-            id: fields[0],           
-            name: fields[1],         
-            priceText: fields[2],   
-            price: priceStringToNumber(fields[2]), 
-            category: fields[3],     
-            description: fields[4] === '(Vacio)' ? '' : fields[4], 
-            image: productImage 
-        };
-        
-        if (product.name) {
-            products.push(product);
+        // Verifica que la fila tenga al menos 6 columnas
+        if (cells && cells.length >= 6) { 
+            const item = {};
+            
+            // Limpiar comillas y espacios de las celdas
+            const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
+            
+            item.id = cleanCells[COLUMN_INDICES.id];
+            item.name = cleanCells[COLUMN_INDICES.name];
+            
+            // Limpia el formato de precio (quita puntos de miles, ej: 15.000 -> 15000)
+            const priceString = cleanCells[COLUMN_INDICES.price];
+            item.price = parseFloat(priceString.replace(/\./g, '').replace(/,/g, '')); 
+            
+            item.category = cleanCells[COLUMN_INDICES.category];
+            item.description = cleanCells[COLUMN_INDICES.description] === '(Vacio)' || cleanCells[COLUMN_INDICES.description] === '' ? '' : cleanCells[COLUMN_INDICES.description];
+            item.image = cleanCells[COLUMN_INDICES.image];
+
+            // Solo agrega el producto si tiene un precio válido
+            if (!isNaN(item.price) && item.price > 0) {
+                parsedData.push(item);
+            }
         }
     });
-    
-    return products;
+
+    return parsedData;
 }
 
-// =======================================================
-// 2. CARGA DE DATOS Y RENDER INICIAL
-// =======================================================
+// ====================================
+// 4. CARGA DEL MENÚ
+// ====================================
 
-async function fetchCsvData() {
-    productsListEl.innerHTML = '<p class="loading-message">Cargando menú...</p>';
-    
+async function loadMenu() {
     try {
-        const response = await fetch(CSV_URL);
+        const response = await fetch(menuFilePath);
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}.`);
+            // Error de red, 404, o CORS (la razón más probable)
+            throw new Error(`Error al cargar el archivo: ${response.statusText}`);
         }
         const csvText = await response.text();
-        allProducts = parseCsv(csvText);
+        menuData = parseCSV(csvText);
         
-        if (allProducts.length > 0) {
-            renderCategories(allProducts);
-            renderProducts(allProducts, 'all');
-            
-            const allButton = document.querySelector(`[data-category="all"]`);
-            if(allButton) allButton.classList.add('active');
-            
-            productsListEl.addEventListener('click', handleAddToCartClick);
+        if (menuData.length > 0) {
+            renderCategories(menuData);
+            renderProducts(menuData);
         } else {
-            productsListEl.innerHTML = '<p class="error-message">No se encontraron productos.</p>';
+            productsList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
+                    <h3>🚨 Error: Menú Vacío.</h3>
+                    <p>El archivo <strong>menu.csv</strong> se cargó, pero no se pudo leer ningún producto válido.</p>
+                    <p><strong>Verifica:</strong> 1. Que tengas al menos 6 columnas en cada fila. 2. Que la columna de Precio (C) solo tenga números.</p>
+                </div>`;
         }
-
     } catch (error) {
-        console.error("Error al cargar o parsear el CSV:", error);
-        productsListEl.innerHTML = `<p class="error-message">Error al cargar el menú: ${error.message}</p>`;
+        console.error('Error en la carga del menú:', error);
+        // Este es el mensaje que indica un problema de servidor o ruta.
+        productsList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
+                <h3>❌ ¡Error Crítico de Carga!</h3>
+                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. La razón más común es que el navegador bloquea la lectura.</p>
+                <p><strong>Solución:</strong></p>
+                <ol style="list-style: decimal inside; padding: 10px; text-align: left; display: inline-block;">
+                    <li>Asegúrate de que <strong>menu.csv</strong> esté en la misma carpeta que <strong>index.html</strong>.</li>
+                    <li>Si lo abres con <strong>file://</strong> (desde tu disco duro), usa una extensión como <strong>Live Server</strong> en VS Code para simular un servidor web.</li>
+                </ol>
+            </div>`;
     }
 }
 
-// =======================================================
-// 3. RENDERIZADO DE PRODUCTOS Y CATEGORÍAS
-// =======================================================
+// ====================================
+// 5. RENDERIZADO (PRODUCTOS Y CATEGORÍAS)
+// ====================================
 
-function renderCategories(products) {
-    const categories = new Set(products.map(p => p.category));
-    categoriesListEl.innerHTML = '';
+function renderCategories(data) {
+    const categories = [...new Set(data.map(item => item.category))].filter(Boolean);
     
-    const allBtn = createCategoryButton('Todos', 'all');
-    categoriesListEl.appendChild(allBtn);
+    // Botón 'Todos'
+    let html = `<li class="category-item">
+        <button class="category-btn active" data-category="all">Todos</button>
+    </li>`;
 
-    categories.forEach(category => {
-        const li = createCategoryButton(category, category);
-        categoriesListEl.appendChild(li);
+    // Botones por categoría
+    html += categories.map(category => `
+        <li class="category-item">
+            <button class="category-btn" data-category="${category}">${category}</button>
+        </li>
+    `).join('');
+    
+    categoriesList.innerHTML = html;
+
+    // Asignar eventos de click a los botones de categoría
+    document.querySelectorAll('.category-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const selectedCategory = e.target.dataset.category;
+            filterProducts(selectedCategory);
+            
+            // Toggle de la clase 'active'
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+        });
     });
-
-    categoriesListEl.addEventListener('click', handleCategoryFilter);
 }
 
-function createCategoryButton(text, dataCategory) {
-    const button = document.createElement('button');
-    button.className = 'category-btn';
-    button.textContent = text;
-    button.dataset.category = dataCategory;
-
-    const li = document.createElement('li');
-    li.appendChild(button);
-    return li;
-}
-
-function handleCategoryFilter(event) {
-    const button = event.target.closest('.category-btn');
-    if (!button) return;
-
-    const selectedCategory = button.dataset.category;
-
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-
-    let filteredProducts = (selectedCategory === 'all')
-        ? allProducts
-        : allProducts.filter(p => p.category === selectedCategory);
-
-    renderProducts(filteredProducts, selectedCategory);
-}
-
-
-function renderProducts(products, currentCategory) {
-    productsListEl.innerHTML = ''; 
-
-    if (products.length === 0) {
-        productsListEl.innerHTML = `<p class="error-message">No hay productos en la categoría: ${currentCategory}</p>`;
-        return;
+function filterProducts(category) {
+    let filteredData = menuData;
+    if (category !== 'all') {
+        filteredData = menuData.filter(item => item.category === category);
     }
+    renderProducts(filteredData);
+}
 
-    products.forEach(product => {
-        const card = document.createElement('div');
-        
-        const formattedPrice = formatPrice(product.price); 
-        
-        const descriptionHtml = product.description 
-            ? `<p class="product-description">${product.description}</p>`
-            : ''; 
-        
-        let imageHtml = '';
-        card.className = 'product-card';
-
-        if (product.image) {
-            imageHtml = `
-                <img 
-                    src="${product.image}" 
-                    alt="${product.name}" 
-                    class="product-image" 
-                    onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}';"
-                >
-            `;
-        } else {
-            card.classList.add('product-card-no-image');
-        }
-
-        card.innerHTML = `
-            ${imageHtml}
+function renderProducts(data) {
+    productsList.innerHTML = data.map(item => `
+        <div class="product-card" data-id="${item.id}">
+            <img src="${item.image}" alt="${item.name}" class="product-image">
             <div class="product-info">
-                <h3 class="product-name">${product.name}</h3>
-                ${descriptionHtml}
-                <span class="product-price">${formattedPrice}</span>
-                
-                <button 
-                    class="add-to-cart-btn" 
-                    data-id="${product.id}"
-                    data-name="${product.name}"
-                    data-price="${product.price}" 
-                    data-price-text="${product.priceText}"
-                    data-image="${product.image || ''}"
-                >
-                    🛒 Añadir al Carrito
-                </button>
+                <h3 class="product-name">${item.name}</h3>
+                ${item.description ? `<p class="product-description">${item.description}</p>` : '<p class="product-description">Disponible en la carta.</p>'}
+                <p class="product-price">${formatPrice(item.price)}</p>
+                <button class="add-to-cart-btn" data-id="${item.id}">Añadir al Pedido</button>
             </div>
-        `;
-        productsListEl.appendChild(card);
+        </div>
+    `).join('');
+    
+    // Asignar eventos de click a los botones "Añadir al Pedido"
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            addItemToCart(productId);
+        });
     });
 }
 
-// =======================================================
-// 4. LÓGICA DEL CARRITO
-// =======================================================
+// ====================================
+// 6. LÓGICA DEL CARRITO
+// ====================================
 
-function handleAddToCartClick(event) {
-    const button = event.target.closest('.add-to-cart-btn');
-    if (!button) return;
+function addItemToCart(productId) {
+    const product = menuData.find(item => item.id === productId);
+    if (!product) return;
 
-    const productId = button.dataset.id;
     const existingItem = cart.find(item => item.id === productId);
 
     if (existingItem) {
         existingItem.quantity++;
     } else {
-        const newItem = {
-            id: productId,
-            name: button.dataset.name,
-            price: parseFloat(button.dataset.price),
-            priceText: button.dataset.priceText,
-            image: button.dataset.image,
-            quantity: 1,
-            note: '' 
-        };
-        cart.push(newItem);
+        cart.push({ ...product, quantity: 1 });
     }
     
-    updateCart();
-    openCart();
+    updateCartDisplay();
+    // Añadir animación al contador
+    cartCount.classList.remove('animate');
+    void cartCount.offsetWidth; // Trigger reflow
+    cartCount.classList.add('animate');
+}
+
+function updateItemQuantity(productId, change) {
+    const itemIndex = cart.findIndex(item => item.id === productId);
+
+    if (itemIndex > -1) {
+        cart[itemIndex].quantity += change;
+        
+        if (cart[itemIndex].quantity <= 0) {
+            cart.splice(itemIndex, 1); // Eliminar si la cantidad es cero o menos
+        }
+        updateCartDisplay();
+    }
+}
+
+function calculateTotals() {
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    // Asumimos envío gratuito para este ejemplo
+    const shipping = 0; 
+    const total = subtotal + shipping;
+    return { subtotal, shipping, total };
+}
+
+function updateCartDisplay() {
+    const { subtotal, total } = calculateTotals();
+    
+    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartSubtotalSpan.textContent = formatPrice(subtotal);
+    cartTotalSpan.textContent = formatPrice(total);
+    checkoutBtn.disabled = cart.length === 0;
+
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p style="text-align: center; color: #999;">Tu pedido está vacío. ¡Añade algo delicioso!</p>';
+    } else {
+        renderCartItems();
+    }
 }
 
 function renderCartItems() {
-    cartItemsEl.innerHTML = '';
-    
-    if (cart.length === 0) {
-        cartItemsEl.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
-        return;
-    }
-
-    cart.forEach(item => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'cart-item';
-        
-        itemEl.innerHTML = `
+    cartItemsContainer.innerHTML = cart.map(item => `
+        <div class="cart-item">
             <div class="item-details">
-                <p class="item-name">${item.name}</p>
-                <small>${formatPrice(item.price)} x ${item.quantity}</small>
+                <strong>${item.name}</strong>
+                <small>${formatPrice(item.price)} c/u</small>
             </div>
             <div class="item-quantity-controls">
-                <button data-id="${item.id}" data-action="decrease">-</button>
+                <button data-id="${item.id}" data-change="-1">-</button>
                 <span>${item.quantity}</span>
-                <button data-id="${item.id}" data-action="increase">+</button>
+                <button data-id="${item.id}" data-change="1">+</button>
             </div>
-        `;
-        cartItemsEl.appendChild(itemEl);
+        </div>
+    `).join('');
+
+    // Asignar eventos a los botones de cantidad (+ / -)
+    cartItemsContainer.querySelectorAll('.item-quantity-controls button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            const change = parseInt(e.target.dataset.change);
+            updateItemQuantity(productId, change);
+        });
     });
 }
 
-function handleCartItemAction(event) {
-    const button = event.target.closest('button');
-    if (!button) return;
+// ====================================
+// 7. LÓGICA DE CHECKOUT Y WHATSAPP
+// ====================================
+
+function buildWhatsAppMessage(name, phone, address, payment) {
+    const { total } = calculateTotals();
     
-    const id = button.dataset.id;
-    const action = button.dataset.action;
-    const itemIndex = cart.findIndex(item => item.id === id);
+    let message = `¡Hola! Me gustaría hacer un pedido:\n\n`;
+    message += `*Cliente:* ${name}\n`;
+    message += `*Teléfono:* ${phone}\n`;
+    message += `*Dirección:* ${address}\n`;
+    message += `*Pago:* ${payment}\n\n`;
+    message += `*--- Detalle del Pedido ---*\n`;
 
-    if (itemIndex === -1) return;
-
-    if (action === 'increase') {
-        cart[itemIndex].quantity++;
-    } else if (action === 'decrease') {
-        if (cart[itemIndex].quantity > 1) {
-            cart[itemIndex].quantity--;
-        } else {
-            cart.splice(itemIndex, 1);
-        }
-    }
-    
-    updateCart();
-}
-
-function updateCart() {
-    let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    
-    let shipping = 0;
-    let total = subtotal;
-
-    if (subtotal > 0) {
-        shipping = SHIPPING_COST;
-        total += SHIPPING_COST;
-    }
-    
-    cartCountEl.textContent = totalItems;
-    cartSubtotalEl.textContent = formatPrice(subtotal);
-    cartShippingEl.textContent = formatPrice(shipping);
-    cartTotalEl.textContent = formatPrice(total);
-    checkoutBtn.disabled = cart.length === 0;
-
-    renderCartItems();
-}
-
-function openCart() {
-    cartSidebarEl.classList.add('open');
-    cartOverlayEl.classList.add('open');
-}
-
-function closeCart() {
-    cartSidebarEl.classList.remove('open');
-    cartOverlayEl.classList.remove('open');
-}
-
-/**
- * FUNCIÓN PRINCIPAL DE ENVÍO POR WHATSAPP:
- * 1. Solicita datos del cliente (nombre, teléfono, dirección).
- * 2. Construye un mensaje con los datos y el resumen del pedido.
- * 3. Abre WhatsApp.
- */
-function handleCheckout() {
-    if (cart.length === 0) return;
-    
-    // 1. **SOLICITAR DATOS DEL CLIENTE** usando prompts
-    const clientName = prompt("Ingresa tu Nombre Completo:");
-    if (!clientName) {
-        alert("El pedido fue cancelado. Debes ingresar tu nombre.");
-        return;
-    }
-    
-    const clientPhone = prompt("Ingresa tu Teléfono (solo números):");
-    if (!clientPhone) {
-        alert("El pedido fue cancelado. Debes ingresar tu teléfono.");
-        return;
-    }
-
-    const clientAddress = prompt("Ingresa tu Dirección exacta para el envío:");
-    if (!clientAddress) {
-        alert("El pedido fue cancelado. Debes ingresar tu dirección.");
-        return;
-    }
-    
-    // 2. Construir el encabezado del mensaje con los datos del cliente
-    let message = `¡Hola Toffe! 👋 Tengo un nuevo pedido desde el Menú Digital.\n\n`;
-    
-    message += `*--- 📝 DATOS DE ENTREGA ---*\n`;
-    message += `Nombre: ${clientName}\n`;
-    message += `Teléfono: ${clientPhone}\n`;
-    message += `Dirección: ${clientAddress}\n`;
-    message += `---------------------------------\n`;
-
-    // 3. Listar los productos (Detalles del Pedido)
-    message += `*--- 🛒 DETALLES DEL PEDIDO ---*\n`;
-    cart.forEach((item, index) => {
-        // Formato: 1. 2x Producto A ($ 10.000)
-        message += `${index + 1}. ${item.quantity}x ${item.name} (${formatPrice(item.price * item.quantity)})\n`;
+    cart.forEach(item => {
+        const lineTotal = item.price * item.quantity;
+        message += `${item.quantity}x ${item.name} (${formatPrice(lineTotal)})\n`;
     });
-    
-    // 4. Añadir resumen de totales
-    message += `---------------------------------\n`;
-    message += `Subtotal: ${cartSubtotalEl.textContent}\n`;
-    message += `Envío: ${cartShippingEl.textContent}\n`;
-    message += `*TOTAL FINAL A PAGAR: ${cartTotalEl.textContent}*\n\n`;
 
-    // 5. Instrucciones de Pago
-    message += `Por favor, confirma el método de pago: (Efectivo, Datafono o Transferencia)\n`;
+    message += `\n*TOTAL:* ${formatPrice(total)}`;
     
-    // 6. Codificar el mensaje para la URL
-    const encodedMessage = encodeURIComponent(message);
-    
-    // 7. Generar y abrir el enlace de WhatsApp
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-    
-    window.open(whatsappUrl, '_blank');
+    // Codificar el mensaje para la URL de WhatsApp
+    return encodeURIComponent(message);
 }
 
-// =======================================================
-// 5. INICIALIZACIÓN Y EVENTOS GLOBALES
-// =======================================================
+checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('client-name').value;
+    const phone = document.getElementById('client-phone').value;
+    const address = document.getElementById('client-address').value;
+    const payment = document.getElementById('payment-method').value;
 
-// Eventos para abrir y cerrar el carrito
-openCartBtn.addEventListener('click', openCart);
-closeCartBtn.addEventListener('click', closeCart);
-cartOverlayEl.addEventListener('click', closeCart);
+    const waMessage = buildWhatsAppMessage(name, phone, address, payment);
+    
+    // Reemplaza el número a continuación con tu número de WhatsApp real (con código de país)
+    const whatsappNumber = '573111234567'; 
+    const waUrl = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
 
-// Listener para modificar items en el carrito (delegación)
-cartItemsEl.addEventListener('click', handleCartItemAction);
+    window.open(waUrl, '_blank');
+    
+    // Cerrar y resetear
+    checkoutModal.close();
+    // Opcional: limpiar carrito después de enviar.
+    // cart = [];
+    // updateCartDisplay();
+});
 
-// Evento para finalizar el pedido: Llama a la función de WhatsApp
-checkoutBtn.addEventListener('click', handleCheckout);
 
+// ====================================
+// 8. EVENT LISTENERS GENERALES
+// ====================================
+
+// Abrir y cerrar el Sidebar
+openCartBtn.addEventListener('click', () => {
+    cartSidebar.classList.add('open');
+    cartOverlay.classList.add('open');
+});
+
+closeCartBtn.addEventListener('click', () => {
+    cartSidebar.classList.remove('open');
+    cartOverlay.classList.remove('open');
+});
+
+cartOverlay.addEventListener('click', () => {
+    cartSidebar.classList.remove('open');
+    cartOverlay.classList.remove('open');
+});
+
+// Abrir Modal de Checkout
+checkoutBtn.addEventListener('click', () => {
+    if (cart.length > 0) {
+        checkoutModal.showModal();
+    }
+});
+
+cancelCheckoutBtn.addEventListener('click', () => {
+    checkoutModal.close();
+});
+
+// ====================================
+// 9. INICIO
+// ====================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetchCsvData();
-    updateCart(); 
+    loadMenu();
+    updateCartDisplay(); // Inicializa el contador en 0
 });

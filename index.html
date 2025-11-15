@@ -3,94 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú - Toffe</title>
-    
+    <title>Menú Digital Toffe</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon"> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo-container">
-            <img src="assets/toffe-logo.jpg" alt="Logo de la empresa Toffe" class="logo">
+    <header class="main-header">
+        <div class="logo-title-container">
+            <img src="assets/logo-toffe.jpg" alt="Logo de Toffe Parrilla & Wok" class="header-logo" id="logo">
+            <h1>Toffe Parrilla & Wok</h1>
         </div>
-        <h1 class="title">Bienvenido al Menú Digital de Toffe</h1>
-        
-        <button id="open-cart-btn" class="open-cart-btn">
-            🛒 Carrito (<span id="cart-count">0</span>)
-        </button>
+        <div class="cart-icon-container" id="open-cart-btn">
+            <span id="cart-count">0</span>
+            🍽️
+        </div>
     </header>
 
-    <nav class="categories-nav">
-        <ul id="categories-list" class="category-buttons-container">
-            </ul>
-    </nav>
+    <main class="main-content">
+        <nav class="categories-nav">
+            <ul id="categories-list">
+                </ul>
+        </nav>
 
-    <main class="menu-container">
-        <section id="products-list" class="products-grid">
-            <p class="loading-message">Cargando menú...</p>
+        <section class="products-container">
+            <div id="products-list" class="products-list">
+                </div>
         </section>
     </main>
 
-    <aside id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <h3>Mi Pedido (Carrito)</h3>
-            <button id="close-cart-btn" class="close-btn">❌</button>
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <aside class="cart-sidebar" id="cart-sidebar">
+        <div class="sidebar-header">
+            <h2>🍽️ Tu Pedido</h2>
+            <button class="close-btn" id="close-cart-btn">✖</button>
         </div>
         
-        <div id="cart-items" class="cart-items-container">
-            <p class="empty-cart-message">Tu carrito está vacío.</p>
-        </div>
+        <div class="cart-items" id="cart-items">
+            </div>
 
         <div class="cart-summary">
-            <p>Subtotal: <span id="cart-subtotal">$ 0.00</span></p>
-            <p>Envío: <span id="cart-shipping">$ 0.00</span></p>
-            <h3>Total: <span id="cart-total">$ 0.00</span></h3>
+            <p>Subtotal: <span id="cart-subtotal">$0</span></p>
+            <p>Envío: <span id="cart-shipping">$0</span></p>
+            <hr>
+            <h3>Total: <span id="cart-total">$0</span></h3>
         </div>
 
-        <button id="checkout-btn" class="checkout-btn" disabled>
-            Enviar Pedido por WhatsApp
-        </button>
+        <button id="checkout-btn" class="checkout-btn" disabled>Realizar Pedido por WhatsApp</button>
     </aside>
 
-    <div id="cart-overlay" class="cart-overlay"></div>
+    <dialog id="checkout-modal" class="checkout-modal">
+        <h3>Datos de Entrega</h3>
+        <form id="checkout-form">
+            <label for="client-name">Nombre:</label>
+            <input type="text" id="client-name" name="client-name" required>
 
-    <section class="location-section">
-        <h2>📍 Ubicación y Contacto</h2>
-        <div class="location-details">
-            <div class="address-info">
-                <h3>Nuestra Dirección</h3>
-                <p>Cra. 93 #129C-23, Suba, Bogotá, Colombia</p>
-                
-                <a 
-                    href="https://maps.app.goo.gl/EJn56eE8Q3cT9T2D7" 
-                    target="_blank" 
-                    class="btn-how-to-get"
-                    aria-label="Obtener indicaciones para llegar a Toffe"
-                >
-                    Indicaciones para Llegar (Ver Mapa)
-                </a>
-            </div>
-            
-            <div class="map-container">
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.77250682136!2d-74.1206893246755!3d4.63004819532665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f9906d4458f4d%3A0x643c16223e75e526!2sCarrera%2056%20%2314-32%2C%20Bogot%C3%A1!5e0!3m2!1ses!2sco!4v1700688000000!5m2!1ses!2sco" 
-                    width="600" 
-                    height="450" 
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy" 
-                    referrerpolicy="no-referrer-when-downgrade"
-                    title="Ubicación de Toffe en el mapa de Google Maps"
-                ></iframe>
-            </div>
-        </div>
-    </section>
+            <label for="client-phone">Teléfono (WhatsApp):</label>
+            <input type="tel" id="client-phone" name="client-phone" required>
 
-    <footer class="footer">
-        <p>© 2025 Toffe - Menú Digital. Todos los derechos reservados.</p>
-    </footer>
+            <label for="client-address">Dirección:</label>
+            <textarea id="client-address" name="client-address" rows="3" required></textarea>
+
+            <label for="payment-method">Método de Pago:</label>
+            <select id="payment-method" name="payment-method" required>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Nequi">Nequi / Daviplata</option>
+                <option value="Tarjeta">Tarjeta (Datafono)</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="button" id="cancel-checkout-btn" class="secondary-btn">Cancelar</button>
+                <button type="submit" class="checkout-submit-btn">Enviar Pedido</button>
+            </div>
+        </form>
+    </dialog>
 
     <script src="script.js"></script>
 </body>
