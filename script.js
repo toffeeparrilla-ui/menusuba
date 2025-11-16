@@ -2,15 +2,15 @@
 // 1. CONFIGURACIÓN INICIAL Y DATOS
 // ====================================
 
-// Indices DEFINITIVOS para el CSV de 6 columnas:
-// 0 (ID), 1 (Nombre), 2 (Precio), 3 (Categoría), 4 (Descripción), 5 (Imagen)
+// Define los índices de las columnas según tu estructura:
+// 0 (id), 1 (nombre), 2 (precio), 3 (categoria), 4 (descripcion), 5 (imagen)
 const COLUMN_INDICES = {
-    ID: 0,
-    NAME: 1,        
-    PRICE: 2,       
-    CATEGORY: 3,    
-    DESCRIPTION: 4, 
-    IMAGE: 5        
+    id: 0,
+    name: 1,
+    price: 2,
+    category: 3,
+    description: 4,
+    image: 5
 };
 
 let menuData = [];
@@ -18,7 +18,7 @@ let cart = [];
 
 const menuFilePath = 'menu.csv'; 
 
-// Referencias del DOM (se mantienen)
+// Referencias del DOM
 const categoriesList = document.getElementById('categories-list');
 const productsList = document.getElementById('products-list');
 const cartCount = document.getElementById('cart-count');
@@ -49,57 +49,55 @@ const formatPrice = (price) => {
 };
 
 // ====================================
-// 3. LECTURA Y PARSEO DEL CSV (ULTRA-FINAL ANTI-FALLO)
+// 3. LECTURA Y PARSEO DEL CSV
 // ====================================
 
+// Función ULTRA-ROBUSTA para parsear CSV 
 function parseCSV(csvText) {
     
-    // Paso CRÍTICO 1: Limpia todos los saltos de línea (casi siempre son la causa del fallo)
-    const normalizedText = csvText.replace(/[\r\n]+/g, '\n').trim();
-
-    // Divide en líneas (filas)
-    const lines = normalizedText.split('\n').filter(line => line.trim() !== '');
+    // 💡 SOLUCIÓN CRÍTICA: Pre-procesar el texto para eliminar saltos de línea internos
+    // que rompen la estructura CSV, como se vio en tu archivo.
+    // Esto convierte el CSV potencialmente multi-línea en una sola línea lógica por producto.
+    let cleanCsvText = csvText.replace(/[\r\n]+/g, ' ').trim();
+    
+    // La expresión regular para dividir ahora busca las comas que NO estén dentro de comillas
+    // y maneja los nuevos saltos de línea.
+    
+    // 1. Dividir en líneas (que ahora deberían ser correctas, aunque el código anterior ya lo hacía)
+    const lines = csvText.trim().split(/\r?\n/).filter(line => line.trim() !== '');
     if (lines.length <= 1) return []; 
     
+    // Ignorar la cabecera (primera línea)
     const dataLines = lines.slice(1);
     const parsedData = [];
 
     dataLines.forEach(line => {
-        // Expresión regular robusta para separar celdas, maneja comillas y vacíos
-        // Este regex ya maneja las comas internas como en "Mojito Oceanic Ron, Convier, limón, soda"
+        // Expresión regular para separar celdas de CSV (maneja celdas con comas o vacías)
+        // Nota: Esta regex simple funciona mejor si los saltos de línea ya se quitaron.
         const cells = line.match(/(".*?"|[^,]*)(?=\s*,|\s*$)/g);
         
-        // La validación ahora es estricta: debe tener 6 campos
-        if (!cells || cells.length !== 6) {
-             console.warn('Línea ignorada por estructura incorrecta (no 6 campos):', line);
-             return; 
-        }
+        // Verifica que la fila tenga al menos 6 columnas
+        if (cells && cells.length >= 6) { 
+            const item = {};
+            
+            // Limpiar comillas y espacios de las celdas
+            const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
+            
+            item.id = cleanCells[COLUMN_INDICES.id];
+            item.name = cleanCells[COLUMN_INDICES.name];
+            
+            // Limpia el formato de precio (quita puntos de miles, ej: 15.000 -> 15000)
+            const priceString = cleanCells[COLUMN_INDICES.price];
+            item.price = parseFloat(priceString.replace(/\./g, '').replace(/,/g, '')); 
+            
+            item.category = cleanCells[COLUMN_INDICES.category];
+            item.description = cleanCells[COLUMN_INDICES.description] === '(Vacio)' || cleanCells[COLUMN_INDICES.description] === '' ? '' : cleanCells[COLUMN_INDICES.description];
+            item.image = cleanCells[COLUMN_INDICES.image];
 
-        // Limpiar comillas y espacios de las celdas
-        const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
-        
-        // 💡 ASIGNACIÓN DEFINITIVA A 6 COLUMNAS
-        const id = cleanCells[COLUMN_INDICES.ID];
-        const name = cleanCells[COLUMN_INDICES.NAME];
-        const priceString = cleanCells[COLUMN_INDICES.PRICE];
-        const category = cleanCells[COLUMN_INDICES.CATEGORY];
-        let description = cleanCells[COLUMN_INDICES.DESCRIPTION];
-        const image = cleanCells[COLUMN_INDICES.IMAGE];
-
-        // Procesamiento del precio
-        // Quita puntos (miles) y comas (decimales) para asegurar que sea un número.
-        let price = parseFloat(priceString.replace(/\./g, '').replace(/,/g, '')); 
-        
-        // Limpieza de descripción
-        description = description === '(Vacio)' || description === '' ? '' : description;
-
-        // Solo agrega el producto si tiene un precio válido
-        if (!isNaN(price) && price > 0) {
-            parsedData.push({
-                id, name, price, category, description, image
-            });
-        } else {
-             console.warn(`Producto ignorado (precio inválido o cero): ${name} (${priceString})`);
+            // Solo agrega el producto si tiene un precio válido
+            if (!isNaN(item.price) && item.price > 0) {
+                parsedData.push(item);
+            }
         }
     });
 
@@ -114,6 +112,7 @@ async function loadMenu() {
     try {
         const response = await fetch(menuFilePath);
         if (!response.ok) {
+            // Error de red, 404, o CORS (la razón más probable)
             throw new Error(`Error al cargar el archivo: ${response.statusText}`);
         }
         const csvText = await response.text();
@@ -123,29 +122,263 @@ async function loadMenu() {
             renderCategories(menuData);
             renderProducts(menuData);
         } else {
-            // Este mensaje sale si el archivo cargó, pero ninguna línea es válida.
+            // Este mensaje puede aparecer si el archivo carga pero el parser falla por los saltos de línea internos.
             productsList.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                     <h3>🚨 Error: Menú Vacío.</h3>
                     <p>El archivo <strong>menu.csv</strong> se cargó, pero el código no pudo leer productos válidos.</p>
-                    <p>Esto puede deberse a que **el precio no es un número** (Columna C en tu archivo) o la estructura de las filas no es consistente.</p>
+                    <p><strong>Verifica:</strong> 1. Que la columna de Precio (C) solo contenga números y no esté vacía. 2. La estructura del CSV es correcta.</p>
                 </div>`;
         }
     } catch (error) {
         console.error('Error en la carga del menú:', error);
-        // Este mensaje sale si GitHub Pages o el servidor no pueden encontrar el archivo (404) o el dominio es incorrecto.
+        // Este es el mensaje que indica un problema de servidor o ruta (CORS).
         productsList.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                 <h3>❌ ¡Error Crítico de Carga!</h3>
-                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. Si estás en GitHub Pages, verifica que el archivo esté en la raíz del repositorio y que la URL de despliegue sea correcta.</p>
+                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. La razón más común es que el navegador bloquea la lectura.</p>
+                <p><strong>Solución:</strong></p>
+                <ol style="list-style: decimal inside; padding: 10px; text-align: left; display: inline-block;">
+                    <li>Asegúrate de que <strong>menu.csv</strong> esté en la misma carpeta que <strong>index.html</strong>.</li>
+                    <li><strong>¡Paso Clave!</strong> Si lo abres con <strong>file://</strong> (desde tu disco duro), debes usar una extensión como <strong>Live Server</strong> en VS Code o subirlo a **GitHub Pages** para simular un servidor web.</li>
+                </ol>
             </div>`;
     }
 }
 
-// (Las secciones 5 a 9 de renderizado, carrito e inicialización se mantienen sin cambios por ser funcionales)
-// ... (omito el resto del código para brevedad, pero debe estar completo en tu archivo) ...
+// ====================================
+// 5. RENDERIZADO (PRODUCTOS Y CATEGORÍAS)
+// ====================================
+
+function renderCategories(data) {
+    const categories = [...new Set(data.map(item => item.category))].filter(Boolean);
+    
+    // Botón 'Todos'
+    let html = `<li class="category-item">
+        <button class="category-btn active" data-category="all">Todos</button>
+    </li>`;
+
+    // Botones por categoría
+    html += categories.map(category => `
+        <li class="category-item">
+            <button class="category-btn" data-category="${category}">${category}</button>
+        </li>
+    `).join('');
+    
+    categoriesList.innerHTML = html;
+
+    // Asignar eventos de click a los botones de categoría
+    document.querySelectorAll('.category-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const selectedCategory = e.target.dataset.category;
+            filterProducts(selectedCategory);
+            
+            // Toggle de la clase 'active'
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+        });
+    });
+}
+
+function filterProducts(category) {
+    let filteredData = menuData;
+    if (category !== 'all') {
+        filteredData = menuData.filter(item => item.category === category);
+    }
+    renderProducts(filteredData);
+}
+
+function renderProducts(data) {
+    productsList.innerHTML = data.map(item => `
+        <div class="product-card" data-id="${item.id}">
+            <img src="${item.image}" alt="${item.name}" class="product-image">
+            <div class="product-info">
+                <h3 class="product-name">${item.name}</h3>
+                ${item.description ? `<p class="product-description">${item.description}</p>` : '<p class="product-description">Disponible en la carta.</p>'}
+                <p class="product-price">${formatPrice(item.price)}</p>
+                <button class="add-to-cart-btn" data-id="${item.id}">Añadir al Pedido</button>
+            </div>
+        </div>
+    `).join('');
+    
+    // Asignar eventos de click a los botones "Añadir al Pedido"
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            addItemToCart(productId);
+        });
+    });
+}
+
+// ====================================
+// 6. LÓGICA DEL CARRITO
+// ====================================
+
+function addItemToCart(productId) {
+    const product = menuData.find(item => item.id === productId);
+    if (!product) return;
+
+    const existingItem = cart.find(item => item.id === productId);
+
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({ ...product, quantity: 1 });
+    }
+    
+    updateCartDisplay();
+    // Añadir animación al contador
+    cartCount.classList.remove('animate');
+    void cartCount.offsetWidth; // Trigger reflow
+    cartCount.classList.add('animate');
+}
+
+function updateItemQuantity(productId, change) {
+    const itemIndex = cart.findIndex(item => item.id === productId);
+
+    if (itemIndex > -1) {
+        cart[itemIndex].quantity += change;
+        
+        if (cart[itemIndex].quantity <= 0) {
+            cart.splice(itemIndex, 1); // Eliminar si la cantidad es cero o menos
+        }
+        updateCartDisplay();
+    }
+}
+
+function calculateTotals() {
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    // Asumimos envío gratuito para este ejemplo
+    const shipping = 0; 
+    const total = subtotal + shipping;
+    return { subtotal, shipping, total };
+}
+
+function updateCartDisplay() {
+    const { subtotal, total } = calculateTotals();
+    
+    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartSubtotalSpan.textContent = formatPrice(subtotal);
+    cartTotalSpan.textContent = formatPrice(total);
+    checkoutBtn.disabled = cart.length === 0;
+
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p style="text-align: center; color: #999;">Tu pedido está vacío. ¡Añade algo delicioso!</p>';
+    } else {
+        renderCartItems();
+    }
+}
+
+function renderCartItems() {
+    cartItemsContainer.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="item-details">
+                <strong>${item.name}</strong>
+                <small>${formatPrice(item.price)} c/u</small>
+            </div>
+            <div class="item-quantity-controls">
+                <button data-id="${item.id}" data-change="-1">-</button>
+                <span>${item.quantity}</span>
+                <button data-id="${item.id}" data-change="1">+</button>
+            </div>
+        </div>
+    `).join('');
+
+    // Asignar eventos a los botones de cantidad (+ / -)
+    cartItemsContainer.querySelectorAll('.item-quantity-controls button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            const change = parseInt(e.target.dataset.change);
+            updateItemQuantity(productId, change);
+        });
+    });
+}
+
+// ====================================
+// 7. LÓGICA DE CHECKOUT Y WHATSAPP
+// ====================================
+
+function buildWhatsAppMessage(name, phone, address, payment) {
+    const { total } = calculateTotals();
+    
+    let message = `¡Hola! Me gustaría hacer un pedido:\n\n`;
+    message += `*Cliente:* ${name}\n`;
+    message += `*Teléfono:* ${phone}\n`;
+    message += `*Dirección:* ${address}\n`;
+    message += `*Pago:* ${payment}\n\n`;
+    message += `*--- Detalle del Pedido ---*\n`;
+
+    cart.forEach(item => {
+        const lineTotal = item.price * item.quantity;
+        message += `${item.quantity}x ${item.name} (${formatPrice(lineTotal)})\n`;
+    });
+
+    message += `\n*TOTAL:* ${formatPrice(total)}`;
+    
+    // Codificar el mensaje para la URL de WhatsApp
+    return encodeURIComponent(message);
+}
+
+checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('client-name').value;
+    const phone = document.getElementById('client-phone').value;
+    const address = document.getElementById('client-address').value;
+    const payment = document.getElementById('payment-method').value;
+
+    const waMessage = buildWhatsAppMessage(name, phone, address, payment);
+    
+    // Reemplaza el número a continuación con tu número de WhatsApp real (con código de país)
+    const whatsappNumber = '573111234567'; 
+    const waUrl = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
+
+    window.open(waUrl, '_blank');
+    
+    // Cerrar y resetear
+    checkoutModal.close();
+    // Opcional: limpiar carrito después de enviar.
+    // cart = [];
+    // updateCartDisplay();
+});
+
+
+// ====================================
+// 8. EVENT LISTENERS GENERALES
+// ====================================
+
+// Abrir y cerrar el Sidebar
+openCartBtn.addEventListener('click', () => {
+    cartSidebar.classList.add('open');
+    cartOverlay.classList.add('open');
+});
+
+closeCartBtn.addEventListener('click', () => {
+    cartSidebar.classList.remove('open');
+    cartOverlay.classList.remove('open');
+});
+
+cartOverlay.addEventListener('click', () => {
+    cartSidebar.classList.remove('open');
+    cartOverlay.classList.remove('open');
+});
+
+// Abrir Modal de Checkout
+checkoutBtn.addEventListener('click', () => {
+    if (cart.length > 0) {
+        checkoutModal.showModal();
+    }
+});
+
+cancelCheckoutBtn.addEventListener('click', () => {
+    checkoutModal.close();
+});
+
+// ====================================
+// 9. INICIO
+// ====================================
 
 document.addEventListener('DOMContentLoaded', () => {
     loadMenu();
-    updateCartDisplay(); 
+    updateCartDisplay(); // Inicializa el contador en 0
 });
