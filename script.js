@@ -2,15 +2,15 @@
 // 1. CONFIGURACIÓN INICIAL Y DATOS
 // ====================================
 
-// Define los índices de las columnas según tu estructura:
-// 0 (id), 1 (nombre), 2 (precio), 3 (categoria), 4 (descripcion), 5 (imagen)
+// Indices DEFINITIVOS para el CSV de 6 columnas:
+// 0 (ID), 1 (Nombre), 2 (Precio), 3 (Categoría), 4 (Descripción), 5 (Imagen)
 const COLUMN_INDICES = {
-    id: 0,
-    name: 1,
-    price: 2,
-    category: 3,
-    description: 4,
-    image: 5
+    ID: 0,
+    NAME: 1,        
+    PRICE: 2,       
+    CATEGORY: 3,    
+    DESCRIPTION: 4, 
+    IMAGE: 5        
 };
 
 let menuData = [];
@@ -41,6 +41,7 @@ const checkoutSubmitBtn = document.querySelector('.checkout-submit-btn');
 
 // Función de utilidad para formato de moneda (COP)
 const formatPrice = (price) => {
+    // Usamos 'es-CO' para el formato colombiano
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',
@@ -49,55 +50,57 @@ const formatPrice = (price) => {
 };
 
 // ====================================
-// 3. LECTURA Y PARSEO DEL CSV
+// 3. LECTURA Y PARSEO DEL CSV (Anti-Fallo)
 // ====================================
 
-// Función ULTRA-ROBUSTA para parsear CSV 
 function parseCSV(csvText) {
     
-    // 💡 SOLUCIÓN CRÍTICA: Pre-procesar el texto para eliminar saltos de línea internos
-    // que rompen la estructura CSV, como se vio en tu archivo.
-    // Esto convierte el CSV potencialmente multi-línea en una sola línea lógica por producto.
-    let cleanCsvText = csvText.replace(/[\r\n]+/g, ' ').trim();
+    // **Paso 1: Limpieza del texto**
+    // Reemplaza saltos de línea internos con un espacio, pero solo aquellos que no
+    // están seguidos por un ID numérico (que indica el inicio de una nueva fila, ej: 143,).
+    let cleanedText = csvText.replace(/\r?\n(?!\d{1,3},)/g, ' ').trim(); 
     
-    // La expresión regular para dividir ahora busca las comas que NO estén dentro de comillas
-    // y maneja los nuevos saltos de línea.
+    // 2. Divide por los saltos de línea restantes (los que inician una nueva fila).
+    const lines = cleanedText.split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length <= 1) return []; // Retorna si solo hay encabezado
     
-    // 1. Dividir en líneas (que ahora deberían ser correctas, aunque el código anterior ya lo hacía)
-    const lines = csvText.trim().split(/\r?\n/).filter(line => line.trim() !== '');
-    if (lines.length <= 1) return []; 
-    
-    // Ignorar la cabecera (primera línea)
-    const dataLines = lines.slice(1);
+    const dataLines = lines.slice(1); // Ignorar el encabezado
     const parsedData = [];
 
+    // Regex robusta para celdas (maneja comillas y vacíos)
+    const cellRegex = /(".*?"|[^,]*)(?=\s*,|\s*$)/g;
+    
     dataLines.forEach(line => {
-        // Expresión regular para separar celdas de CSV (maneja celdas con comas o vacías)
-        // Nota: Esta regex simple funciona mejor si los saltos de línea ya se quitaron.
-        const cells = line.match(/(".*?"|[^,]*)(?=\s*,|\s*$)/g);
+        // Ejecutar el regex de celdas en la línea limpia
+        const cells = line.match(cellRegex);
         
-        // Verifica que la fila tenga al menos 6 columnas
-        if (cells && cells.length >= 6) { 
-            const item = {};
-            
-            // Limpiar comillas y espacios de las celdas
-            const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
-            
-            item.id = cleanCells[COLUMN_INDICES.id];
-            item.name = cleanCells[COLUMN_INDICES.name];
-            
-            // Limpia el formato de precio (quita puntos de miles, ej: 15.000 -> 15000)
-            const priceString = cleanCells[COLUMN_INDICES.price];
-            item.price = parseFloat(priceString.replace(/\./g, '').replace(/,/g, '')); 
-            
-            item.category = cleanCells[COLUMN_INDICES.category];
-            item.description = cleanCells[COLUMN_INDICES.description] === '(Vacio)' || cleanCells[COLUMN_INDICES.description] === '' ? '' : cleanCells[COLUMN_INDICES.description];
-            item.image = cleanCells[COLUMN_INDICES.image];
+        // La línea DEBE tener exactamente 6 campos para ser válida
+        if (!cells || cells.length !== 6) {
+             return; 
+        }
 
-            // Solo agrega el producto si tiene un precio válido
-            if (!isNaN(item.price) && item.price > 0) {
-                parsedData.push(item);
-            }
+        // Limpiar comillas y espacios de las celdas
+        const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
+        
+        // 💡 ASIGNACIÓN A 6 COLUMNAS
+        const id = cleanCells[COLUMN_INDICES.ID];
+        const name = cleanCells[COLUMN_INDICES.NAME];
+        const priceString = cleanCells[COLUMN_INDICES.PRICE];
+        const category = cleanCells[COLUMN_INDICES.CATEGORY];
+        let description = cleanCells[COLUMN_INDICES.DESCRIPTION];
+        const image = cleanCells[COLUMN_INDICES.IMAGE];
+
+        // Procesamiento del precio (Debe ser un número puro en el CSV)
+        let price = parseFloat(priceString); 
+        
+        // Limpieza de descripción e imagen para campos vacíos
+        description = description === '(Vacio)' || description === '' ? '' : description;
+
+        // Solo agrega el producto si tiene un precio válido
+        if (!isNaN(price) && price > 0) {
+            parsedData.push({
+                id, name, price, category, description, image
+            });
         }
     });
 
@@ -112,7 +115,6 @@ async function loadMenu() {
     try {
         const response = await fetch(menuFilePath);
         if (!response.ok) {
-            // Error de red, 404, o CORS (la razón más probable)
             throw new Error(`Error al cargar el archivo: ${response.statusText}`);
         }
         const csvText = await response.text();
@@ -122,26 +124,20 @@ async function loadMenu() {
             renderCategories(menuData);
             renderProducts(menuData);
         } else {
-            // Este mensaje puede aparecer si el archivo carga pero el parser falla por los saltos de línea internos.
+            // Este mensaje sale si el archivo cargó, pero ninguna línea es válida.
             productsList.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                     <h3>🚨 Error: Menú Vacío.</h3>
                     <p>El archivo <strong>menu.csv</strong> se cargó, pero el código no pudo leer productos válidos.</p>
-                    <p><strong>Verifica:</strong> 1. Que la columna de Precio (C) solo contenga números y no esté vacía. 2. La estructura del CSV es correcta.</p>
+                    <p>Verifica que todas las filas tengan **6 columnas** exactas.</p>
                 </div>`;
         }
     } catch (error) {
         console.error('Error en la carga del menú:', error);
-        // Este es el mensaje que indica un problema de servidor o ruta (CORS).
         productsList.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                 <h3>❌ ¡Error Crítico de Carga!</h3>
-                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. La razón más común es que el navegador bloquea la lectura.</p>
-                <p><strong>Solución:</strong></p>
-                <ol style="list-style: decimal inside; padding: 10px; text-align: left; display: inline-block;">
-                    <li>Asegúrate de que <strong>menu.csv</strong> esté en la misma carpeta que <strong>index.html</strong>.</li>
-                    <li><strong>¡Paso Clave!</strong> Si lo abres con <strong>file://</strong> (desde tu disco duro), debes usar una extensión como <strong>Live Server</strong> en VS Code o subirlo a **GitHub Pages** para simular un servidor web.</li>
-                </ol>
+                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. Verifica que esté en la raíz del repositorio.</p>
             </div>`;
     }
 }
@@ -315,7 +311,6 @@ function buildWhatsAppMessage(name, phone, address, payment) {
 
     message += `\n*TOTAL:* ${formatPrice(total)}`;
     
-    // Codificar el mensaje para la URL de WhatsApp
     return encodeURIComponent(message);
 }
 
@@ -329,7 +324,7 @@ checkoutForm.addEventListener('submit', (e) => {
 
     const waMessage = buildWhatsAppMessage(name, phone, address, payment);
     
-    // Reemplaza el número a continuación con tu número de WhatsApp real (con código de país)
+    // **IMPORTANTE**: Reemplaza este número con tu número de WhatsApp real (con código de país)
     const whatsappNumber = '573111234567'; 
     const waUrl = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
 
@@ -337,9 +332,6 @@ checkoutForm.addEventListener('submit', (e) => {
     
     // Cerrar y resetear
     checkoutModal.close();
-    // Opcional: limpiar carrito después de enviar.
-    // cart = [];
-    // updateCartDisplay();
 });
 
 
@@ -380,5 +372,5 @@ cancelCheckoutBtn.addEventListener('click', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadMenu();
-    updateCartDisplay(); // Inicializa el contador en 0
+    updateCartDisplay(); 
 });
