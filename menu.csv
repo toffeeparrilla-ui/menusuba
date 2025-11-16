@@ -40,9 +40,9 @@ A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
 9,ChampiÃ±on y Pollo,16900,Crepes,"Trozos de Pollo, baÃ±ado en salsa de champiÃ±on con queso mozarella",assets/imagenes/Crepes/img185.jpg
 11,Crepes Mixto,17900,Crepes,"Trozos de lomo y pollo. baÃ±ado en salsa de la casa, con queso mozarella",assets/imagenes/Crepes/img191.jpg
 12,Wafles con Fruta,15900,Wafles,"Crujiente por fuera y suave por dentro, decorado con frutas frescas, crema chantilly y miel maple",assets/imagenes/Crepes/img197.jpg
-170,,,Wafles,,(Vacio)
-171,,,Wafles,,(Vacio)
-172,,,Wafles,,(Vacio)
+170,,1,Wafles,,(Vacio)
+171,,1,Wafles,,(Vacio)
+172,,1,Wafles,,(Vacio)
 173,,,Wafles,,(Vacio)
 120,Masato,5000,Bebidas Frias,,(Vacio)
 121,Rumis,5000,Bebidas Frias,,(Vacio)
@@ -172,3 +172,4 @@ A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
 164,Vino Espumoso Frances,79000,Vinos,,(Vacio)
 165,Sauvignon Blanco,79000,Vinos,,(Vacio)
 159,Casillero Del Diablo Cabernet Sauvignon,79900,Vinos,,(Vacio)
+
