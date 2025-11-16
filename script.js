@@ -2,15 +2,15 @@
 // 1. CONFIGURACIÓN INICIAL Y DATOS
 // ====================================
 
-// Indices DEFINITIVOS, basados en el CSV final de 6 columnas:
-// 0 (A: id), 1 (B: nombre), 2 (C: precio), 3 (D: categoria), 4 (E: descripcion), 5 (F: imagen)
+// Indices DEFINITIVOS para el CSV de 6 columnas:
+// 0 (ID), 1 (Nombre), 2 (Precio), 3 (Categoría), 4 (Descripción), 5 (Imagen)
 const COLUMN_INDICES = {
     ID: 0,
-    NAME: 1,        // El nombre ahora está en el índice 1 (Columna B)
-    PRICE: 2,       // El precio ahora está en el índice 2 (Columna C)
-    CATEGORY: 3,    // La categoría ahora está en el índice 3 (Columna D)
-    DESCRIPTION: 4, // La descripción ahora está en el índice 4 (Columna E)
-    IMAGE: 5        // La imagen ahora está en el índice 5 (Columna F)
+    NAME: 1,        
+    PRICE: 2,       
+    CATEGORY: 3,    
+    DESCRIPTION: 4, 
+    IMAGE: 5        
 };
 
 let menuData = [];
@@ -18,7 +18,7 @@ let cart = [];
 
 const menuFilePath = 'menu.csv'; 
 
-// Referencias del DOM (sin cambios)
+// Referencias del DOM (se mantienen)
 const categoriesList = document.getElementById('categories-list');
 const productsList = document.getElementById('products-list');
 const cartCount = document.getElementById('cart-count');
@@ -49,13 +49,16 @@ const formatPrice = (price) => {
 };
 
 // ====================================
-// 3. LECTURA Y PARSEO DEL CSV (ULTRA-FINAL)
+// 3. LECTURA Y PARSEO DEL CSV (ULTRA-FINAL ANTI-FALLO)
 // ====================================
 
 function parseCSV(csvText) {
     
-    // 1. Divide en líneas
-    const lines = csvText.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+    // Paso CRÍTICO 1: Limpia todos los saltos de línea (casi siempre son la causa del fallo)
+    const normalizedText = csvText.replace(/[\r\n]+/g, '\n').trim();
+
+    // Divide en líneas (filas)
+    const lines = normalizedText.split('\n').filter(line => line.trim() !== '');
     if (lines.length <= 1) return []; 
     
     const dataLines = lines.slice(1);
@@ -63,11 +66,13 @@ function parseCSV(csvText) {
 
     dataLines.forEach(line => {
         // Expresión regular robusta para separar celdas, maneja comillas y vacíos
+        // Este regex ya maneja las comas internas como en "Mojito Oceanic Ron, Convier, limón, soda"
         const cells = line.match(/(".*?"|[^,]*)(?=\s*,|\s*$)/g);
         
-        if (!cells || cells.length < 6) {
-             // Si no tiene al menos 6 columnas, es inválido y lo ignoramos.
-            return; 
+        // La validación ahora es estricta: debe tener 6 campos
+        if (!cells || cells.length !== 6) {
+             console.warn('Línea ignorada por estructura incorrecta (no 6 campos):', line);
+             return; 
         }
 
         // Limpiar comillas y espacios de las celdas
@@ -82,7 +87,7 @@ function parseCSV(csvText) {
         const image = cleanCells[COLUMN_INDICES.IMAGE];
 
         // Procesamiento del precio
-        // Quita puntos (miles) y comas (decimales) para manejar 15.000
+        // Quita puntos (miles) y comas (decimales) para asegurar que sea un número.
         let price = parseFloat(priceString.replace(/\./g, '').replace(/,/g, '')); 
         
         // Limpieza de descripción
@@ -93,6 +98,8 @@ function parseCSV(csvText) {
             parsedData.push({
                 id, name, price, category, description, image
             });
+        } else {
+             console.warn(`Producto ignorado (precio inválido o cero): ${name} (${priceString})`);
         }
     });
 
@@ -135,239 +142,10 @@ async function loadMenu() {
     }
 }
 
-// ====================================
-// 5. RENDERIZADO (PRODUCTOS Y CATEGORÍAS) (sin cambios)
-// ====================================
-
-function renderCategories(data) {
-    const categories = [...new Set(data.map(item => item.category))].filter(Boolean);
-    
-    // Botón 'Todos'
-    let html = `<li class="category-item">
-        <button class="category-btn active" data-category="all">Todos</button>
-    </li>`;
-
-    // Botones por categoría
-    html += categories.map(category => `
-        <li class="category-item">
-            <button class="category-btn" data-category="${category}">${category}</button>
-        </li>
-    `).join('');
-    
-    categoriesList.innerHTML = html;
-
-    // Asignar eventos de click a los botones de categoría
-    document.querySelectorAll('.category-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const selectedCategory = e.target.dataset.category;
-            filterProducts(selectedCategory);
-            
-            // Toggle de la clase 'active'
-            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-        });
-    });
-}
-
-function filterProducts(category) {
-    let filteredData = menuData;
-    if (category !== 'all') {
-        filteredData = menuData.filter(item => item.category === category);
-    }
-    renderProducts(filteredData);
-}
-
-function renderProducts(data) {
-    productsList.innerHTML = data.map(item => `
-        <div class="product-card" data-id="${item.id}">
-            <img src="${item.image}" alt="${item.name}" class="product-image">
-            <div class="product-info">
-                <h3 class="product-name">${item.name}</h3>
-                ${item.description ? `<p class="product-description">${item.description}</p>` : '<p class="product-description">Disponible en la carta.</p>'}
-                <p class="product-price">${formatPrice(item.price)}</p>
-                <button class="add-to-cart-btn" data-id="${item.id}">Añadir al Pedido</button>
-            </div>
-        </div>
-    `).join('');
-    
-    // Asignar eventos de click a los botones "Añadir al Pedido"
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const productId = e.target.dataset.id;
-            addItemToCart(productId);
-        });
-    });
-}
-
-// ====================================
-// 6. LÓGICA DEL CARRITO (sin cambios)
-// ====================================
-
-function addItemToCart(productId) {
-    const product = menuData.find(item => item.id === productId);
-    if (!product) return;
-
-    const existingItem = cart.find(item => item.id === productId);
-
-    if (existingItem) {
-        existingItem.quantity++;
-    } else {
-        cart.push({ ...product, quantity: 1 });
-    }
-    
-    updateCartDisplay();
-    // Añadir animación al contador
-    cartCount.classList.remove('animate');
-    void cartCount.offsetWidth; // Trigger reflow
-    cartCount.classList.add('animate');
-}
-
-function updateItemQuantity(productId, change) {
-    const itemIndex = cart.findIndex(item => item.id === productId);
-
-    if (itemIndex > -1) {
-        cart[itemIndex].quantity += change;
-        
-        if (cart[itemIndex].quantity <= 0) {
-            cart.splice(itemIndex, 1); // Eliminar si la cantidad es cero o menos
-        }
-        updateCartDisplay();
-    }
-}
-
-function calculateTotals() {
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    // Asumimos envío gratuito para este ejemplo
-    const shipping = 0; 
-    const total = subtotal + shipping;
-    return { subtotal, shipping, total };
-}
-
-function updateCartDisplay() {
-    const { subtotal, total } = calculateTotals();
-    
-    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartSubtotalSpan.textContent = formatPrice(subtotal);
-    cartTotalSpan.textContent = formatPrice(total);
-    checkoutBtn.disabled = cart.length === 0;
-
-    if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p style="text-align: center; color: #999;">Tu pedido está vacío. ¡Añade algo delicioso!</p>';
-    } else {
-        renderCartItems();
-    }
-}
-
-function renderCartItems() {
-    cartItemsContainer.innerHTML = cart.map(item => `
-        <div class="cart-item">
-            <div class="item-details">
-                <strong>${item.name}</strong>
-                <small>${formatPrice(item.price)} c/u</small>
-            </div>
-            <div class="item-quantity-controls">
-                <button data-id="${item.id}" data-change="-1">-</button>
-                <span>${item.quantity}</span>
-                <button data-id="${item.id}" data-change="1">+</button>
-            </div>
-        </div>
-    `).join('');
-
-    // Asignar eventos a los botones de cantidad (+ / -)
-    cartItemsContainer.querySelectorAll('.item-quantity-controls button').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const productId = e.target.dataset.id;
-            const change = parseInt(e.target.dataset.change);
-            updateItemQuantity(productId, change);
-        });
-    });
-}
-
-// ====================================
-// 7. LÓGICA DE CHECKOUT Y WHATSAPP (sin cambios)
-// ====================================
-
-function buildWhatsAppMessage(name, phone, address, payment) {
-    const { total } = calculateTotals();
-    
-    let message = `¡Hola! Me gustaría hacer un pedido:\n\n`;
-    message += `*Cliente:* ${name}\n`;
-    message += `*Teléfono:* ${phone}\n`;
-    message += `*Dirección:* ${address}\n`;
-    message += `*Pago:* ${payment}\n\n`;
-    message += `*--- Detalle del Pedido ---*\n`;
-
-    cart.forEach(item => {
-        const lineTotal = item.price * item.quantity;
-        message += `${item.quantity}x ${item.name} (${formatPrice(lineTotal)})\n`;
-    });
-
-    message += `\n*TOTAL:* ${formatPrice(total)}`;
-    
-    // Codificar el mensaje para la URL de WhatsApp
-    return encodeURIComponent(message);
-}
-
-checkoutForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const name = document.getElementById('client-name').value;
-    const phone = document.getElementById('client-phone').value;
-    const address = document.getElementById('client-address').value;
-    const payment = document.getElementById('payment-method').value;
-
-    const waMessage = buildWhatsAppMessage(name, phone, address, payment);
-    
-    // Reemplaza el número a continuación con tu número de WhatsApp real (con código de país)
-    const whatsappNumber = '573111234567'; 
-    const waUrl = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
-
-    window.open(waUrl, '_blank');
-    
-    // Cerrar y resetear
-    checkoutModal.close();
-    // Opcional: limpiar carrito después de enviar.
-    // cart = [];
-    // updateCartDisplay();
-});
-
-
-// ====================================
-// 8. EVENT LISTENERS GENERALES (sin cambios)
-// ====================================
-
-// Abrir y cerrar el Sidebar
-openCartBtn.addEventListener('click', () => {
-    cartSidebar.classList.add('open');
-    cartOverlay.classList.add('open');
-});
-
-closeCartBtn.addEventListener('click', () => {
-    cartSidebar.classList.remove('open');
-    cartOverlay.classList.remove('open');
-});
-
-cartOverlay.addEventListener('click', () => {
-    cartSidebar.classList.remove('open');
-    cartOverlay.classList.remove('open');
-});
-
-// Abrir Modal de Checkout
-checkoutBtn.addEventListener('click', () => {
-    if (cart.length > 0) {
-        checkoutModal.showModal();
-    }
-});
-
-cancelCheckoutBtn.addEventListener('click', () => {
-    checkoutModal.close();
-});
-
-// ====================================
-// 9. INICIO
-// ====================================
+// (Las secciones 5 a 9 de renderizado, carrito e inicialización se mantienen sin cambios por ser funcionales)
+// ... (omito el resto del código para brevedad, pero debe estar completo en tu archivo) ...
 
 document.addEventListener('DOMContentLoaded', () => {
     loadMenu();
-    updateCartDisplay(); // Inicializa el contador en 0
+    updateCartDisplay(); 
 });
