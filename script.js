@@ -18,7 +18,7 @@ let cart = [];
 
 const menuFilePath = 'menu.csv'; 
 
-// Referencias del DOM
+// Referencias del DOM (Se mantienen)
 const categoriesList = document.getElementById('categories-list');
 const productsList = document.getElementById('products-list');
 const cartCount = document.getElementById('cart-count');
@@ -39,9 +39,7 @@ const checkoutSubmitBtn = document.querySelector('.checkout-submit-btn');
 // 2. UTILIDADES DEL SISTEMA
 // ====================================
 
-// Función de utilidad para formato de moneda (COP)
 const formatPrice = (price) => {
-    // Usamos 'es-CO' para el formato colombiano
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',
@@ -50,36 +48,32 @@ const formatPrice = (price) => {
 };
 
 // ====================================
-// 3. LECTURA Y PARSEO DEL CSV (Anti-Fallo)
+// 3. LECTURA Y PARSEO DEL CSV (ULTRA-ROBUSTO)
 // ====================================
 
 function parseCSV(csvText) {
     
-    // **Paso 1: Limpieza del texto**
-    // Reemplaza saltos de línea internos con un espacio, pero solo aquellos que no
-    // están seguidos por un ID numérico (que indica el inicio de una nueva fila, ej: 143,).
+    // 1. Limpieza de saltos de línea: Une los campos rotos por saltos de línea internos.
     let cleanedText = csvText.replace(/\r?\n(?!\d{1,3},)/g, ' ').trim(); 
     
-    // 2. Divide por los saltos de línea restantes (los que inician una nueva fila).
+    // 2. Divide en líneas.
     const lines = cleanedText.split(/\r?\n/).filter(line => line.trim() !== '');
-    if (lines.length <= 1) return []; // Retorna si solo hay encabezado
+    if (lines.length <= 1) return []; 
     
-    const dataLines = lines.slice(1); // Ignorar el encabezado
+    const dataLines = lines.slice(1);
     const parsedData = [];
 
-    // Regex robusta para celdas (maneja comillas y vacíos)
+    // Regex robusta para celdas (maneja comillas)
     const cellRegex = /(".*?"|[^,]*)(?=\s*,|\s*$)/g;
     
     dataLines.forEach(line => {
-        // Ejecutar el regex de celdas en la línea limpia
         const cells = line.match(cellRegex);
         
-        // La línea DEBE tener exactamente 6 campos para ser válida
+        // Debe tener exactamente 6 campos
         if (!cells || cells.length !== 6) {
              return; 
         }
 
-        // Limpiar comillas y espacios de las celdas
         const cleanCells = cells.map(cell => cell ? cell.trim().replace(/^"|"$/g, '') : '');
         
         // 💡 ASIGNACIÓN A 6 COLUMNAS
@@ -90,10 +84,9 @@ function parseCSV(csvText) {
         let description = cleanCells[COLUMN_INDICES.DESCRIPTION];
         const image = cleanCells[COLUMN_INDICES.IMAGE];
 
-        // Procesamiento del precio (Debe ser un número puro en el CSV)
+        // Precio es un número puro
         let price = parseFloat(priceString); 
         
-        // Limpieza de descripción e imagen para campos vacíos
         description = description === '(Vacio)' || description === '' ? '' : description;
 
         // Solo agrega el producto si tiene un precio válido
@@ -108,14 +101,15 @@ function parseCSV(csvText) {
 }
 
 // ====================================
-// 4. CARGA DEL MENÚ
+// 4. CARGA DEL MENÚ (Se mantiene)
 // ====================================
 
 async function loadMenu() {
     try {
         const response = await fetch(menuFilePath);
         if (!response.ok) {
-            throw new Error(`Error al cargar el archivo: ${response.statusText}`);
+            // Este es un error 404/403: El archivo no se encontró o no se pudo acceder.
+            throw new Error(`Error ${response.status}: No se pudo acceder al archivo.`);
         }
         const csvText = await response.text();
         menuData = parseCSV(csvText);
@@ -124,20 +118,19 @@ async function loadMenu() {
             renderCategories(menuData);
             renderProducts(menuData);
         } else {
-            // Este mensaje sale si el archivo cargó, pero ninguna línea es válida.
+            // Este mensaje aparece si el archivo cargó, pero no se leyó nada válido.
             productsList.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                     <h3>🚨 Error: Menú Vacío.</h3>
-                    <p>El archivo <strong>menu.csv</strong> se cargó, pero el código no pudo leer productos válidos.</p>
-                    <p>Verifica que todas las filas tengan **6 columnas** exactas.</p>
+                    <p>El código cargó el CSV, pero ninguna línea fue válida. Esto sucede si la **estructura (6 columnas)** o el **precio (solo números)** sigue siendo incorrecto en alguna fila.</p>
                 </div>`;
         }
     } catch (error) {
-        console.error('Error en la carga del menú:', error);
+        console.error('Error Crítico:', error);
         productsList.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #cc0000; background-color: #ffe0e0; border-radius: 8px;">
                 <h3>❌ ¡Error Crítico de Carga!</h3>
-                <p>No se pudo acceder al archivo <strong>menu.csv</strong>. Verifica que esté en la raíz del repositorio.</p>
+                <p>No se pudo descargar el archivo <strong>menu.csv</strong>. (${error.message})</p>
             </div>`;
     }
 }
@@ -145,31 +138,23 @@ async function loadMenu() {
 // ====================================
 // 5. RENDERIZADO (PRODUCTOS Y CATEGORÍAS)
 // ====================================
+// ... (El resto de las funciones de renderizado, carrito y checkout se mantienen igual) ...
 
 function renderCategories(data) {
     const categories = [...new Set(data.map(item => item.category))].filter(Boolean);
-    
-    // Botón 'Todos'
     let html = `<li class="category-item">
         <button class="category-btn active" data-category="all">Todos</button>
     </li>`;
-
-    // Botones por categoría
     html += categories.map(category => `
         <li class="category-item">
             <button class="category-btn" data-category="${category}">${category}</button>
         </li>
     `).join('');
-    
     categoriesList.innerHTML = html;
-
-    // Asignar eventos de click a los botones de categoría
     document.querySelectorAll('.category-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const selectedCategory = e.target.dataset.category;
             filterProducts(selectedCategory);
-            
-            // Toggle de la clase 'active'
             document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
             e.target.classList.add('active');
         });
@@ -197,7 +182,6 @@ function renderProducts(data) {
         </div>
     `).join('');
     
-    // Asignar eventos de click a los botones "Añadir al Pedido"
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const productId = e.target.dataset.id;
@@ -207,36 +191,30 @@ function renderProducts(data) {
 }
 
 // ====================================
-// 6. LÓGICA DEL CARRITO
+// 6. LÓGICA DEL CARRITO (Se mantiene)
 // ====================================
 
 function addItemToCart(productId) {
     const product = menuData.find(item => item.id === productId);
     if (!product) return;
-
     const existingItem = cart.find(item => item.id === productId);
-
     if (existingItem) {
         existingItem.quantity++;
     } else {
         cart.push({ ...product, quantity: 1 });
     }
-    
     updateCartDisplay();
-    // Añadir animación al contador
     cartCount.classList.remove('animate');
-    void cartCount.offsetWidth; // Trigger reflow
+    void cartCount.offsetWidth;
     cartCount.classList.add('animate');
 }
 
 function updateItemQuantity(productId, change) {
     const itemIndex = cart.findIndex(item => item.id === productId);
-
     if (itemIndex > -1) {
         cart[itemIndex].quantity += change;
-        
         if (cart[itemIndex].quantity <= 0) {
-            cart.splice(itemIndex, 1); // Eliminar si la cantidad es cero o menos
+            cart.splice(itemIndex, 1);
         }
         updateCartDisplay();
     }
@@ -244,20 +222,17 @@ function updateItemQuantity(productId, change) {
 
 function calculateTotals() {
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    // Asumimos envío gratuito para este ejemplo
-    const shipping = 0; 
+    const shipping = 0;
     const total = subtotal + shipping;
     return { subtotal, shipping, total };
 }
 
 function updateCartDisplay() {
     const { subtotal, total } = calculateTotals();
-    
     cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartSubtotalSpan.textContent = formatPrice(subtotal);
     cartTotalSpan.textContent = formatPrice(total);
     checkoutBtn.disabled = cart.length === 0;
-
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<p style="text-align: center; color: #999;">Tu pedido está vacío. ¡Añade algo delicioso!</p>';
     } else {
@@ -280,7 +255,6 @@ function renderCartItems() {
         </div>
     `).join('');
 
-    // Asignar eventos a los botones de cantidad (+ / -)
     cartItemsContainer.querySelectorAll('.item-quantity-controls button').forEach(button => {
         button.addEventListener('click', (e) => {
             const productId = e.target.dataset.id;
@@ -291,7 +265,7 @@ function renderCartItems() {
 }
 
 // ====================================
-// 7. LÓGICA DE CHECKOUT Y WHATSAPP
+// 7. LÓGICA DE CHECKOUT Y WHATSAPP (Se mantiene)
 // ====================================
 
 function buildWhatsAppMessage(name, phone, address, payment) {
@@ -324,13 +298,10 @@ checkoutForm.addEventListener('submit', (e) => {
 
     const waMessage = buildWhatsAppMessage(name, phone, address, payment);
     
-    // **IMPORTANTE**: Reemplaza este número con tu número de WhatsApp real (con código de país)
-    const whatsappNumber = '573111234567'; 
+    const whatsappNumber = '573111234567'; // Reemplaza con tu número real
     const waUrl = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
 
     window.open(waUrl, '_blank');
-    
-    // Cerrar y resetear
     checkoutModal.close();
 });
 
@@ -339,7 +310,6 @@ checkoutForm.addEventListener('submit', (e) => {
 // 8. EVENT LISTENERS GENERALES
 // ====================================
 
-// Abrir y cerrar el Sidebar
 openCartBtn.addEventListener('click', () => {
     cartSidebar.classList.add('open');
     cartOverlay.classList.add('open');
@@ -355,7 +325,6 @@ cartOverlay.addEventListener('click', () => {
     cartOverlay.classList.remove('open');
 });
 
-// Abrir Modal de Checkout
 checkoutBtn.addEventListener('click', () => {
     if (cart.length > 0) {
         checkoutModal.showModal();
