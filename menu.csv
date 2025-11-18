@@ -3,12 +3,12 @@ A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
 45,Salchipapa Americana,15900,Entradas,,assets/imagenes/Entradas/img49.jpg
 43,Coctel de Camarones,18900,Entradas,Canasta Crocante de Platano con Camarones,assets/imagenes/Entradas/img40.jpg
 47,Pechuga a la Plancha,22900,Especiales Grille,Pechuga a la parrilla acompañada de papa criolla Pidelo con Ensalada de la casa o Vegetales al wok,assets/imagenes/Especiales Grille/img63.jpg
-46,Cerdo Tipacay,23900,Especiales Grille,Cerdo con vegetales al wok ACOMPAÃ‘ADO DE papa a la Francesa,assets/imagenes/Especiales Grille/img53.jpg
+46,Cerdo Tipacay,23900,Especiales Grille,Cerdo con vegetales al wok ACOMPA NADO DE papa a la Francesa,assets/imagenes/Especiales Grille/img53.jpg
 49,Steak a la Parrilla,23900,Especiales Grille,PIDELO CON Ensalada de la casa o Vegetales al wok,assets/imagenes/Especiales Grille/img66.jpg
 93,Mini Churrasco,26900,Especiales Grille,"Delicioso Corte de Chata. acompañado de Yuca y chimichurri, PIDELO con Ensalada de la casa o Vegetales al wok",assets/imagenes/Especiales Grille/img82.jpg
 94,Pechuga en Salsa de Champiñones,28900,Especiales Grille,Acompañado de yuca frita y ensalada de la Casa,assets/imagenes/Especiales Grille/img73.jpg
 95,Pechuga Parmesana,28900,Especiales Grille,"Acompañado de tomate, ensalada de la casa y papa francesa.",assets/imagenes/Especiales Grille/img70.jpg
-48,Salteado del AtlÃ¡ntico,31500,Especiales Grille,Cubos de Salmón salteados con vegetales al wok ACOMPAÃ‘ADOS con papa a la francesa,assets/imagenes/Especiales Grille/img60.jpg
+48,Salteado del Atlantico,31500,Especiales Grille,Cubos de Salmón salteados con vegetales al wok ACOMPANADOS con papa a la francesa,assets/imagenes/Especiales Grille/img60.jpg
 91,Costillas BBQ,33900,Especiales Grille,350gr de Deliciosas costillas de Cerdo. bañadas en salsa bbq. Acompañado de Aros de Cebolla. Papa Francesa y ensalada de la casa,assets/imagenes/Especiales Grille/img89.jpg
 96,Punta de Anca,40900,Especiales Grille,Acompañado de papa francesa. ensalada de aguacate y chimichurri,assets/imagenes/Especiales Grille/img95.jpg
 89,Bife de Chorizo,41900,Especiales Grille,Acompañado de papa francesa. ensalada de la casa y chimichurri,assets/imagenes/Especiales Grille/img79.jpg
@@ -19,19 +19,19 @@ A (id),B (nombre),C (precio),D (categoria),E (descripcion),F (imagen)
 1,Bagre en Salsa Criolla,33900,A La Marinera,"Acompañado de Arroz, Ensalada de la casa, patacon y yuca frita",assets/imagenes/A La Marinera/img13.jpg
 5,Trucha al ajillo,33900,A La Marinera,O tambien Pidelo en salsa de champiñones Acompañado de Ensalada de la casa o papa fracesa,assets/imagenes/A La Marinera/img12.jpg
 4,Salmon,42900,A La Marinera,"Pidelo en salsa de Maracuya o al Ajillo, Acompañado de ensalada de la casa, con pure de papa o papa a la francesa",assets/imagenes/A La Marinera/img139.jpg
-86,Pasta Alfredo,19900,Pastas De La Casa,Con jamón y Maiz Tierno ACOMPAÃ‘ADO de Pan de Ajo,assets/imagenes/Pastas De La Casa/img131.jpg
-87,Pasta Carbonara,21900,Pastas De La Casa,Con tocineta y champiñones ACOMPAÃ‘ADO de Pan de Ajo,assets/imagenes/Pastas De La Casa/img133.jpg
-85,Pasta a la Marinera,29900,Pastas De La Casa,ACOMPAÃ‘ADO de Pan de Ajo,assets/imagenes/Pastas De La Casa/img120.jpg
+86,Pasta Alfredo,19900,Pastas De La Casa,Con jamón y Maiz Tierno ACOMPANADO de Pan de Ajo,assets/imagenes/Pastas De La Casa/img131.jpg
+87,Pasta Carbonara,21900,Pastas De La Casa,Con tocineta y champiñones ACOMPANADO de Pan de Ajo,assets/imagenes/Pastas De La Casa/img133.jpg
+85,Pasta a la Marinera,29900,Pastas De La Casa,ACOMPA NADO de Pan de Ajo,assets/imagenes/Pastas De La Casa/img120.jpg
 88,Pasta de la Casa,34900,Pastas De La Casa,Con cubos de Salmón y Langostinos,assets/imagenes/Pastas De La Casa/img123.jpg
 54,Especial Jakimeshi Pollo,21900,Especiales Wok,Mezcla de Pollo o lomo de res con arroz frito y vegetales,assets/imagenes/Especiales Wok/img151.jpg
 53,Especial Jakimeshi Lomo,22900,Especiales Wok,Mezcla de Pollo o lomo de res con arroz frito y vegetales,assets/imagenes/Especiales Wok/img152.jpg
 55,Menu Infantil,23900,Especiales Wok,Trozos de Pollo en salsa teriyaki Acompañado de arroz yakimeshi o pastas. Incluye Jugo y Helado NOTA: Este menu es solo para niños.,assets/imagenes/Especiales Wok/img194.jpg
 50,Beef Teriyaki,24900,Especiales Wok,Lomo de res en salsa teriyaki Acompañado de Vegetales a la Plancha,assets/imagenes/Especiales Wok/img157.jpg
-51,Chiken Noodles,24900,Especiales Wok,"Pasta Ramel al wok con 200gr de pollo ACOMPAÃ‘ADO Champiñones, maiz tierno y Brocoli, Bañado en salsa teriyaki",assets/imagenes/Especiales Wok/img161.jpg
-52,Chiken Teriyaki,24900,Especiales Wok,Pechuga de Pollo en salsa teriyaki ACOMPAÃ‘ADO de vegetales al wok,assets/imagenes/Especiales Wok/img145.jpg
+51,Chiken Noodles,24900,Especiales Wok,"Pasta Ramel al wok con 200gr de pollo ACOMPA NADO Champiñones, maiz tierno y Brocoli, Bañado en salsa teriyaki",assets/imagenes/Especiales Wok/img161.jpg
+52,Chiken Teriyaki,24900,Especiales Wok,Pechuga de Pollo en salsa teriyaki ACOMPA NADO de vegetales al wok,assets/imagenes/Especiales Wok/img145.jpg
 56,Teppanyaki Conection,28900,Especiales Wok,"Lomo de res y pechuga a la plancha, marinados en salsa teriyaki, acompañado de vegetales a la planchay arroz yakimechi",assets/imagenes/Especiales Wok/img170.jpg
 59,Tokio Mignon,28900,Especiales Wok,"200gr de Lomo con tocineta (libre de Grasa), Acompañado de Champiñones y arroz yakimeshi",assets/imagenes/Especiales Wok/img148.jpg
-58,Teriyaki Mixto,33900,Especiales Wok,"Langostinos, lomo de res, camarones, trozos de pollo. marinados en salsa teriyaki ACOMPAÃ‘ADO de vegetales a la plancha y Arroz Yakimeshi",assets/imagenes/Especiales Wok/img164.jpg
+58,Teriyaki Mixto,33900,Especiales Wok,"Langostinos, lomo de res, camarones, trozos de pollo. marinados en salsa teriyaki ACOMPANADO de vegetales a la plancha y Arroz Yakimeshi",assets/imagenes/Especiales Wok/img164.jpg
 57,Teppanyaki de Camarones,34900,Especiales Wok,Vegetales al wok con camarones salteados,assets/imagenes/Especiales Wok/img167.jpg
 6,Teriyaki ClÃ¡sico,64900,Combos Teriyaki,"5 porciones con Lomo de res. trozos de pechuga y cerdo, con vegetales al wok y arroz yakimeshi",assets/imagenes/Combos Teriyaki/img223.jpg
 8,Teriyaki Familiar,71900,Combos Teriyaki,"5 porciones con Lomo de res, trozos de pechuga y cerdo con vegetales al wok y arroz yakimeshi Acompañado de Papa a la Francesa y Gaseosa",assets/imagenes/Combos Teriyaki/img211.jpg
