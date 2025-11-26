@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú Digital Toffe</title>
+    
     <link rel="stylesheet" href="style.css">
+    
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -14,6 +16,7 @@
             <img src="assets/logo-toffe.jpg" alt="Logo de Toffe Parrilla & Wok" class="header-logo" id="logo">
             <h1>Toffe Parrilla & Wok</h1>
         </div>
+        
         <div class="cart-icon-container" id="open-cart-btn">
             <span id="cart-count">0</span>
             🍽️
@@ -39,7 +42,8 @@
             <button class="close-btn" id="close-cart-btn">✖</button>
         </div>
         
-        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-items" id="cart-items">
+            </div>
 
         <div class="cart-summary">
             <p>Subtotal: <span id="cart-subtotal">$0</span></p>
@@ -55,13 +59,13 @@
         <h3>Datos de Entrega</h3>
         <form id="checkout-form">
             <label for="client-name">Nombre:</label>
-            <input type="text" id="client-name" name="client-name" required>
+            <input type="text" id="client-name" name="client-name" required placeholder="Tu nombre completo">
 
             <label for="client-phone">Teléfono (WhatsApp):</label>
-            <input type="tel" id="client-phone" name="client-phone" required>
+            <input type="tel" id="client-phone" name="client-phone" required placeholder="Para confirmar el pedido">
 
             <label for="client-address">Dirección:</label>
-            <textarea id="client-address" name="client-address" rows="3" required></textarea>
+            <textarea id="client-address" name="client-address" rows="3" required placeholder="Dirección exacta de entrega"></textarea>
 
             <label for="payment-method">Método de Pago:</label>
             <select id="payment-method" name="payment-method" required>
@@ -79,5 +83,6 @@
 
     <script src="data.js"></script>
     <script src="script.js"></script>
+
 </body>
 </html>

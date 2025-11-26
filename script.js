@@ -1,13 +1,13 @@
 // ====================================
-// 1. CONFIGURACIÓN
+// 1. CONFIGURACIÓN Y VARIABLES
 // ====================================
 
 let cart = [];
 
-// Cargamos los datos desde la variable global MENU_DATA (del archivo data.js)
+// Verificamos si MENU_DATA ya cargó desde el archivo data.js
 let menuData = typeof MENU_DATA !== 'undefined' ? MENU_DATA : [];
 
-// Elementos del DOM
+// Referencias a elementos del HTML (DOM)
 const categoriesList = document.getElementById('categories-list');
 const productsList = document.getElementById('products-list');
 const cartCount = document.getElementById('cart-count');
@@ -23,12 +23,14 @@ const checkoutModal = document.getElementById('checkout-modal');
 const checkoutForm = document.getElementById('checkout-form');
 const cancelCheckoutBtn = document.getElementById('cancel-checkout-btn');
 
+// Imagen por defecto si alguna falla o no existe
 const PLACEHOLDER_IMAGE = 'assets/placeholder.jpg'; 
 
 // ====================================
 // 2. UTILIDADES
 // ====================================
 
+// Formato de moneda para Colombia (COP)
 const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
@@ -46,15 +48,22 @@ function initMenu() {
         renderCategories(menuData);
         renderProducts(menuData, 'all');
     } else {
-        productsList.innerHTML = `<div style="text-align: center; padding: 20px;"><h3>No se encontraron productos.</h3><p>Verifica el archivo data.js</p></div>`;
+        productsList.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <h3>No se encontraron productos.</h3>
+                <p>Asegúrate de que el archivo <strong>data.js</strong> esté enlazado correctamente en el HTML antes que este script.</p>
+            </div>`;
     }
 }
 
+// Renderizar los botones de las categorías
 function renderCategories(data) {
     const categories = [...new Set(data.map(item => item.category))].filter(Boolean);
     
+    // Botón "Todos"
     let html = `<li class="category-item"><button class="category-btn active" data-category="all">Todos</button></li>`;
     
+    // Botones dinámicos
     html += categories.map(cat => `
         <li class="category-item">
             <button class="category-btn" data-category="${cat}">${cat}</button>
@@ -63,22 +72,43 @@ function renderCategories(data) {
     
     categoriesList.innerHTML = html;
 
+    // Eventos de click para filtrar
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            // Quitar clase active de todos y ponerla al actual
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
-            renderProducts(menuData, e.target.dataset.category);
+            
+            // Filtrar productos
+            const category = e.target.dataset.category;
+            renderProducts(menuData, category);
         });
     });
 }
 
+// Renderizar las tarjetas de productos
 function renderProducts(data, category) {
-    let filtered = category === 'all' ? data : data.filter(p => p.category === category);
+    // Filtrar por categoría seleccionada
+    const filtered = category === 'all' ? data : data.filter(p => p.category === category);
     
     productsList.innerHTML = filtered.map(item => {
-        let imgHtml = item.image ? 
-            `<img src="${item.image}" alt="${item.name}" class="product-image" onerror="this.src='${PLACEHOLDER_IMAGE}'">` : 
-            `<div class="product-card-no-image"></div>`;
+        // Lógica de imagen: Si hay ruta, usa img tag. Si no, usa div vacío o placeholder.
+        // 💡 Agregamos loading="lazy" para optimizar velocidad
+        let imgHtml = '';
+        
+        if (item.image && item.image.trim() !== '' && item.image !== '(Vacio)') {
+            imgHtml = `
+                <img 
+                    src="${item.image}" 
+                    alt="${item.name}" 
+                    class="product-image" 
+                    loading="lazy" 
+                    onerror="this.onerror=null; this.src='${PLACEHOLDER_IMAGE}';"
+                >
+            `;
+        } else {
+            imgHtml = `<div class="product-card-no-image"></div>`;
+        }
 
         return `
         <div class="product-card">
@@ -92,8 +122,12 @@ function renderProducts(data, category) {
         </div>`;
     }).join('');
 
+    // Reactivar eventos de los botones "Añadir"
     document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => addItemToCart(parseInt(e.target.dataset.id)));
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            addItemToCart(id);
+        });
     });
 }
 
@@ -111,29 +145,53 @@ function addItemToCart(id) {
     } else {
         cart.push({ ...product, quantity: 1 });
     }
+    
     updateCart();
     
-    // Animación
+    // Pequeña animación en el icono del carrito
     cartCount.classList.remove('animate');
-    void cartCount.offsetWidth;
+    void cartCount.offsetWidth; // Reinicia la animación
     cartCount.classList.add('animate');
 }
 
-function updateCart() {
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const total = subtotal; // + envío si aplica
+// Función para botones + y - dentro del carrito
+// Se declara global (window) para que funcione con el onclick del HTML generado
+window.changeQty = (id, delta) => {
+    const index = cart.findIndex(item => item.id === id);
+    if (index > -1) {
+        cart[index].quantity += delta;
+        
+        // Si la cantidad llega a 0, eliminamos el producto
+        if (cart[index].quantity <= 0) {
+            cart.splice(index, 1);
+        }
+        updateCart();
+    }
+};
 
+function updateCart() {
+    // Calcular totales
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = subtotal; // Aquí podrías sumar envío si quisieras
+
+    // Actualizar textos
     cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartSubtotalSpan.textContent = formatPrice(subtotal);
     cartTotalSpan.textContent = formatPrice(total);
+    
+    // Habilitar/Deshabilitar botón de pedir
     checkoutBtn.disabled = cart.length === 0;
 
+    // Renderizar lista del carrito
     if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p style="text-align: center; color: #999;">Tu pedido está vacío.</p>';
+        cartItemsContainer.innerHTML = '<p style="text-align: center; color: #999; margin-top: 20px;">Tu pedido está vacío.</p>';
     } else {
         cartItemsContainer.innerHTML = cart.map(item => `
             <div class="cart-item">
-                <div class="item-details"><strong>${item.name}</strong><br><small>${formatPrice(item.price)} c/u</small></div>
+                <div class="item-details">
+                    <strong>${item.name}</strong><br>
+                    <small>${formatPrice(item.price)} c/u</small>
+                </div>
                 <div class="item-quantity-controls">
                     <button onclick="changeQty(${item.id}, -1)">-</button>
                     <span>${item.quantity}</span>
@@ -144,44 +202,87 @@ function updateCart() {
     }
 }
 
-// Función global para ser llamada desde el HTML generado
-window.changeQty = (id, delta) => {
-    const index = cart.findIndex(item => item.id === id);
-    if (index > -1) {
-        cart[index].quantity += delta;
-        if (cart[index].quantity <= 0) cart.splice(index, 1);
-        updateCart();
-    }
-};
-
 // ====================================
-// 5. WHATSAPP
+// 5. FINALIZAR PEDIDO (WHATSAPP)
 // ====================================
 
 checkoutForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Evita que la página se recargue
+    
     const name = document.getElementById('client-name').value;
     const phone = document.getElementById('client-phone').value;
     const address = document.getElementById('client-address').value;
     const payment = document.getElementById('payment-method').value;
 
-    let msg = `¡Hola! Quiero pedir:\n\n*Cliente:* ${name}\n*Tel:* ${phone}\n*Dir:* ${address}\n*Pago:* ${payment}\n\n*Pedido:*\n`;
-    cart.forEach(item => msg += `- ${item.quantity}x ${item.name} (${formatPrice(item.price * item.quantity)})\n`);
-    msg += `\n*TOTAL: ${cartTotalSpan.textContent}*`;
+    // Construir mensaje de WhatsApp
+    let msg = `¡Hola Toffe! 👋 Quiero realizar el siguiente pedido:\n\n`;
+    msg += `*Cliente:* ${name}\n`;
+    msg += `*Teléfono:* ${phone}\n`;
+    msg += `*Dirección:* ${address}\n`;
+    msg += `*Método de Pago:* ${payment}\n\n`;
+    msg += `*--- DETALLE DEL PEDIDO ---*\n`;
 
-    const whatsappNumber = '573111234567'; // 🚨 TU NÚMERO AQUÍ
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+    cart.forEach(item => {
+        const totalLine = item.price * item.quantity;
+        msg += `- ${item.quantity}x ${item.name} (${formatPrice(totalLine)})\n`;
+    });
+
+    msg += `\n*TOTAL A PAGAR: ${cartTotalSpan.textContent}*`;
+
+    // Reemplaza este número con el tuyo (Código país + número)
+    const whatsappNumber = '573219959831'; 
+    
+    const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+
+    window.open(waUrl, '_blank');
+    
+    checkoutModal.close();
+    // Opcional: Limpiar carrito
+    // cart = []; updateCart();
+});
+
+// ====================================
+// 6. EVENTOS DE INTERFAZ (UI)
+// ====================================
+
+// Abrir carrito
+openCartBtn.addEventListener('click', () => {
+    cartSidebar.classList.add('open');
+    cartOverlay.classList.add('open');
+});
+
+// Cerrar carrito (botón X)
+closeCartBtn.addEventListener('click', () => {
+    cartSidebar.classList.remove('open');
+    cartOverlay.classList.remove('open');
+});
+
+// Cerrar carrito (clic afuera)
+cartOverlay.addEventListener('click', () => {
+    cartSidebar.classList.remove('open');
+    cartOverlay.classList.remove('open');
+});
+
+// Abrir Modal de Checkout
+checkoutBtn.addEventListener('click', () => {
+    if (cart.length > 0) {
+        // Cerramos el sidebar para ver mejor el modal
+        cartSidebar.classList.remove('open');
+        cartOverlay.classList.remove('open');
+        checkoutModal.showModal();
+    }
+});
+
+// Cancelar/Cerrar Modal
+cancelCheckoutBtn.addEventListener('click', () => {
     checkoutModal.close();
 });
 
-// Eventos UI
-openCartBtn.addEventListener('click', () => { cartSidebar.classList.add('open'); cartOverlay.classList.add('open'); });
-closeCartBtn.addEventListener('click', () => { cartSidebar.classList.remove('open'); cartOverlay.classList.remove('open'); });
-cartOverlay.addEventListener('click', () => { cartSidebar.classList.remove('open'); cartOverlay.classList.remove('open'); });
-checkoutBtn.addEventListener('click', () => { if(cart.length > 0) checkoutModal.showModal(); });
-cancelCheckoutBtn.addEventListener('click', () => checkoutModal.close());
+// ====================================
+// 7. INICIALIZACIÓN
+// ====================================
 
 document.addEventListener('DOMContentLoaded', () => {
     initMenu();
-    updateCart();
+    updateCart(); 
 });
