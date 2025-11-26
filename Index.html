@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Digital Toffe</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-title-container">
+            <img src="assets/logo-toffe.jpg" alt="Logo de Toffe Parrilla & Wok" class="header-logo" id="logo">
+            <h1>Toffe Parrilla & Wok</h1>
+        </div>
+        <div class="cart-icon-container" id="open-cart-btn">
+            <span id="cart-count">0</span>
+            🍽️
+        </div>
+    </header>
+
+    <main class="main-content">
+        <nav class="categories-nav">
+            <ul id="categories-list">
+                </ul>
+        </nav>
+
+        <section class="products-container">
+            <div id="products-list" class="products-list">
+                </div>
+        </section>
+    </main>
+
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <aside class="cart-sidebar" id="cart-sidebar">
+        <div class="sidebar-header">
+            <h2>🍽️ Tu Pedido</h2>
+            <button class="close-btn" id="close-cart-btn">✖</button>
+        </div>
+        
+        <div class="cart-items" id="cart-items"></div>
+
+        <div class="cart-summary">
+            <p>Subtotal: <span id="cart-subtotal">$0</span></p>
+            <p>Envío: <span id="cart-shipping">$0</span></p>
+            <hr>
+            <h3>Total: <span id="cart-total">$0</span></h3>
+        </div>
+
+        <button id="checkout-btn" class="checkout-btn" disabled>Realizar Pedido por WhatsApp</button>
+    </aside>
+
+    <dialog id="checkout-modal" class="checkout-modal">
+        <h3>Datos de Entrega</h3>
+        <form id="checkout-form">
+            <label for="client-name">Nombre:</label>
+            <input type="text" id="client-name" name="client-name" required>
+
+            <label for="client-phone">Teléfono (WhatsApp):</label>
+            <input type="tel" id="client-phone" name="client-phone" required>
+
+            <label for="client-address">Dirección:</label>
+            <textarea id="client-address" name="client-address" rows="3" required></textarea>
+
+            <label for="payment-method">Método de Pago:</label>
+            <select id="payment-method" name="payment-method" required>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Nequi">Nequi / Daviplata</option>
+                <option value="Tarjeta">Tarjeta (Datafono)</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="button" id="cancel-checkout-btn" class="secondary-btn">Cancelar</button>
+                <button type="submit" class="checkout-submit-btn">Enviar Pedido</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

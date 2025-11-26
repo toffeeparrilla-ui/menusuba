@@ -2,9 +2,9 @@
 /* 1. RESET Y TIPOGRAFÍA                */
 /* ==================================== */
 :root {
-    /* 🚨 1. TUS COLORES CORPORATIVOS ACTUALIZADOS */
-    --primary-color: #FBB03B;  /* Color Principal (Naranja Fuerte/Botones) */
-    --secondary-color: #222222; /* Color Secundario (Gris Carbón Oscuro/Acento) */
+    /* Colores Corporativos */
+    --primary-color: #FBB03B;  /* Naranja Fuerte */
+    --secondary-color: #222222; /* Gris Carbón Oscuro */
     
     /* Variables de soporte */
     --text-dark: #333;
@@ -21,7 +21,6 @@
 }
 
 body {
-    /* 💡 FUENTE RECOMENDADA: Quicksand */
     font-family: 'Quicksand', sans-serif; 
     background-color: var(--bg-light);
     color: var(--text-dark);
@@ -33,7 +32,7 @@ body {
 /* ==================================== */
 .main-header {
     background-color: var(--primary-color);
-    color: var(--text-dark); /* Texto oscuro, ya que el fondo principal es claro (#FBB03B) */
+    color: var(--text-dark);
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -62,7 +61,7 @@ body {
     font-weight: 700;
 }
 
-/* Icono del Carrito en el Header */
+/* Icono del Carrito */
 .cart-icon-container {
     font-size: 1.5rem;
     cursor: pointer;
@@ -70,13 +69,12 @@ body {
     padding: 5px;
 }
 
-/* 💡 AJUSTES PARA VISIBILIDAD DEL CONTADOR */
 #cart-count {
     position: absolute;
     top: -8px;
     right: -8px;
-    background-color: var(--secondary-color); /* Gris Carbón */
-    color: var(--text-light); /* Texto blanco */
+    background-color: var(--secondary-color);
+    color: var(--text-light);
     font-size: 0.85rem;
     font-weight: 700;
     width: 25px;
@@ -84,23 +82,23 @@ body {
     line-height: 25px;
     text-align: center;
     border-radius: 50%;
-    border: 2px solid var(--text-light); /* Borde blanco para resaltar */
+    border: 2px solid var(--text-light);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease-out;
 }
 
-/* Animación de 'Pop' para el contador (definida en JS) */
+#cart-count.animate {
+    animation: pop-in 0.3s ease-out;
+}
+
 @keyframes pop-in {
     0% { transform: scale(1); }
     50% { transform: scale(1.3); }
     100% { transform: scale(1); }
 }
-#cart-count.animate {
-    animation: pop-in 0.3s ease-out;
-}
 
 /* ==================================== */
-/* 3. NAVEGACIÓN DE CATEGORÍAS          */
+/* 3. NAVEGACIÓN                        */
 /* ==================================== */
 .categories-nav {
     padding: 10px 0;
@@ -128,8 +126,8 @@ body {
     border: 1px solid var(--primary-color);
     border-radius: 20px;
     background-color: var(--bg-light);
-    color: var(--text-dark); /* Texto oscuro */
-    font-weight: 500;
+    color: var(--text-dark);
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -138,7 +136,7 @@ body {
 .category-btn.active,
 .category-btn:hover {
     background-color: var(--primary-color);
-    color: var(--text-dark); /* Texto oscuro sobre el naranja */
+    color: var(--text-dark);
 }
 .category-btn:active {
     transform: translateY(1px);
@@ -146,7 +144,7 @@ body {
 }
 
 /* ==================================== */
-/* 4. LISTA DE PRODUCTOS Y TARJETAS     */
+/* 4. PRODUCTOS                         */
 /* ==================================== */
 .products-container {
     padding: 20px;
@@ -169,7 +167,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow-light);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: transform 0.2s;
     display: flex; 
     flex-direction: column;
     min-height: 250px;
@@ -183,12 +181,12 @@ body {
 .product-image {
     width: 100%;
     height: 180px;
-    object-fit: contain; /* Asegura que la imagen completa se vea */
+    object-fit: contain; /* Imagen completa */
     background-color: #fff; 
 }
 
 .product-card-no-image {
-    min-height: auto; 
+    min-height: 10px; 
 }
 
 .product-info {
@@ -200,9 +198,9 @@ body {
 
 .product-name {
     font-size: 1.15rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 5px;
-    color: var(--secondary-color); /* Gris Carbón */
+    color: var(--secondary-color);
 }
 
 .product-description {
@@ -215,25 +213,25 @@ body {
 .product-price {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--secondary-color); /* Gris Carbón para el precio */
+    color: var(--secondary-color);
     margin-bottom: 10px;
 }
 
 .add-to-cart-btn {
     background-color: var(--primary-color);
-    color: var(--text-dark); /* Texto oscuro sobre el naranja */
+    color: var(--text-dark);
     border: none;
     padding: 10px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     transition: background-color 0.2s;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .add-to-cart-btn:hover {
-    background-color: color-mix(in srgb, var(--primary-color) 80%, black);
+    background-color: #e69b2e; /* Un poco más oscuro que el primary */
 }
 .add-to-cart-btn:active {
     transform: translateY(1px);
@@ -241,200 +239,82 @@ body {
 }
 
 /* ==================================== */
-/* 5. SIDEBAR Y CARRITO                 */
+/* 5. SIDEBAR Y MODAL                   */
 /* ==================================== */
 .cart-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 15;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease-in-out;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 15; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
 }
-.cart-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-}
+.cart-overlay.open { opacity: 1; pointer-events: auto; }
 
 .cart-sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 85%;
-    max-width: 400px;
-    height: 100%;
+    position: fixed; top: 0; right: 0;
+    width: 85%; max-width: 400px; height: 100%;
     background-color: var(--text-light);
     z-index: 20;
     transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
+    transition: transform 0.3s;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column;
 }
-.cart-sidebar.open {
-    transform: translateX(0);
-}
+.cart-sidebar.open { transform: translateX(0); }
 
 .sidebar-header {
     padding: 15px 20px;
     background-color: var(--primary-color);
-    color: var(--text-dark); /* Texto oscuro sobre naranja */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-.sidebar-header h2 {
-    font-size: 1.3rem;
+    color: var(--text-dark);
+    display: flex; justify-content: space-between; align-items: center;
 }
 .close-btn {
-    background: none;
-    border: none;
-    color: var(--text-dark); /* Botón de cerrar oscuro */
-    font-size: 1.5rem;
-    cursor: pointer;
+    background: none; border: none; font-size: 1.5rem; cursor: pointer;
 }
 
-.cart-items {
-    padding: 20px;
-    overflow-y: auto;
-    flex-grow: 1;
-}
+.cart-items { padding: 20px; overflow-y: auto; flex-grow: 1; }
 
 .cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed #ddd;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px dashed #ddd;
 }
-.item-details small {
-    color: #666;
-    font-size: 0.85rem;
-}
-
 .item-quantity-controls button {
-    background-color: var(--primary-color); /* Usamos el naranja para los botones de cantidad */
-    border: none;
-    color: var(--text-dark);
-    font-weight: 700;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.1s;
+    background-color: var(--primary-color); border: none;
+    width: 30px; height: 30px; border-radius: 50%;
+    font-weight: 700; cursor: pointer;
 }
-.item-quantity-controls button:active {
-    background-color: color-mix(in srgb, var(--primary-color) 80%, black);
-}
-.item-quantity-controls span {
-    margin: 0 10px;
-    font-weight: 600;
-}
+.item-quantity-controls span { margin: 0 10px; font-weight: 600; }
 
-.cart-summary {
-    padding: 15px 20px;
-    border-top: 2px solid var(--bg-light);
-    flex-shrink: 0;
-}
-.cart-summary hr {
-    margin: 8px 0;
-    border: 0;
-    border-top: 1px solid #ddd;
-}
-.cart-summary h3 {
-    font-size: 1.4rem;
-    color: var(--secondary-color); /* Gris Carbón */
-}
-.cart-summary p {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1rem;
-    color: var(--text-dark);
-}
+.cart-summary { padding: 15px 20px; border-top: 2px solid var(--bg-light); }
+.cart-summary p { display: flex; justify-content: space-between; }
+.cart-summary h3 { color: var(--secondary-color); font-size: 1.4rem; }
 
 .checkout-btn {
-    width: 100%;
-    padding: 15px;
-    background-color: var(--secondary-color); /* Gris Carbón */
-    color: var(--text-light); /* Texto blanco */
-    border: none;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    flex-shrink: 0;
-}
-.checkout-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    color: #666;
-}
-
-/* ==================================== */
-/* 6. MODAL DE CHECKOUT                 */
-/* ==================================== */
-.checkout-modal {
-    border: none;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: var(--shadow-medium);
-    max-width: 90%;
-    min-width: 300px;
-}
-
-.checkout-modal h3 {
-    color: var(--secondary-color); /* Gris Carbón */
-    margin-bottom: 15px;
-}
-
-.checkout-modal form label {
-    display: block;
-    margin-top: 10px;
-    font-weight: 500;
-}
-
-.checkout-modal form input, 
-.checkout-modal form select, 
-.checkout-modal form textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: inherit;
-    font-size: 1rem;
-}
-
-.modal-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.checkout-submit-btn {
-    background-color: var(--secondary-color); /* Gris Carbón */
-    color: var(--text-light); /* Texto blanco */
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.secondary-btn {
-    background-color: #999;
+    width: 100%; padding: 15px;
+    background-color: var(--secondary-color);
     color: var(--text-light);
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-weight: 600;
+    border: none; font-size: 1.1rem; font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s;
+}
+.checkout-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+
+/* Modal */
+.checkout-modal {
+    border: none; border-radius: 10px; padding: 20px;
+    box-shadow: var(--shadow-medium); max-width: 90%; min-width: 300px;
+}
+.checkout-modal h3 { color: var(--secondary-color); margin-bottom: 15px; }
+.checkout-modal form label { display: block; margin-top: 10px; font-weight: 600; }
+.checkout-modal form input, .checkout-modal form select, .checkout-modal form textarea {
+    width: 100%; padding: 8px; margin-top: 5px;
+    border: 1px solid #ccc; border-radius: 5px; font-family: inherit;
+}
+.modal-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+.checkout-submit-btn {
+    background-color: var(--secondary-color); color: var(--text-light);
+    border: none; padding: 10px 15px; border-radius: 5px; font-weight: 600; cursor: pointer;
+}
+.secondary-btn {
+    background-color: #999; color: var(--text-light);
+    border: none; padding: 10px 15px; border-radius: 5px; font-weight: 600; cursor: pointer;
 }
