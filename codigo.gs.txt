@@ -1,0 +1,68 @@
+// El nombre de la pestaña (hoja) donde se guardarán los pedidos.
+// ¡Debe coincidir con el nombre de tu pestaña: "Suba"!
+const SHEET_NAME = "PEDIDOS"; 
+
+/**
+ * Función principal que se ejecuta cuando la aplicación envía una solicitud HTTP (POST).
+ * Recibe el JSON del carrito y escribe una fila por cada ítem.
+ * @param {Object} e - Objeto de evento con los datos de la solicitud.
+ */
+function doPost(e) {
+  try {
+    // 1. Validaciones iniciales
+    if (!e || !e.postData || !e.postData.contents) {
+      Logger.log("Error: No hay datos en la solicitud.");
+      return ContentService.createTextOutput(JSON.stringify({ result: "error", message: "No data received." })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Parsear los datos JSON del cuerpo
+    const data = JSON.parse(e.postData.contents);
+    
+    // Acceder a la hoja de cálculo
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      Logger.log("Error: La hoja 'PEDIDOS' no se encontró.");
+      return ContentService.createTextOutput(JSON.stringify({ result: "error", message: `Sheet '${SHEET_NAME}' not found. Check the sheet name.` })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2. GENERAR UN ID ÚNICO DE PEDIDO Y TIEMPO
+    // Formato: P-XXXXXXYYY (timestamp + 3 dígitos random)
+    const pedidoId = `P-${new Date().getTime().toString().slice(-6)}${Math.floor(Math.random() * 900) + 100}`;
+    const fechaHora = new Date();
+    
+    // Formatear el método de pago (reemplazar guiones por espacios)
+    const metodoPagoDisplay = data.metodopago ? data.metodopago.replace(/_/g, ' ') : 'N/A';
+
+    // 3. ITERAR SOBRE CADA ITEM DEL CARRITO Y CREAR UNA FILA
+    // data.carrito es el array de productos que viene del JavaScript
+    data.carrito.forEach(item => {
+      // **NOTA**: Este array DEBE coincidir con el orden de las 10 columnas de tu hoja:
+      // A, B, C, D, E, F, G, H, I, J
+      const row = [
+        pedidoId,             // Columna A: ID Pedido (Se repite)
+        fechaHora,            // Columna B: Fecha/Hora
+        data.nombrecliente,   // Columna C: Nombre Cliente
+        data.telefono,        // Columna D: Teléfono
+        data.direccion,       // Columna E: Dirección
+        metodoPagoDisplay,    // Columna F: Método Pago
+        data.total,           // Columna G: Total del Pedido
+        item.nombre,          // Columna H: Nombre Producto
+        item.cantidad,        // Columna I: Cantidad
+        item.nota || ''       // Columna J: Nota (usa cadena vacía si no existe)
+      ];
+      
+      // Añadir la fila a la hoja
+      sheet.appendRow(row);
+    });
+    
+    // 4. Respuesta de éxito
+    return ContentService.createTextOutput(JSON.stringify({ result: "success", pedidoId: pedidoId, message: "Pedido guardado correctamente." })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    // 5. Manejo de errores
+    Logger.log("Error processing request: " + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({ result: "error", message: "Internal server error: " + error.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
